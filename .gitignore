@@ -38,7 +38,9 @@ yarn-error.log*
 claude-session.jsonl
 codex-session.jsonl
 git-log.txt
-seed-vault/
+
+# private vault content (anything Bekir does not want to ship publicly)
+seed-vault/private/
 
 # RAG index cache (rebuildable from seed-vault/)
 .cache/

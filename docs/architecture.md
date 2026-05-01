@@ -34,7 +34,7 @@ Reads a directory of `.md` files (Obsidian vault), extracts frontmatter via `gra
 - **Embeddings:** Google `gemini-embedding-001` via `@ai-sdk/google`
 - **Storage:** in-memory + on-disk JSON for the MVP (fast enough for ~5k chunks)
 - **Retrieval:** cosine similarity, top-k = 3, with snippet truncation to ~400 tokens
-- **Reasoning over snippets:** Gemini 3 Pro (default — frontier-class extraction quality), `gemini-2.5-flash` fallback for trivial queries to keep cost down; Claude Haiku 4.5 optional for multi-model demo
+- **Reasoning over snippets:** `gemini-3.1-pro-preview` (default — frontier-class with `thinking_level` control), `gemini-2.5-flash` fallback for trivial queries to keep cost down; Claude Haiku 4.5 optional for multi-model demo
 
 ### 3. x402 middleware (`src/lib/x402.ts`)
 A Next.js route handler that:

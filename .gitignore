@@ -40,6 +40,9 @@ codex-session.jsonl
 git-log.txt
 seed-vault/
 
+# RAG index cache (rebuildable from seed-vault/)
+.cache/
+
 # vercel
 .vercel
 

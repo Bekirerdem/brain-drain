@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Brain Drain
 
-## Getting Started
+> An x402-gated personal knowledge marketplace where AI agents pay individual experts in USDC to query their private vaults.
 
-First, run the development server:
+Built for [Colosseum Frontier 2026](https://colosseum.com/frontier) on Solana.
+
+---
+
+## What it does
+
+You upload your Obsidian (or any Markdown) vault. Brain Drain turns it into an x402-protected micro-API. When an external AI agent asks a question whose answer lives in your notes, it must pay USDC before getting the relevant snippet. Settlement happens on Solana mainnet in ~400ms; the agent uses a Coinbase CDP Embedded Wallet to auto-fund and auto-sign, and the seller (you) receives the USDC inside Phantom Cash.
+
+## Why it matters
+
+Open-web training data is exhausted. The most valuable knowledge lives in private vaults — researchers, engineers, lawyers, doctors. There has never been a frictionless rail for AI agents to compensate the humans whose curated notes they consume. Brain Drain inverts the economics: AI pays the source.
+
+## Stack
+
+- **Next.js 16** (App Router) on Vercel
+- **TypeScript** end-to-end
+- **Solana** mainnet for settlement (`@solana/web3.js`, `@solana/spl-token`)
+- **Coinbase CDP Embedded Wallets** (`@coinbase/cdp-sdk`) for buyer-side MPC
+- **x402** HTTP 402 standard for paywalled endpoints
+- **Phantom Cash** for seller payouts (USDC SPL transfer)
+- **Helius RPC** for low-latency settlement verification
+- **Anthropic Claude** for agent reasoning, **OpenAI** for embeddings (RAG)
+- **MCP** server for Claude Desktop / Cursor integration
+
+## Sponsor bounties targeted
+
+- Best Multi-Protocol Agent (x402 + AgentPay)
+- Best Use of Phantom CASH
+- Best Usage of CDP Embedded Wallets
+- Best AgentPay Demo
+- Best x402 Integration
+
+## Local development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+bun install
+cp .env.example .env.local   # then fill in keys
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Status
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🚧 Day 0 — initial scaffold, not yet functional. See [`docs/architecture.md`](docs/architecture.md) for the system design and [`docs/roadmap.md`](docs/roadmap.md) for the 11-day sprint plan.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## License
 
-## Learn More
+MIT — see [LICENSE](LICENSE).
 
-To learn more about Next.js, take a look at the following resources:
+## Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Bekir Erdem ([@l3eksS](https://x.com/l3eksS) on X, [@Beks](https://arena.colosseum.org/u/Beks) on Colosseum). Solo build for Frontier 2026.

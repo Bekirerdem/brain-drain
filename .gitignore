@@ -34,6 +34,12 @@ yarn-error.log*
 .env*
 !.env.example
 
+# session transcripts and grant prep artifacts (uploaded to Drive, not committed)
+claude-session.jsonl
+codex-session.jsonl
+git-log.txt
+seed-vault/
+
 # vercel
 .vercel
 

@@ -31,10 +31,10 @@ sequenceDiagram
 Reads a directory of `.md` files (Obsidian vault), extracts frontmatter via `gray-matter`, chunks the body, and stores in a local index. v0 uses a flat JSON index; v1 may move to a vector DB.
 
 ### 2. RAG index (`src/lib/rag.ts`)
-- **Embeddings:** Google `gemini-embedding-001` via `@ai-sdk/google` (free tier: 1500 req/day)
+- **Embeddings:** Google `gemini-embedding-001` via `@ai-sdk/google`
 - **Storage:** in-memory + on-disk JSON for the MVP (fast enough for ~5k chunks)
 - **Retrieval:** cosine similarity, top-k = 3, with snippet truncation to ~400 tokens
-- **Reasoning over snippets:** Gemini 2.5 Flash (free tier), Gemini 2.5 Pro for hard queries; Claude Haiku 4.5 optional for multi-model demo
+- **Reasoning over snippets:** Gemini 3 Pro (default — frontier-class extraction quality), `gemini-2.5-flash` fallback for trivial queries to keep cost down; Claude Haiku 4.5 optional for multi-model demo
 
 ### 3. x402 middleware (`src/lib/x402.ts`)
 A Next.js route handler that:

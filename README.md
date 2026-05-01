@@ -23,7 +23,7 @@ Open-web training data is exhausted. The most valuable knowledge lives in privat
 - **x402** HTTP 402 standard for paywalled endpoints
 - **Phantom Cash** for seller payouts (USDC SPL transfer)
 - **Helius RPC** for low-latency settlement verification
-- **Google Gemini** (2.5 Flash for reasoning, gemini-embedding-001 for RAG) — primary; Anthropic Claude Haiku 4.5 optional for multi-model demo
+- **Google Gemini 3 Pro** for reasoning, `gemini-embedding-001` for RAG, `gemini-2.5-flash` for cheap fallback; Anthropic Claude Haiku 4.5 optional for multi-model demo
 - **MCP** server for Claude Desktop / Cursor integration
 
 ## Sponsor bounties targeted

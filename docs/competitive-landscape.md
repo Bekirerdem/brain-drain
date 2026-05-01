@@ -46,13 +46,15 @@ Cypherpunk (Sept-Oct 2025, the immediately-preceding hackathon to Frontier) is t
 
 ### Tier S — direct mechanical analogues (must differentiate against)
 
-#### MCPay
+#### MCPay → Frames (production rebrand)
 - **Hackathon:** Cypherpunk 2025 — 🥇 **1st Place Stablecoins** ($25,000) + **Frames C4 accelerator**
-- **One-liner:** *"Monetize Model Context Protocol tools and AI agent capabilities using the x402 payment standard on Solana."*
-- **Stack overlap:** MCP + x402 + Solana + USDC + TypeScript — **identical primitives to Brain Drain**.
-- **Repo:** [microchipgnu/MCPay](https://github.com/microchipgnu/MCPay)
+- **2026 status:** rebranded as **Frames** (`frames.ag` / `@framesag`). The `mcpay.tech` domain redirects to `frames.ag`. Operating live: **~370K transactions, $75K total volume** as of 2026-05-01.
+- **What they sell now:** premium AI services — OpenAI Sora-2 ($0.12/sec video), Google nano-banana ($0.05/image), Exa Search ($0.01/call), Twitter Trends ($0.01/call). Big-provider supply side.
+- **Stack:** Privy embedded wallets, EVM + Solana, MCP + x402, Hono backend, TypeScript SDK (`mcpay` on npm).
+- **Repo / SDK:** [microchipgnu/MCPay](https://github.com/microchipgnu/MCPay) — open source, Apache 2.0.
 - **Profile:** [arena.colosseum.org/projects/explore/mcpay](https://arena.colosseum.org/projects/explore/mcpay)
-- **Why it's not the same project:** MCPay sells access to **server-side capabilities** — calling an MCP tool (e.g., a database query, an image generator). Brain Drain sells access to **a specific human's curated knowledge**. The MCP server in MCPay is a *commercial endpoint*; the MCP server in Brain Drain is a *personal expert*. Different supply side, different pricing dynamic, different defensibility (curation quality vs. tool capability).
+- **Why it's not the same project (sharper after seeing the live product):** Frames is **Stripe for big AI services** — agents pay OpenAI/Google/Exa via a Privy wallet. Brain Drain is **Substack for individual experts** — agents pay the human whose notes contain the answer, settled into the seller's Phantom Cash. Different supply side, different defensibility, different bounty wedge (Frames runs on Privy; Brain Drain runs on Coinbase CDP + Phantom Cash).
+- **Threat assessment:** Low for Frontier 2026. Accelerator graduates rarely re-enter the same hackathon track; if they do, it would be in a different vertical. Their pivot from "monetize any MCP server" to "premium AI tool wallet" leaves the personal-knowledge sub-niche open.
 
 > **Action:** Day 1 morning, do a deep-read of MCPay's repo + demo video. Note the exact features they shipped vs. didn't (e.g., dynamic pricing? reputation? Phantom Cash?). Position Brain Drain on what they *skipped*.
 

@@ -1,33 +1,35 @@
 import {
   address as toAddress,
-  getBase58Encoder,
+  getBase64Encoder,
   getBase64EncodedWireTransaction,
+  getTransactionDecoder,
   type Address,
-  type SignatureDictionary,
   type Transaction,
-  type TransactionPartialSigner,
-  type TransactionWithinSizeLimit,
+  type TransactionModifyingSigner,
   type TransactionWithLifetime,
+  type TransactionWithinSizeLimit,
 } from "@solana/kit";
 import type { BuyerAccount } from "./account";
 
-type SignableTransaction = Transaction & TransactionWithinSizeLimit & TransactionWithLifetime;
+type SignableInput = Transaction | (Transaction & TransactionWithLifetime);
+type SignedOutput = Transaction & TransactionWithinSizeLimit & TransactionWithLifetime;
 
-const base58 = getBase58Encoder();
+const base64 = getBase64Encoder();
+const txDecoder = getTransactionDecoder();
 
-export function cdpAccountToSvmSigner(account: BuyerAccount): TransactionPartialSigner {
+export function cdpAccountToSvmSigner(account: BuyerAccount): TransactionModifyingSigner {
   const addr = toAddress(account.address) as Address;
   return {
     address: addr,
-    async signTransactions(
-      transactions: readonly SignableTransaction[],
-    ): Promise<readonly SignatureDictionary[]> {
+    async modifyAndSignTransactions(
+      transactions: readonly SignableInput[],
+    ): Promise<readonly SignedOutput[]> {
       return Promise.all(
         transactions.map(async (tx) => {
-          const base64 = getBase64EncodedWireTransaction(tx);
-          const { signedTransaction } = await account.signTransaction({ transaction: base64 });
-          const signatureBytes = base58.encode(signedTransaction);
-          return { [addr]: signatureBytes } as unknown as SignatureDictionary;
+          const wire = getBase64EncodedWireTransaction(tx as SignedOutput);
+          const { signedTransaction } = await account.signTransaction({ transaction: wire });
+          const signedBytes = base64.encode(signedTransaction);
+          return txDecoder.decode(signedBytes) as SignedOutput;
         }),
       );
     },

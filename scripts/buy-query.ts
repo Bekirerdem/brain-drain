@@ -1,8 +1,7 @@
 #!/usr/bin/env bun
 import { createPaymentHeader, selectPaymentRequirements } from "x402/client";
-import { svm } from "x402/shared";
 import { env } from "../src/lib/env";
-import { getCdpClient, getOrCreateBuyerAccount } from "../src/lib/cdp";
+import { cdpAccountToSvmSigner, getOrCreateBuyerAccount } from "../src/lib/cdp";
 
 const DEFAULT_X402_VERSION = 1;
 const X402_NETWORK = "solana-devnet" as const;
@@ -40,8 +39,7 @@ async function main(): Promise<void> {
   );
 
   const account = await getOrCreateBuyerAccount();
-  const privateKey = await getCdpClient().solana.exportAccount({ address: account.address });
-  const signer = await svm.createSignerFromBase58(privateKey);
+  const signer = cdpAccountToSvmSigner(account);
 
   const xPaymentHeader = await createPaymentHeader(
     signer,

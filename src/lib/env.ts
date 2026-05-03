@@ -34,6 +34,8 @@ const EnvSchema = z.object({
   USDC_MINT_DEVNET: z.string().min(BASE58_MIN).max(BASE58_MAX),
   USDC_MINT_MAINNET: z.string().min(BASE58_MIN).max(BASE58_MAX),
 
+  RAG_INDEX_PATH: z.string().min(1).default(".cache/index.json"),
+
   NEXT_PUBLIC_APP_URL: z.string().url(),
 });
 

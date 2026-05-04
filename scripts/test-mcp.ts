@@ -2,6 +2,7 @@
 import { env } from "../src/lib/env";
 
 const url = `${env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "")}/api/mcp`;
+const REQUEST_TIMEOUT_MS = 180_000;
 
 interface JsonRpcRequest {
   readonly jsonrpc: "2.0";
@@ -18,6 +19,7 @@ async function call(body: JsonRpcRequest): Promise<unknown> {
       Accept: "application/json, text/event-stream",
     },
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
   console.log(`[mcp] ${body.method} → ${res.status}`);
   if (!res.ok) {

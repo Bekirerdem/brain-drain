@@ -68,16 +68,18 @@ export function createMcpServer(): McpServer {
 }
 
 async function runPaidQuery(input: { question: string; k?: number }) {
-  const buyer = await getOrCreateBuyerAccount();
-  const transfer = await buyer.transfer({
-    to: env.SELLER_SOLANA_ADDRESS,
-    token: "usdc",
-    amount: usdcToAtomic(env.X402_DEFAULT_PRICE_USDC),
-    network: "devnet",
-  });
+  const buyer = await timed("buyer", () => getOrCreateBuyerAccount());
+  const transfer = await timed("transfer", () =>
+    buyer.transfer({
+      to: env.SELLER_SOLANA_ADDRESS,
+      token: "usdc",
+      amount: usdcToAtomic(env.X402_DEFAULT_PRICE_USDC),
+      network: "devnet",
+    }),
+  );
 
-  const queryVector = await embedText(input.question);
-  const index = await getIndex();
+  const queryVector = await timed("embed", () => embedText(input.question));
+  const index = await timed("index", () => getIndex());
   const results = retrieveTopK(queryVector, index.entries, {
     k: input.k ?? QUERY_K_DEFAULT,
   });
@@ -98,4 +100,11 @@ async function runPaidQuery(input: { question: string; k?: number }) {
       payer: buyer.address,
     },
   };
+}
+
+async function timed<T>(label: string, fn: () => Promise<T>): Promise<T> {
+  const start = performance.now();
+  const result = await fn();
+  console.log(`[mcp.query] ${label} ${Math.round(performance.now() - start)}ms`);
+  return result;
 }

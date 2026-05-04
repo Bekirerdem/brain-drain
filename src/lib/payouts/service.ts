@@ -20,9 +20,13 @@ export async function getSellerPayouts(query: PayoutQuery): Promise<PayoutEvent[
   });
   if (signatures.length === 0) return [];
 
-  const txs = await conn.getParsedTransactions(
-    signatures.map((s) => s.signature),
-    { commitment: "confirmed", maxSupportedTransactionVersion: 0 },
+  const txs = await Promise.all(
+    signatures.map((s) =>
+      conn.getParsedTransaction(s.signature, {
+        commitment: "confirmed",
+        maxSupportedTransactionVersion: 0,
+      }),
+    ),
   );
 
   const events: PayoutEvent[] = [];

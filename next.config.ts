@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  outputFileTracingIncludes: {
+    "/api/mcp": ["./.cache/index.json"],
+    "/api/query": ["./.cache/index.json"],
+  },
 };
 
 export default nextConfig;

@@ -1,62 +1,43 @@
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { PublicKey } from "@solana/web3.js";
 import { env } from "../env";
-import { getConnection } from "../solana/connection";
 import { atomicToUsdc, getUsdcMint } from "../solana/usdc";
+import {
+  getParsedTransaction,
+  getSignaturesForAddress,
+  type ParsedTransaction,
+} from "../solana/rpc";
 import type { PayoutEvent, PayoutQuery } from "./types";
 
+const RPC_THROTTLE_MS = 150;
+
 export async function getSellerPayouts(query: PayoutQuery): Promise<PayoutEvent[]> {
-  const conn = getConnection();
   const mintAddress = getUsdcMint();
   const seller = env.SELLER_SOLANA_ADDRESS;
   const sellerAta = getAssociatedTokenAddressSync(
     new PublicKey(mintAddress),
     new PublicKey(seller),
-  );
+  ).toBase58();
 
-  const signatures = await conn.getSignaturesForAddress(sellerAta, {
+  const signatures = await getSignaturesForAddress(sellerAta, {
     limit: query.limit,
     before: query.before,
   });
   if (signatures.length === 0) return [];
 
-  const txs = await Promise.all(
-    signatures.map((s) =>
-      conn.getParsedTransaction(s.signature, {
-        commitment: "confirmed",
-        maxSupportedTransactionVersion: 0,
-      }),
-    ),
-  );
-
   const events: PayoutEvent[] = [];
-  for (let i = 0; i < txs.length; i++) {
-    const tx = txs[i];
+  for (const [i, sig] of signatures.entries()) {
+    if (i > 0) await sleep(RPC_THROTTLE_MS);
+    const tx = await getParsedTransaction(sig.signature);
     if (!tx || tx.meta?.err) continue;
-    const event = extractPayout(tx, signatures[i]?.signature ?? "", seller, mintAddress);
+    const event = extractPayout(tx, sig.signature, seller, mintAddress);
     if (event) events.push(event);
   }
   return events;
 }
 
-interface ParsedTx {
-  readonly slot: number;
-  readonly blockTime?: number | null;
-  readonly meta?: {
-    readonly preTokenBalances?: readonly TokenBalance[] | null;
-    readonly postTokenBalances?: readonly TokenBalance[] | null;
-  } | null;
-}
-
-interface TokenBalance {
-  readonly accountIndex: number;
-  readonly mint: string;
-  readonly owner?: string;
-  readonly uiTokenAmount: { readonly amount: string };
-}
-
 function extractPayout(
-  tx: ParsedTx,
+  tx: ParsedTransaction,
   signature: string,
   seller: string,
   mint: string,
@@ -84,4 +65,8 @@ function extractPayout(
     amountUsdc: atomicToUsdc(delta),
     mint,
   };
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

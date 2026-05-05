@@ -39,25 +39,73 @@ const ParsedTransactionSchema = z
 export type SignatureInfo = z.infer<typeof SignatureInfoSchema>;
 export type ParsedTransaction = NonNullable<z.infer<typeof ParsedTransactionSchema>>;
 
+const DEFAULT_ATTEMPTS = 3;
+const BACKOFF_MS = [0, 250, 750] as const;
+
 let nextRpcId = 1;
+
+class RpcError extends Error {
+  readonly retryable: boolean;
+  constructor(message: string, retryable: boolean) {
+    super(message);
+    this.retryable = retryable;
+  }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 async function rpcCall<T>(
   method: string,
   params: readonly unknown[],
   resultSchema: z.ZodType<T>,
+  attempts: number = DEFAULT_ATTEMPTS,
+): Promise<T> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    if (i > 0) await sleep(BACKOFF_MS[Math.min(i, BACKOFF_MS.length - 1)]);
+    try {
+      return await rpcCallOnce(method, params, resultSchema);
+    } catch (err) {
+      lastErr = err;
+      if (err instanceof RpcError && !err.retryable) throw err;
+    }
+  }
+  throw lastErr instanceof Error
+    ? lastErr
+    : new Error(`RPC ${method} failed after ${attempts} attempts`);
+}
+
+async function rpcCallOnce<T>(
+  method: string,
+  params: readonly unknown[],
+  resultSchema: z.ZodType<T>,
 ): Promise<T> {
   const id = nextRpcId++;
-  const res = await fetch(env.SOLANA_RPC_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ jsonrpc: "2.0", id, method, params }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(env.SOLANA_RPC_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id, method, params }),
+    });
+  } catch (err) {
+    // network-level failures (DNS, timeout, TLS) — always retryable
+    throw new RpcError(`RPC ${method} network error: ${String(err)}`, true);
+  }
   if (!res.ok) {
-    throw new Error(`RPC ${method} HTTP ${res.status}: ${await res.text()}`);
+    const retryable = res.status === 429 || res.status >= 500;
+    const body = await res.text().catch(() => "");
+    throw new RpcError(`RPC ${method} HTTP ${res.status}: ${body}`, retryable);
   }
   const envelope = RpcEnvelopeSchema.parse(await res.json());
   if (envelope.error) {
-    throw new Error(`RPC ${method} error ${envelope.error.code}: ${envelope.error.message}`);
+    // JSON-RPC errors are logic-level — not retryable.
+    throw new RpcError(
+      `RPC ${method} error ${envelope.error.code}: ${envelope.error.message}`,
+      false,
+    );
   }
   return resultSchema.parse(envelope.result);
 }

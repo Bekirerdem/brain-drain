@@ -1,9 +1,11 @@
 import { z } from "zod";
-import { getConnection } from "./connection";
+import { getParsedTransaction, type ParsedTransaction } from "./rpc";
 import { SolanaAddressSchema, SolanaSignatureSchema } from "./types";
 import { atomicToUsdc, getUsdcMint, usdcToAtomic } from "./usdc";
 
 const DEFAULT_MAX_AGE_SEC = 300;
+const TX_LOOKUP_ATTEMPTS = 4;
+const TX_LOOKUP_BACKOFF_MS = [0, 400, 900, 1500] as const;
 
 export const VerifyPaymentInputSchema = z.object({
   signature: SolanaSignatureSchema,
@@ -29,27 +31,50 @@ export type VerifiedPayment = z.infer<typeof VerifiedPaymentSchema>;
 
 export type VerifyResult =
   | { ok: true; payment: VerifiedPayment }
-  | { ok: false; reason: string };
+  | { ok: false; reason: string; retryable: boolean };
 
 export async function verifyUsdcPayment(raw: unknown): Promise<VerifyResult> {
   const parsed = VerifyPaymentInputSchema.safeParse(raw);
   if (!parsed.success) {
-    return { ok: false, reason: `invalid input: ${parsed.error.message}` };
+    return {
+      ok: false,
+      reason: `invalid input: ${parsed.error.message}`,
+      retryable: false,
+    };
   }
   const input = parsed.data;
 
-  const tx = await getConnection().getParsedTransaction(input.signature, {
-    maxSupportedTransactionVersion: 0,
-    commitment: "confirmed",
-  });
-  if (!tx) return { ok: false, reason: "transaction not found yet" };
-  if (tx.meta?.err) return { ok: false, reason: "transaction failed on chain" };
+  const tx = await fetchWithIndexingRetry(input.signature);
+  if (!tx) {
+    return {
+      ok: false,
+      reason: "transaction not yet indexed by RPC",
+      retryable: true,
+    };
+  }
+  if (tx.meta?.err) {
+    return {
+      ok: false,
+      reason: "transaction failed on chain",
+      retryable: false,
+    };
+  }
 
   const blockTime = tx.blockTime ?? 0;
-  if (!blockTime) return { ok: false, reason: "transaction missing block time" };
+  if (!blockTime) {
+    return {
+      ok: false,
+      reason: "transaction missing block time",
+      retryable: true,
+    };
+  }
   const ageSec = Math.floor(Date.now() / 1000) - blockTime;
   if (ageSec > input.maxAgeSeconds) {
-    return { ok: false, reason: `transaction stale (age=${ageSec}s)` };
+    return {
+      ok: false,
+      reason: `transaction stale (age=${ageSec}s)`,
+      retryable: false,
+    };
   }
 
   const expectedMint = getUsdcMint();
@@ -62,7 +87,11 @@ export async function verifyUsdcPayment(raw: unknown): Promise<VerifyResult> {
     (b) => b.owner === input.expectedRecipient && b.mint === expectedMint,
   );
   if (!recipientPost) {
-    return { ok: false, reason: "no USDC credit to recipient" };
+    return {
+      ok: false,
+      reason: "no USDC credit to recipient",
+      retryable: false,
+    };
   }
 
   const recipientPre = pre.find(
@@ -76,6 +105,7 @@ export async function verifyUsdcPayment(raw: unknown): Promise<VerifyResult> {
     return {
       ok: false,
       reason: `underpayment: got ${delta.toString()}, need ${expectedAtomic.toString()}`,
+      retryable: false,
     };
   }
 
@@ -97,4 +127,19 @@ export async function verifyUsdcPayment(raw: unknown): Promise<VerifyResult> {
       slot: tx.slot,
     },
   };
+}
+
+async function fetchWithIndexingRetry(
+  signature: string,
+): Promise<ParsedTransaction | null> {
+  for (let i = 0; i < TX_LOOKUP_ATTEMPTS; i++) {
+    if (i > 0) await sleep(TX_LOOKUP_BACKOFF_MS[i]);
+    const tx = await getParsedTransaction(signature);
+    if (tx) return tx;
+  }
+  return null;
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

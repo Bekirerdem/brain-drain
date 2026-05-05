@@ -16,7 +16,7 @@ sequenceDiagram
     API-->>Buyer: 402 Payment Required<br/>{ price, recipient, mint }
     Buyer->>CDP: signAndSend(USDC transfer)
     CDP->>Solana: SPL transfer (USDC)
-    Solana-->>Phantom: balance += 0.05 USDC
+    Solana-->>Phantom: balance += 0.25 USDC
     Buyer->>API: GET /query?q=...<br/>+ X-Payment-Signature
     API->>Solana: verify tx (via Helius RPC)
     Solana-->>API: confirmed

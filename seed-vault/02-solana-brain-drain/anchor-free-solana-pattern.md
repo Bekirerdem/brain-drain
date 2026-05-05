@@ -44,7 +44,7 @@ Five components. None of them is an Anchor program. Three of them are existing T
 
 The naive Brain Drain v1 design had an Anchor escrow: buyer deposits USDC into the program, program holds it until snippet is delivered, then releases. This is what most x402 demos on Ethereum end up looking like.
 
-**Replaced by:** direct USDC SPL transfer. The "escrow" is the buyer's faith that we'll deliver the snippet; we mitigate this with replay protection (returns the same chunk for the same signature) and a small TTL window. For a $0.05 transaction, the trust assumption is acceptable.
+**Replaced by:** direct USDC SPL transfer. The "escrow" is the buyer's faith that we'll deliver the snippet; we mitigate this with replay protection (returns the same chunk for the same signature) and a small TTL window. For a $0.25 transaction, the trust assumption is acceptable.
 
 **v1 might want this back.** A 2-of-3 multisig CDP wallet (buyer + seller + LLM judge) gives us trustless escrow without writing Solana program code — see "Multisig in pure TypeScript" below.
 
@@ -116,7 +116,7 @@ For v0, none of these matter. For v1 / Eternal hackathon submission, the first o
 
 If you're staring at an Anchor program and wondering "do I need this?", run through this checklist:
 
-1. **Does the value of the on-chain logic exceed the gas cost of running it?** For a $0.05 transaction, the answer is almost always no.
+1. **Does the value of the on-chain logic exceed the gas cost of running it?** For a $0.25 transaction, the answer is almost always no.
 2. **Is the off-chain alternative subject to a real adversarial attack?** If your trust model already includes "the API operator is honest" (it usually does), the off-chain verifier is fine.
 3. **Will the Anchor program need to be upgraded?** Each upgrade is a deploy, a verify, a security review. If you can defer the contract by two months and write it once well, do that.
 4. **Are you using existing primitives (SPL, multisig, MPC) at full strength?** If you're rewriting MPC custody as an Anchor program, stop.

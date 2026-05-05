@@ -51,7 +51,7 @@ Two RPC calls per verification: `getSignatureStatuses` (cheap, ~50 ms) followed 
 
 ## `confirmed` vs `finalized`
 
-We use `confirmed` (one block of confirmation) rather than `finalized` (~13 seconds of waiting for full finality). For $0.05 transfers the value-at-risk during the confirmation-to-finalisation window is tiny; the optimistic-confirmation latency is 30x better, which the agent UX rewards heavily.
+We use `confirmed` (one block of confirmation) rather than `finalized` (~13 seconds of waiting for full finality). For $0.25 transfers the value-at-risk during the confirmation-to-finalisation window is tiny; the optimistic-confirmation latency is 30x better, which the agent UX rewards heavily.
 
 The narrow case where this would bite: a chain reorg unwinds the confirmed-but-not-finalised transaction. On Solana mainnet this is so rare (last single-slot reorg I'm aware of was years ago, and reorgs of confirmed-status transactions are essentially zero) that the expected loss is much smaller than the latency win. We accept the trade.
 

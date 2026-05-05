@@ -29,7 +29,7 @@ EVM L2s settle in 2-12 seconds; Ethereum mainnet in 12-30 seconds. Solana mainne
 | Ethereum L1 | ~12 s | ~$0.50 | ~15 TPS |
 | Polygon zkEVM | ~3 s | ~$0.01 | ~2,000 TPS |
 
-Brain Drain charges $0.05 per snippet. On Ethereum mainnet the gas alone would be 10x the snippet price. On Base it's still 100% of the price. Only Solana lets the seller actually keep the money.
+Brain Drain charges $0.25 per snippet. On Ethereum mainnet the gas alone would consume the price. On Base it would still eat 20% per call. Only Solana lets the seller actually keep the money.
 
 By April 2026 Solana captured roughly half of all x402 agent-to-agent transaction volume globally — Coinbase's own numbers in the Galaxy Research piece (2026-01-07). MCPay, the Cypherpunk 2025 winner, hit 370K transactions on Solana before pivoting to multi-chain (now Frames at frames.ag).
 
@@ -38,13 +38,13 @@ By April 2026 Solana captured roughly half of all x402 agent-to-agent transactio
 ```http
 HTTP/1.1 402 Payment Required
 Content-Type: application/json
-WWW-Authenticate: x402 token=USDC, network=solana, recipient=2SUm7fDR…PAYMPb3L, amount=0.05
+WWW-Authenticate: x402 token=USDC, network=solana, recipient=2SUm7fDR…PAYMPb3L, amount=0.25
 
 {
   "error": "payment_required",
   "price": {
     "token": "USDC",
-    "amount": "0.05",
+    "amount": "0.25",
     "decimals": 6,
     "network": "solana-mainnet",
     "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
@@ -63,7 +63,7 @@ X-Payment-Network: solana-mainnet
 X-Payment-Token: USDC
 ```
 
-The signature is the Solana transaction signature (base58, 88 chars). The server verifies the transaction exists, confirms it sent ≥ 0.05 USDC to the recipient address, and that the signature is sufficiently confirmed (we use `confirmed`, not `finalized`; see [`helius-rpc-low-latency-patterns`](./helius-rpc-low-latency-patterns.md)).
+The signature is the Solana transaction signature (base58, 88 chars). The server verifies the transaction exists, confirms it sent ≥ 0.25 USDC to the recipient address, and that the signature is sufficiently confirmed (we use `confirmed`, not `finalized`; see [`helius-rpc-low-latency-patterns`](./helius-rpc-low-latency-patterns.md)).
 
 ## Verification logic
 
@@ -117,9 +117,9 @@ The cached value is the chunk id that was returned. A retry of the same query+si
 
 ## What Brain Drain does *not* do that other x402 implementations do
 
-- **Streaming payments.** Cloudflare's Agents SDK supports streaming — pay per token. Brain Drain charges a fixed $0.05 per query because the unit of value is "one retrieval", not "N tokens". Simpler to reason about, simpler to demo.
+- **Streaming payments.** Cloudflare's Agents SDK supports streaming — pay per token. Brain Drain charges a fixed $0.25 per query because the unit of value is "one retrieval", not "N tokens". Simpler to reason about, simpler to demo.
 - **Multi-token pricing.** We accept USDC only. EUROe, USDP, etc. are out of scope for v0; the env has only `USDC_MINT_DEVNET` and `USDC_MINT_MAINNET` defined.
-- **Dynamic pricing.** v1 may add congestion-based pricing (charge more during high-throughput windows). v0 is a static $0.05 set in `X402_DEFAULT_PRICE_USDC`.
+- **Dynamic pricing.** v1 may add congestion-based pricing (charge more during high-throughput windows). v0 is a static $0.25 set in `X402_DEFAULT_PRICE_USDC`.
 - **Subscription mode.** Stripe-style "pay $5/mo, unlimited queries" is the antithesis of x402. We don't.
 
 ## Coinbase's facilitator vs running our own
@@ -137,10 +137,10 @@ The 3-minute Frontier submission video shows this end-to-end loop in real time:
 
 1. **0:00** — terminal: external agent calls `brain_drain.query` via MCP.
 2. **0:10** — terminal shows `402 Payment Required` + price quote.
-3. **0:15** — Phantom Cash mobile screen recording: balance ticks $0.00 → -$0.05 (buyer wallet, but really we're showing the payment debit on the buyer side and the credit on Bekir's seller side simultaneously via screen splits).
+3. **0:15** — Phantom Cash mobile screen recording: balance ticks $0.00 → -$0.25 (buyer wallet, but really we're showing the payment debit on the buyer side and the credit on Bekir's seller side simultaneously via screen splits).
 4. **0:30** — terminal: `200 OK` with snippet from `koza-l1-deployment-lessons` returned.
 5. **0:45** — Solana explorer: transaction signature opens, USDC transfer confirmed, both addresses visible.
-6. **1:00** — Phantom Cash: seller's balance ticks $0.00 → +$0.05.
+6. **1:00** — Phantom Cash: seller's balance ticks $0.00 → +$0.25.
 7. **1:15** — repeat 2 more times with different queries to show retrieval quality, balance keeps climbing.
 
 That sequence is the demo. Everything else in the video frames it.

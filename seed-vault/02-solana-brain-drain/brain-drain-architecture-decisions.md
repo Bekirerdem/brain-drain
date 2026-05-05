@@ -21,7 +21,7 @@ The frame for each decision is the same: I had two-to-four real options, I chose
 
 ## 2. Settlement layer — Solana mainnet
 
-**Picked because** sub-cent fees and ~400 ms confirmations are the only realistic substrate for $0.05/query economics. EVM L2s settle in 2–12 seconds at $0.30 minimums; both numbers kill the agent UX. Solana is not an aspiration here, it is a constraint of what x402 micropayments require.
+**Picked because** sub-cent fees and ~400 ms confirmations are the only realistic substrate for $0.25/query economics. EVM L2s settle in 2–12 seconds at $0.30 minimums; both numbers kill the agent UX. Solana is not an aspiration here, it is a constraint of what x402 micropayments require.
 
 **Alternatives considered:** Base (cheap by L2 standards but 2-second blocks plus a $0.10 floor); a Subnet-EVM L1 (wakeful idea given Bekir's Avalanche history, but the agent ecosystem is not on Avalanche); Polygon CDK chains (similar issue).
 

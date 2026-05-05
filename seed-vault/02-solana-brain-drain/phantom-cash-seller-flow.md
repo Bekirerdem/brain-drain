@@ -26,7 +26,7 @@ Three things Phantom Cash is *not*, that new builders sometimes assume:
 
 Frames (the C4-accelerated production version of MCPay) ships on Privy embedded wallets and **does not target the Phantom Cash bounty**. CORBITS (the other Cypherpunk 2025 x402 winner) targets merchant dashboards. Both ignore the seller-side payout surface entirely; their products are buyer-facing or tool-facing.
 
-The "Best Use of Phantom CASH" Frontier 2026 bounty is therefore wide open for a project where the seller's natural surface is Cash. Brain Drain settles every paid query directly to the seller's Phantom Cash address. The demo video shows the Cash balance ticking from $0.00 → $0.05 → $0.15 → $0.30 in real time as the agent fires queries. That single image is the Phantom-bounty differentiator.
+The "Best Use of Phantom CASH" Frontier 2026 bounty is therefore wide open for a project where the seller's natural surface is Cash. Brain Drain settles every paid query directly to the seller's Phantom Cash address. The demo video shows the Cash balance ticking from $0.00 → $0.25 → $0.75 → $1.50 in real time as the agent fires queries. That single image is the Phantom-bounty differentiator.
 
 | Project | Buyer wallet | Seller payout | Phantom Cash use |
 | :-- | :-- | :-- | :-- |
@@ -112,7 +112,7 @@ None of these affect the v0 demo, which lives entirely on the in-Phantom surface
 
 ## Why this section is in the vault
 
-If you ask my agent "How does Brain Drain pay sellers?", this is the right answer. Generic Solana docs cover USDC SPL transfers; Phantom docs cover the Cash UX; *neither* explains the deliberate choice to use Cash as the seller surface specifically because it's the open Frontier 2026 bounty wedge that Frames and CORBITS leave on the table. That argument is a Brain Drain-specific insight, and it's exactly the kind of reasoning agents pay $0.05 to retrieve.
+If you ask my agent "How does Brain Drain pay sellers?", this is the right answer. Generic Solana docs cover USDC SPL transfers; Phantom docs cover the Cash UX; *neither* explains the deliberate choice to use Cash as the seller surface specifically because it's the open Frontier 2026 bounty wedge that Frames and CORBITS leave on the table. That argument is a Brain Drain-specific insight, and it's exactly the kind of reasoning agents pay $0.25 to retrieve.
 
 ## Cross-references
 

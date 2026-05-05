@@ -33,7 +33,7 @@ Approximate, both providers' standard tiers:
 | `claude-haiku-4-5` | $1.00 | $5.00 |
 | `claude-sonnet-4-6` | $3.00 | $15.00 |
 
-For Brain Drain's average query (~500 input tokens of context, ~300 output tokens of synthesis), the per-call cost on Gemini Pro is ~$0.005, on Haiku 4.5 is ~$0.002, on 2.5 Flash is ~$0.0001. We charge the agent $0.05 per query. The model cost is a tiny fraction of the price.
+For Brain Drain's average query (~500 input tokens of context, ~300 output tokens of synthesis), the per-call cost on Gemini Pro is ~$0.005, on Haiku 4.5 is ~$0.002, on 2.5 Flash is ~$0.0001. We charge the agent $0.25 per query. The model cost is a tiny fraction of the price; the wedge funds the seller payout, infra, and platform layer.
 
 ## Where Gemini wins
 

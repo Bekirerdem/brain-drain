@@ -119,7 +119,7 @@ The concise pitch line:
 
 1. **Keep the project.** No direct competitor exists; the mechanism is proven to win prizes; our differentiation is defensible.
 2. **Re-frame the public narrative.** Stop leading with *"x402-gated micro-API"* (sounds like CORBITS). Lead with *"AI pays the source"* — the inversion.
-3. **Make the seller the protagonist.** Demo video opens on Bekir's Phantom Cash tab at $0.00, ends with it ticking past $0.50 after a few queries. That single image is what differentiates us in the judges' memory.
+3. **Make the seller the protagonist.** Demo video opens on Bekir's Phantom Cash tab at $0.00, ends with it ticking past $0.75 after a few queries. That single image is what differentiates us in the judges' memory.
 4. **Borrow MCPay's architectural credibility.** Cite them as prior art (graceful, builders' code) and explicitly explain the wedge. This shows we did the homework and respects the ecosystem.
 5. **Phantom Cash is the bounty wedge.** Neither MCPay nor CORBITS targets the Phantom Cash bounty. Brain Drain's seller flow surfaces Cash natively — owns this lane.
 6. **Two-sided onboarding from the landing page.** Two CTAs: *"I'm an expert, mount my vault"* and *"I'm building an agent, start querying."* This visibly distinguishes us from one-sided infra projects.

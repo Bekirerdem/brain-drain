@@ -26,7 +26,7 @@ Future tools (`brain_drain.list_vaults`, `brain_drain.subscribe`) live in v1 if 
 ```json
 {
   "name": "brain_drain.query",
-  "description": "Query Bekir Erdem's curated knowledge vault. The vault contains expert notes on Avalanche L1 deployment, Foundry verification gotchas, x402 micropayments, MCP architecture, n8n + Claude orchestration, Apify lead-gen patterns, and several other niche technical domains. Costs 0.05 USDC per call, settled on Solana mainnet in ~400ms via the operator's Phantom Cash address.",
+  "description": "Query Bekir Erdem's curated knowledge vault. The vault contains expert notes on Avalanche L1 deployment, Foundry verification gotchas, x402 micropayments, MCP architecture, n8n + Claude orchestration, Apify lead-gen patterns, and several other niche technical domains. Costs 0.25 USDC per call, settled on Solana mainnet in ~400ms via the operator's Phantom Cash address.",
   "inputSchema": {
     "type": "object",
     "properties": {
@@ -37,8 +37,8 @@ Future tools (`brain_drain.list_vaults`, `brain_drain.subscribe`) live in v1 if 
       },
       "max_price_usdc": {
         "type": "number",
-        "default": 0.05,
-        "description": "Refuse if the quoted price exceeds this. Defaults to the standard 0.05 USDC."
+        "default": 0.25,
+        "description": "Refuse if the quoted price exceeds this. Defaults to the standard 0.25 USDC."
       }
     },
     "required": ["question"]
@@ -108,7 +108,7 @@ When the client calls `brain_drain.query`, the server returns a structured "paym
     "data": {
       "price": {
         "token": "USDC",
-        "amount": "0.05",
+        "amount": "0.25",
         "decimals": 6,
         "network": "solana-mainnet",
         "mint": "EPjFWdd5...wyTDt1v",
@@ -164,7 +164,7 @@ The `_meta` field is the standard MCP escape hatch for transport-level metadata.
       ],
       "tx_signature": "5yJ4...ze6Q3aL",
       "tx_explorer": "https://explorer.solana.com/tx/5yJ4...ze6Q3aL",
-      "price_paid_usdc": 0.05
+      "price_paid_usdc": 0.25
     }
   }
 }

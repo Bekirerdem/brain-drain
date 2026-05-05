@@ -44,7 +44,7 @@ Karpathy's spec splits the system into three layers and three workflows.
 
 A maintained LLM Wiki is dense with niche, hard-won knowledge that does not exist in the open-web training set: war stories, error-message-to-fix mappings, deprecated-API workarounds, regional gotchas, undocumented behaviour. This is exactly the corpus type for which generic LLMs hallucinate or refuse.
 
-Brain Drain takes a maintained wiki and exposes its retrieval layer as a paid x402 micro-API. An external agent that hits a knowledge boundary can pay $0.05 in USDC and get back the relevant snippet plus citations from the human's actual notes — better than a hallucinated guess, dramatically better than a dead-end "I don't have access to that".
+Brain Drain takes a maintained wiki and exposes its retrieval layer as a paid x402 micro-API. An external agent that hits a knowledge boundary can pay $0.25 in USDC and get back the relevant snippet plus citations from the human's actual notes — better than a hallucinated guess, dramatically better than a dead-end "I don't have access to that".
 
 The two systems compose: the operator runs the wiki (LLM does bookkeeping, human does sourcing); Brain Drain monetises the wiki when other agents need answers.
 

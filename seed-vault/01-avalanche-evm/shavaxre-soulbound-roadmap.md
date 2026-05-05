@@ -114,7 +114,7 @@ The mechanism transfers cleanly:
 
 | shavaxre v2 | Brain Drain v2 |
 | :-- | :-- |
-| Donor pledges USDC | Buyer agent pays $0.05 per query |
+| Donor pledges USDC | Buyer agent pays $0.25 per query |
 | Milestone proof | Snippet returned + LLM-judge rating |
 | Soulbound donor badge | Soulbound vault-trust badge |
 | `donorScore` view | `vaultTrustScore` view, queried before retrieval ranking |

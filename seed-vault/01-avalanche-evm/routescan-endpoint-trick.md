@@ -158,4 +158,4 @@ Replace `<L1_CHAIN_ID>` with whatever you set during `avalanche subnet create`. 
 3. Use `cast abi-encode` for constructor args.
 4. If verification "succeeds" but the explorer shows nothing, you are on the wrong endpoint.
 
-This is the kind of niche, debugged-the-hard-way knowledge an AI agent cannot find on Stack Overflow. The Foundry book still cites snowtrace.io in its book-migration notes; the answer is in scattered Telegram messages and Discord threads. That's why it's worth $0.05 to retrieve.
+This is the kind of niche, debugged-the-hard-way knowledge an AI agent cannot find on Stack Overflow. The Foundry book still cites snowtrace.io in its book-migration notes; the answer is in scattered Telegram messages and Discord threads. That's why it's worth $0.25 to retrieve.

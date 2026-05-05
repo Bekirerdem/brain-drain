@@ -30,7 +30,7 @@ const EnvSchema = z.object({
   SELLER_SOLANA_ADDRESS: z.string().min(BASE58_MIN).max(BASE58_MAX),
   SELLER_PHANTOM_TAG: z.string().optional(),
 
-  X402_DEFAULT_PRICE_USDC: z.coerce.number().positive().default(0.05),
+  X402_DEFAULT_PRICE_USDC: z.coerce.number().positive().default(0.25),
   USDC_MINT_DEVNET: z.string().min(BASE58_MIN).max(BASE58_MAX),
   USDC_MINT_MAINNET: z.string().min(BASE58_MIN).max(BASE58_MAX),
 

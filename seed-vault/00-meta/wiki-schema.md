@@ -90,7 +90,7 @@ When the operator asks a question:
 3. Synthesise an answer with **explicit citations** in the form `(see [[page-slug]])`.
 4. If the answer is reusable, ask the operator: *"Worth filing as `<category>/<slug>.md`?"* On confirm, write the new page and log it.
 
-This is the workflow Brain Drain's `/api/query` endpoint runs at scale, except the answer is sold for $0.05 USDC instead of consumed locally.
+This is the workflow Brain Drain's `/api/query` endpoint runs at scale, except the answer is sold for $0.25 USDC instead of consumed locally.
 
 ## 7. Lint workflow
 

@@ -1,9 +1,10 @@
 import Link from "next/link";
 
 const NAV_ITEMS = [
-  { label: "Vault", href: "/#vault" },
-  { label: "Dashboard", href: "/dashboard" },
+  { label: "Live", href: "/#live" },
+  { label: "Trust", href: "/#vault-trust" },
   { label: "Protocol", href: "/#how-it-works" },
+  { label: "Dashboard", href: "/dashboard" },
 ] as const;
 
 const GITHUB_URL = "https://github.com/Bekirerdem/brain-drain";
@@ -21,7 +22,7 @@ export function Header() {
             Brain Drain<span className="text-[var(--color-accent)]">.</span>
           </span>
           <span className="hidden sm:inline text-mono-tight text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-faint)] group-hover:text-[var(--color-text-muted)] transition-colors">
-            vault for agents
+            x402 + RAG protocol
           </span>
         </Link>
 
@@ -47,10 +48,10 @@ export function Header() {
             GitHub
           </a>
           <a
-            href="#claude-desktop"
+            href="#live"
             className="inline-flex h-9 px-4 items-center rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[13px] font-medium hover:brightness-110 hover:shadow-[0_0_24px_-6px_var(--color-accent)] transition-all duration-200"
           >
-            Connect
+            See live
           </a>
         </div>
       </div>

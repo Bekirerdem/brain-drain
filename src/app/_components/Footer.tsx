@@ -26,9 +26,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-4 max-w-sm text-[13px] leading-[1.6] text-[var(--color-text-muted)]">
-              An editorial vault where AI agents settle{" "}
-              <span className="text-mono-tight text-[var(--color-text)]">0.05 USDC</span>{" "}
-              per snippet on Solana via x402. Open source. Audit-ready.
+              An x402 + RAG reference implementation. The vault running here is mine — v1 opens per-seller upload + payouts to everyone.
             </p>
             <p className="mt-6 text-mono-tight text-[11px] uppercase tracking-[0.18em] text-[var(--color-text-faint)]">
               Made by Bekir Erdem · Bursa · in 11 days

@@ -49,7 +49,7 @@ export const POST = withX402(
     price: `$${env.X402_DEFAULT_PRICE_USDC}`,
     network: x402Network,
     config: {
-      description: "Top-k RAG snippets from Bekir's expert vault",
+      description: "Top-k RAG snippets from Bekir's operator vault",
     },
   },
 );

@@ -1,68 +1,179 @@
+"use client";
+
 import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { OrbitVisual } from "../_components/OrbitVisual";
+
+/* ─────────────────────────────────────────────────────────
+ * HERO ENTRANCE STORYBOARD
+ *
+ *    0ms   blank — chrome stays static (header/nav already rendered)
+ *  100ms   live indicator slides down + ping starts
+ *  250ms   headline fades up
+ *  400ms   sub-paragraph fades up
+ *  550ms   CTAs fade up
+ *  700ms   orbit canvas reveals (right column)
+ *  850ms   stats stripe stagger in (4 cells × 80ms)
+ * ───────────────────────────────────────────────────────── */
+
+const TIMING = {
+  liveIndicator: 100,
+  headline: 250,
+  paragraph: 400,
+  ctas: 550,
+  orbit: 700,
+  stats: 850,
+} as const;
+
+const HEADLINE = {
+  offsetY: 16,
+  spring: { type: "spring" as const, stiffness: 320, damping: 28 },
+};
+
+const FADE = {
+  spring: { type: "spring" as const, stiffness: 300, damping: 30 },
+};
+
+const CARD_STAGGER_MS = 80;
 
 const HERO_STATS = [
-  { label: "Settlement", value: "~400ms", caption: "Solana devnet" },
-  { label: "Per snippet", value: "0.05 USDC", caption: "x402 protocol" },
-  { label: "Vault chunks", value: "152", caption: "25 expert notes" },
+  { label: "Confirmation", value: "~400ms", caption: "Solana devnet" },
+  { label: "Per snippet", value: "0.25 USDC", caption: "x402 protocol" },
+  { label: "Vault chunks", value: "152", caption: "25 operator notes" },
   { label: "Open source", value: "MIT", caption: "audit-ready" },
 ] as const;
 
 export function Hero() {
+  const [rawStage, setRawStage] = useState(0);
+  const reduced = useReducedMotion();
+  const stage = reduced ? 99 : rawStage;
+
+  useEffect(() => {
+    if (reduced) return;
+    const timers: ReturnType<typeof setTimeout>[] = [
+      setTimeout(() => setRawStage(1), TIMING.liveIndicator),
+      setTimeout(() => setRawStage(2), TIMING.headline),
+      setTimeout(() => setRawStage(3), TIMING.paragraph),
+      setTimeout(() => setRawStage(4), TIMING.ctas),
+      setTimeout(() => setRawStage(5), TIMING.orbit),
+      setTimeout(() => setRawStage(6), TIMING.stats),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [reduced]);
+
   return (
     <section className="bg-aurora bg-grain relative overflow-hidden">
       <div className="bg-aurora-canvas" aria-hidden="true" />
       <div className="bg-grain-overlay" aria-hidden="true" />
 
-      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-20 pb-28 lg:pt-28 lg:pb-40">
-        <div className="max-w-4xl">
-          <LiveIndicator />
-          <h1 className="text-display mt-8 text-[clamp(44px,8vw,112px)] text-[var(--color-text)]">
-            AI agents are paying me{" "}
-            <br className="hidden md:block" aria-hidden="true" />
-            <em className="not-italic font-normal text-[var(--color-accent)]">
-              for what I know.
-            </em>
-          </h1>
-          <p className="mt-8 max-w-2xl text-[var(--color-text-muted)] text-lg lg:text-xl leading-[1.55]">
-            An editorial vault where AI agents settle{" "}
-            <span className="text-mono-tight text-[var(--color-text)]">0.05 USDC</span>{" "}
-            per snippet on Solana via x402. Open source. Audit-ready.{" "}
-            <span className="text-mono-tight text-[var(--color-text)]">~400ms</span>{" "}
-            settlement.
-          </p>
+      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-16 pb-24 lg:pt-24 lg:pb-32">
+        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-12 lg:gap-16 items-center">
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: stage >= 1 ? 1 : 0, y: stage >= 1 ? 0 : -8 }}
+              transition={FADE.spring}
+            >
+              <LiveIndicator />
+            </motion.div>
 
-          <div className="mt-10 flex flex-wrap items-center gap-3">
-            <a
-              href="#claude-desktop"
-              className="group inline-flex h-11 px-6 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)] transition-all duration-200"
+            <motion.h1
+              className="text-display mt-8 text-[clamp(40px,7vw,96px)] text-[var(--color-text)]"
+              initial={{ opacity: 0, y: HEADLINE.offsetY }}
+              animate={{
+                opacity: stage >= 2 ? 1 : 0,
+                y: stage >= 2 ? 0 : HEADLINE.offsetY,
+              }}
+              transition={HEADLINE.spring}
             >
-              Add to Claude Desktop
-              <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-            </a>
-            <Link
-              href="/dashboard"
-              className="group inline-flex h-11 px-5 items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg-card)]/40 backdrop-blur text-[14px] text-[var(--color-text)] hover:bg-[var(--color-bg-card)] hover:border-[var(--color-border-emphasis)] transition-all duration-200"
+              The protocol AI agents pay{" "}
+              <br className="hidden md:block" aria-hidden="true" />
+              <em className="not-italic font-normal text-[var(--color-accent)]">
+                vault operators through.
+              </em>
+            </motion.h1>
+
+            <motion.p
+              className="mt-7 max-w-xl text-[var(--color-text-muted)] text-lg lg:text-xl leading-[1.55]"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: stage >= 3 ? 1 : 0, y: stage >= 3 ? 0 : 12 }}
+              transition={FADE.spring}
             >
-              View dashboard
-              <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-            </Link>
+              Brain Drain is an{" "}
+              <span className="text-mono-tight text-[var(--color-text)]">x402 + RAG</span>{" "}
+              reference implementation on Solana. Agents settle{" "}
+              <span className="text-mono-tight text-[var(--color-text)]">0.25 USDC</span>{" "}
+              for cited snippets in{" "}
+              <span className="text-mono-tight text-[var(--color-text)]">~400ms</span>.
+              The vault running below is mine — v1 opens upload to everyone.
+            </motion.p>
+
+            <motion.div
+              className="mt-9 flex flex-wrap items-center gap-3"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: stage >= 4 ? 1 : 0, y: stage >= 4 ? 0 : 12 }}
+              transition={FADE.spring}
+            >
+              <a
+                href="#live"
+                className="group inline-flex h-11 px-6 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)] transition-all duration-200"
+              >
+                See it settle live
+                <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+              </a>
+              <a
+                href="#how-it-works"
+                className="group inline-flex h-11 px-5 items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg-card)]/40 backdrop-blur text-[14px] text-[var(--color-text)] hover:bg-[var(--color-bg-card)] hover:border-[var(--color-border-emphasis)] transition-all duration-200"
+              >
+                How it works
+                <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+              </a>
+              <Link
+                href="/dashboard"
+                className="hidden sm:inline-flex h-11 px-3 items-center text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+              >
+                View dashboard ↗
+              </Link>
+            </motion.div>
           </div>
+
+          <motion.div
+            className="relative order-first lg:order-last"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{
+              opacity: stage >= 5 ? 1 : 0,
+              scale: stage >= 5 ? 1 : 0.96,
+            }}
+            transition={{ type: "spring", stiffness: 220, damping: 30 }}
+          >
+            <OrbitVisual active={stage >= 5} />
+          </motion.div>
         </div>
 
-        <div className="mt-24 lg:mt-32 grid grid-cols-2 sm:grid-cols-4 gap-px bg-[var(--color-border)] border-y border-[var(--color-border)]">
-          {HERO_STATS.map((stat) => (
-            <div
+        <div className="mt-20 lg:mt-28 grid grid-cols-2 sm:grid-cols-4 gap-px bg-[var(--color-border)] border-y border-[var(--color-border)]">
+          {HERO_STATS.map((stat, i) => (
+            <motion.div
               key={stat.label}
               className="bg-[var(--color-bg)] px-5 py-6 lg:px-6 lg:py-7"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{
+                opacity: stage >= 6 ? 1 : 0,
+                y: stage >= 6 ? 0 : 12,
+              }}
+              transition={{
+                ...FADE.spring,
+                delay: stage >= 6 ? (i * CARD_STAGGER_MS) / 1000 : 0,
+              }}
             >
               <p className="text-eyebrow">{stat.label}</p>
-              <p className="text-display text-[clamp(22px,3vw,32px)] mt-3 text-[var(--color-text)]">
+              <p className="text-display text-[clamp(22px,3vw,32px)] mt-3 text-[var(--color-text)] tabular-nums">
                 {stat.value}
               </p>
               <p className="text-mono-tight text-[11px] mt-1 text-[var(--color-text-faint)]">
                 {stat.caption}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

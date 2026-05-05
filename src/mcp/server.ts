@@ -19,9 +19,9 @@ export function createMcpServer(): McpServer {
   server.registerTool(
     "brain_drain_query",
     {
-      title: "Query Bekir's expert vault",
+      title: "Query Bekir's operator vault",
       description:
-        "Pay $0.05 USDC to retrieve top-K snippets from Bekir's private notes. Settles on Solana via x402.",
+        "Pay $0.25 USDC to retrieve top-K snippets from Bekir's curated markdown vault. Settles on Solana via x402.",
       inputSchema: {
         question: z.string().min(1).max(QUERY_INPUT_MAX),
         k: z.number().int().min(QUERY_K_MIN).max(QUERY_K_MAX).optional(),

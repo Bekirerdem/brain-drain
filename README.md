@@ -2,9 +2,9 @@
 
 # Brain Drain
 
-**Sell your knowledge to the machines.**
+**The protocol AI agents pay vault operators through.**
 
-An `x402`-gated personal knowledge marketplace where autonomous AI agents pay individual experts in USDC — settled on Solana in ~400ms, delivered straight into Phantom Cash.
+An `x402` + RAG reference implementation on Solana. Autonomous AI agents settle **0.25 USDC** per cited snippet from a maintained markdown vault — confirmed on-chain in ~400ms, paid into the operator's Phantom Cash address. Single-seller v0 by design — proves the protocol works end-to-end. v1 opens per-vault upload, payouts, and trust signals (LLM-judge refunds, citation-discipline scoring).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Solana](https://img.shields.io/badge/Solana-mainnet-9945FF?logo=solana&logoColor=white)](https://solana.com)
@@ -23,12 +23,14 @@ Open-web training data is exhausted. The most valuable knowledge — the kind th
 
 There has never been a frictionless rail for an AI agent to compensate the human whose context it just consumed.
 
-## The inversion
+## The inversion (and why this v0 is intentionally narrow)
 
-Brain Drain flips the data economics of agentic AI. An expert points the app at any Markdown directory — Obsidian, Notion export, internal wiki — and Brain Drain turns it into an `x402`-protected micro-API:
+Brain Drain is **not the marketplace** — it's the **protocol the marketplace will run on**. v0 ships the cleanest x402+RAG round-trip on Solana with a single seller (the maintainer). v1+ unlocks multi-seller upload, per-vault payouts, and quality denetim. Treat the v0 demo as a working proof of the rails, not as the consumer surface.
+
+In v0, an expert points the app at any Markdown directory — Obsidian, Notion export, internal wiki — and Brain Drain turns it into an `x402`-protected micro-API:
 
 1. An external agent calls `/query` with a natural-language question.
-2. The endpoint replies `402 Payment Required` with a USDC price quote (default `$0.05`).
+2. The endpoint replies `402 Payment Required` with a USDC price quote (default `$0.25`).
 3. The agent's wallet — a Coinbase CDP Embedded Wallet on Solana — auto-funds, auto-signs, and re-issues the request with a payment proof.
 4. Helius RPC verifies the SPL transfer in sub-second time. The endpoint returns the top-k snippets from the vault.
 5. The seller's USDC lands in their **Phantom Cash** balance instantly.
@@ -50,7 +52,7 @@ sequenceDiagram
     API-->>Agent: 402 Payment Required<br/>{price, recipient, mint}
     Agent->>CDP: signAndSend(USDC transfer)
     CDP->>Sol: SPL transfer (USDC)
-    Sol-->>Cash: balance += $0.05
+    Sol-->>Cash: balance += $0.25
     Agent->>API: GET /query?q=...<br/>+ X-Payment-Signature
     API->>Sol: verify tx (Helius RPC)
     Sol-->>API: confirmed

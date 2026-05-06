@@ -16,7 +16,8 @@ import { z } from "zod";
 import { createVault } from "@/lib/vaults";
 import { getSupabaseAnon } from "@/lib/supabase";
 import { getSessionWallet } from "@/lib/auth";
-import { Limits, clientKey, rateLimit } from "@/lib/ratelimit";
+import { Limits, rateLimit } from "@/lib/ratelimit";
+import { logAndSanitize, zodFieldError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // Per-wallet upload throttle — Gemini embedding is the expensive part.
-  const limited = rateLimit(`vault-upload:${sessionWallet}`, Limits.vaultUpload);
+  const limited = await rateLimit(`vault-upload:${sessionWallet}`, Limits.vaultUpload);
   if (!limited.ok) {
     return NextResponse.json(
       {
@@ -91,7 +92,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     owner: sp.get("owner") ?? undefined,
   });
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.message }, { status: 400 });
+    const safe = zodFieldError(parsed.error, "vaults.list.query");
+    return NextResponse.json(
+      { error: safe.error, field: safe.field },
+      { status: safe.status },
+    );
   }
   const { limit, sort, owner } = parsed.data;
 
@@ -128,7 +133,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const res = await query;
   if (res.error) {
-    return NextResponse.json({ error: res.error.message }, { status: 500 });
+    const safe = logAndSanitize(res.error, {
+      event: "vaults.list.db",
+      publicMessage: "could not load vaults",
+      status: 500,
+    });
+    return NextResponse.json({ error: safe.error }, { status: safe.status });
   }
 
   return NextResponse.json({ count: res.data.length, vaults: res.data });

@@ -37,6 +37,24 @@ export type Database = {
         };
         Relationships: [];
       };
+      rate_limit_buckets: {
+        Row: {
+          key: string;
+          last_refill: string;
+          tokens: number;
+        };
+        Insert: {
+          key: string;
+          last_refill?: string;
+          tokens: number;
+        };
+        Update: {
+          key?: string;
+          last_refill?: string;
+          tokens?: number;
+        };
+        Relationships: [];
+      };
       vaults: {
         Row: {
           chunks_count: number;
@@ -93,7 +111,16 @@ export type Database = {
       };
     };
     Views: { [_ in never]: never };
-    Functions: { [_ in never]: never };
+    Functions: {
+      consume_rate_limit_token: {
+        Args: { p_capacity: number; p_interval_ms: number; p_key: string };
+        Returns: {
+          allowed: boolean;
+          remaining: number;
+          retry_after_ms: number;
+        }[];
+      };
+    };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };
   };

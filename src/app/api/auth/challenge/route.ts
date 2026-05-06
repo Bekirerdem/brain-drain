@@ -11,7 +11,7 @@ const BodySchema = z.object({
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const limited = rateLimit(clientKey(request, "auth-challenge"), Limits.authChallenge);
+  const limited = await rateLimit(clientKey(request, "auth-challenge"), Limits.authChallenge);
   if (!limited.ok) {
     return NextResponse.json(
       { error: "too many challenge requests" },

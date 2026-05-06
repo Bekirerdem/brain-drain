@@ -1,20 +1,19 @@
 /**
- * In-process token bucket rate limiter.
+ * Distributed token bucket rate limiter, backed by Postgres
+ * (consume_rate_limit_token RPC under SELECT FOR UPDATE row lock).
  *
- * Multi-instance caveat: each Vercel function instance owns its own buckets,
- * so a determined attacker hitting many instances simultaneously could
- * exceed the nominal per-instance limit. For hackathon scope (single
- * region, low traffic) this is acceptable. v1 swap-in target:
- * @upstash/ratelimit + @upstash/redis for distributed counters.
+ * Multi-instance safe — every Vercel function instance shares the same
+ * counters via Supabase. Adds one DB roundtrip per limited request,
+ * which is acceptable for the rate-prone routes we gate (auth +
+ * vault upload + waitlist).
  *
- * Bucket keys are arbitrary — typically `${route}:${ip}` or
- * `${route}:${wallet}` once an authenticated identity is available.
+ * Failure mode: fail-OPEN. If Supabase is unreachable, allow the
+ * request. Rationale — partial outage shouldn't deny legit users.
+ * Attackers exploiting an outage to bypass limits face a separate
+ * (more visible) downstream failure anyway.
  */
 
-interface Bucket {
-  tokens: number;
-  lastRefill: number;
-}
+import { getSupabaseAdmin } from "@/lib/supabase";
 
 interface Limit {
   /** Max tokens (also = burst capacity). */
@@ -26,61 +25,56 @@ interface Limit {
 export interface RateLimitResult {
   readonly ok: boolean;
   readonly remaining: number;
-  /** ms until next token is available (0 if `ok`). */
   readonly retryAfterMs: number;
 }
 
-const buckets = new Map<string, Bucket>();
-const MAX_KEYS = 5_000;
-
-/** Common limits, named so calling code stays self-documenting. */
 export const Limits = {
-  /** Vault uploads — expensive (Gemini embeds + storage write). */
   vaultUpload: { capacity: 5, intervalMs: 60 * 60 * 1000 } satisfies Limit,
-  /** Auth challenge issuance — cheap but spammable. */
   authChallenge: { capacity: 30, intervalMs: 60 * 1000 } satisfies Limit,
-  /** Auth verify — slow ed25519 + DB delete; brute-force surface. */
   authVerify: { capacity: 10, intervalMs: 60 * 1000 } satisfies Limit,
-  /** Waitlist — email signups; modest spam protection. */
   waitlist: { capacity: 5, intervalMs: 10 * 60 * 1000 } satisfies Limit,
 } as const;
 
-export function rateLimit(key: string, limit: Limit): RateLimitResult {
-  const now = Date.now();
-  const existing = buckets.get(key);
-  const refillRate = limit.capacity / limit.intervalMs; // tokens per ms
-
-  let tokens: number;
-  if (!existing) {
-    tokens = limit.capacity;
-  } else {
-    const elapsed = now - existing.lastRefill;
-    tokens = Math.min(limit.capacity, existing.tokens + elapsed * refillRate);
-  }
-
-  if (tokens < 1) {
-    buckets.set(key, { tokens, lastRefill: now });
+export async function rateLimit(
+  key: string,
+  limit: Limit,
+): Promise<RateLimitResult> {
+  try {
+    const admin = getSupabaseAdmin();
+    const { data, error } = await admin.rpc("consume_rate_limit_token", {
+      p_key: key,
+      p_capacity: limit.capacity,
+      p_interval_ms: limit.intervalMs,
+    });
+    if (error || !data || data.length === 0) {
+      // Fail open — log so the issue is visible without paging.
+      console.error(
+        JSON.stringify({
+          level: "warn",
+          event: "ratelimit.failopen",
+          key_prefix: key.slice(0, 32),
+          error: error?.message ?? "no rows returned",
+        }),
+      );
+      return { ok: true, remaining: limit.capacity, retryAfterMs: 0 };
+    }
+    const row = data[0];
     return {
-      ok: false,
-      remaining: 0,
-      retryAfterMs: Math.ceil((1 - tokens) / refillRate),
+      ok: row.allowed,
+      remaining: row.remaining,
+      retryAfterMs: Number(row.retry_after_ms),
     };
+  } catch (err) {
+    console.error(
+      JSON.stringify({
+        level: "warn",
+        event: "ratelimit.exception",
+        key_prefix: key.slice(0, 32),
+        error: (err as Error).message,
+      }),
+    );
+    return { ok: true, remaining: limit.capacity, retryAfterMs: 0 };
   }
-
-  tokens -= 1;
-  buckets.set(key, { tokens, lastRefill: now });
-
-  // Cheap eviction — drop oldest when map grows too large.
-  if (buckets.size > MAX_KEYS) {
-    const oldestKey = buckets.keys().next().value;
-    if (oldestKey !== undefined) buckets.delete(oldestKey);
-  }
-
-  return {
-    ok: true,
-    remaining: Math.floor(tokens),
-    retryAfterMs: 0,
-  };
 }
 
 /** Extracts a best-effort client identifier from a Next request. */

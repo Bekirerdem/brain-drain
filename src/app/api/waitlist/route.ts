@@ -15,7 +15,7 @@ const BodySchema = z.object({
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const limited = rateLimit(clientKey(request, "waitlist"), Limits.waitlist);
+  const limited = await rateLimit(clientKey(request, "waitlist"), Limits.waitlist);
   if (!limited.ok) {
     return NextResponse.json(
       { error: "too many signups" },

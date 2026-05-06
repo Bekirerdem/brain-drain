@@ -19,7 +19,7 @@ const BodySchema = z.object({
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const limited = rateLimit(clientKey(request, "auth-verify"), Limits.authVerify);
+  const limited = await rateLimit(clientKey(request, "auth-verify"), Limits.authVerify);
   if (!limited.ok) {
     return NextResponse.json(
       { error: "too many verification attempts" },

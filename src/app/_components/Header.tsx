@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 const NAV_ITEMS = [
+  { label: "Vaults", href: "/vaults" },
   { label: "Live", href: "/#live" },
-  { label: "Trust", href: "/#vault-trust" },
   { label: "Protocol", href: "/#how-it-works" },
   { label: "Dashboard", href: "/dashboard" },
 ] as const;
@@ -47,12 +47,12 @@ export function Header() {
           >
             GitHub
           </a>
-          <a
-            href="#live"
+          <Link
+            href="/vaults/new"
             className="inline-flex h-9 px-4 items-center rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[13px] font-medium hover:brightness-110 hover:shadow-[0_0_24px_-6px_var(--color-accent)] transition-all duration-200"
           >
-            See live
-          </a>
+            Mount vault
+          </Link>
         </div>
       </div>
     </header>

@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { useState } from "react";
 
 const STEPS = [
   {
@@ -12,12 +12,12 @@ const STEPS = [
   {
     n: "02",
     title: "Seed the embedding index",
-    body: "One command (bun seed-vault) chunks every page, runs Gemini embeddings, and persists a query-ready index alongside your code. Build-time, no vector DB.",
+    body: "Drop the bundle in /vaults/new. Brain Drain chunks every page, runs Gemini embeddings, and persists a query-ready index in Supabase Storage. ~30 s for 100 chunks.",
   },
   {
     n: "03",
-    title: "Get a paid MCP endpoint",
-    body: "Brain Drain gives you a public x402-gated URL. AI agents discover it via MCP, see the price metadata, settle USDC on Solana, and receive top-3 snippets in one round trip.",
+    title: "Earn USDC per query",
+    body: "Get a paid x402 endpoint at /api/v/{your-slug}/query. Settlements route directly to your Solana address — Brain Drain never custodies funds. Operator picks the price.",
   },
 ] as const;
 
@@ -32,16 +32,17 @@ export function ForExperts() {
           <div>
             <p className="text-eyebrow">For vault operators</p>
             <h2 className="text-display mt-6 text-[clamp(36px,5.5vw,68px)] text-[var(--color-text)]">
-              Today my vault.{" "}
+              Mount your vault.{" "}
               <em className="not-italic font-normal text-[var(--color-accent)]">
-                Tomorrow any vault.
+                Get paid.
               </em>
             </h2>
             <p className="mt-6 max-w-xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
               The decision log you already keep is the corpus AI agents
-              hallucinate around today. Mount it as an x402 endpoint. Earn USDC
-              every time an agent cites it. No "experts" gating — the trust
-              signals are public; agents (and you) decide what's worth paying for.
+              hallucinate around today. Mount it as an x402 endpoint, set
+              your price, get paid every time an agent cites it. No
+              gatekeeping — every vault publishes its own metadata, agents
+              pay (or don&apos;t) based on what they see.
             </p>
 
             <ol className="mt-12 space-y-7">
@@ -51,11 +52,12 @@ export function ForExperts() {
             </ol>
 
             <p className="mt-12 text-mono-tight text-[12px] text-[var(--color-text-faint)] max-w-md leading-[1.6]">
-              v0 is single-seller by design — proves the x402+RAG protocol works end-to-end. v1 opens the upload flow, per-seller payouts, and trust signals (LLM-judge refunds, vault reputation) to everyone on the waitlist.
+              Multi-vault devnet live now. Mainnet config is one env flag —
+              `SOLANA_NETWORK=mainnet-beta` — protocol logic is identical.
             </p>
           </div>
 
-          <WaitlistCard />
+          <MountCallout />
         </div>
       </div>
     </section>
@@ -99,39 +101,7 @@ function ExpertStep({
   );
 }
 
-type Status = "idle" | "submitting" | "success" | "error";
-
-function WaitlistCard() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<Status>("idle");
-  const [message, setMessage] = useState<string | null>(null);
-
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (status === "submitting") return;
-    setStatus("submitting");
-    setMessage(null);
-    try {
-      const res = await fetch("/api/waitlist", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setStatus("error");
-        setMessage(data?.error ?? "Could not record your email. Try again.");
-        return;
-      }
-      setStatus("success");
-      setMessage(data?.message ?? "You're on the list.");
-      setEmail("");
-    } catch {
-      setStatus("error");
-      setMessage("Network blip. Try again in a moment.");
-    }
-  }
-
+function MountCallout() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -140,62 +110,53 @@ function WaitlistCard() {
       transition={{ type: "spring", stiffness: 280, damping: 30 }}
       className="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/70 backdrop-blur-md p-7 lg:p-9"
     >
-      <p className="text-eyebrow">Waitlist · v1</p>
+      <p className="text-eyebrow">Live now · devnet</p>
       <h3 className="mt-4 text-display text-[clamp(22px,3vw,28px)] text-[var(--color-text)]">
-        Mount your vault.{" "}
+        Drop your markdown.{" "}
         <em className="not-italic font-normal text-[var(--color-accent)]">
-          Get paid.
+          Get an endpoint.
         </em>
       </h3>
       <p className="mt-3 text-[14px] leading-[1.6] text-[var(--color-text-muted)] max-w-sm">
-        Drop your email and I&apos;ll ping you the moment per-seller upload + payout
-        splitting goes live. No spam, no newsletter — one email when v1 ships.
+        No waitlist, no approval queue, no gating. Mount a vault now and
+        share the URL with any agent runtime that speaks MCP or x402.
+        Settlements route to your Solana wallet on-chain.
       </p>
 
-      <form onSubmit={onSubmit} className="mt-7">
-        <label className="block">
-          <span className="text-mono-tight text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-faint)]">
-            Email
-          </span>
-          <input
-            type="email"
-            required
-            placeholder="you@vault.dev"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={status === "submitting" || status === "success"}
-            className="mt-2 w-full h-11 px-4 rounded-[var(--radius-pill)] bg-[var(--color-bg)] border border-[var(--color-border-strong)] focus:border-[var(--color-accent)] focus:outline-none text-[14px] text-[var(--color-text)] placeholder:text-[var(--color-text-faint)] transition-colors"
-          />
-        </label>
-
-        <button
-          type="submit"
-          disabled={status === "submitting" || status === "success"}
-          className="mt-4 w-full h-11 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+      <div className="mt-7 space-y-3">
+        <Link
+          href="/vaults/new"
+          className="block w-full h-11 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)] transition-all duration-200 grid place-items-center"
         >
-          {status === "submitting"
-            ? "Adding…"
-            : status === "success"
-              ? "On the list ✓"
-              : "Join the v1 waitlist"}
-        </button>
-      </form>
-
-      {message && (
-        <p
-          className={`mt-4 text-[12.5px] leading-[1.5] ${
-            status === "error"
-              ? "text-[#ff8a8a]"
-              : "text-[var(--color-accent)]"
-          }`}
+          Mount your vault →
+        </Link>
+        <Link
+          href="/vaults"
+          className="block w-full h-11 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg)]/40 text-[14px] text-[var(--color-text)] hover:bg-[var(--color-bg-card)] hover:border-[var(--color-border-emphasis)] transition-colors grid place-items-center"
         >
-          {message}
-        </p>
-      )}
+          Browse public vaults
+        </Link>
+      </div>
+
+      <ul className="mt-8 space-y-2.5 text-[12.5px] text-[var(--color-text-muted)] leading-[1.55]">
+        <Bullet>You set the price · 0.05 – 5.00 USDC per query</Bullet>
+        <Bullet>Settlements land in your wallet · Brain Drain holds nothing</Bullet>
+        <Bullet>Re-mount any time to pick up vault edits</Bullet>
+        <Bullet>Public metadata — agents inspect before paying</Bullet>
+      </ul>
 
       <p className="mt-6 text-mono-tight text-[10px] uppercase tracking-[0.18em] text-[var(--color-text-faint)]">
         Solo build · open source · MIT
       </p>
     </motion.div>
+  );
+}
+
+function Bullet({ children }: { children: React.ReactNode }) {
+  return (
+    <li className="flex gap-2.5">
+      <span className="text-[var(--color-accent)] text-[11px] mt-1">▸</span>
+      <span>{children}</span>
+    </li>
   );
 }

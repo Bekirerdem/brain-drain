@@ -39,8 +39,8 @@ const CARD_STAGGER_MS = 80;
 
 const HERO_STATS = [
   { label: "Confirmation", value: "~400ms", caption: "Solana devnet" },
-  { label: "Per snippet", value: "0.25 USDC", caption: "x402 protocol" },
-  { label: "Vault chunks", value: "152", caption: "25 operator notes" },
+  { label: "Starting at", value: "0.05 USDC", caption: "operator-set price" },
+  { label: "Per-vault routing", value: "x402", caption: "no platform custody" },
   { label: "Open source", value: "MIT", caption: "audit-ready" },
 ] as const;
 
@@ -100,13 +100,12 @@ export function Hero() {
               animate={{ opacity: stage >= 3 ? 1 : 0, y: stage >= 3 ? 0 : 12 }}
               transition={FADE.spring}
             >
-              Brain Drain is an{" "}
+              Mount any markdown corpus, get an{" "}
               <span className="text-mono-tight text-[var(--color-text)]">x402 + RAG</span>{" "}
-              reference implementation on Solana. Agents settle{" "}
-              <span className="text-mono-tight text-[var(--color-text)]">0.25 USDC</span>{" "}
-              for cited snippets in{" "}
+              endpoint, earn USDC every time an AI agent cites it. Per-vault
+              routing on Solana — Brain Drain itself never custodies the
+              funds, settlements land in the operator&apos;s wallet in{" "}
               <span className="text-mono-tight text-[var(--color-text)]">~400ms</span>.
-              The vault running below is mine — v1 opens upload to everyone.
             </motion.p>
 
             <motion.div
@@ -115,26 +114,26 @@ export function Hero() {
               animate={{ opacity: stage >= 4 ? 1 : 0, y: stage >= 4 ? 0 : 12 }}
               transition={FADE.spring}
             >
-              <a
-                href="#live"
+              <Link
+                href="/vaults/new"
                 className="group inline-flex h-11 px-6 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)] transition-all duration-200"
               >
-                See it settle live
+                Mount your vault
                 <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-              </a>
-              <a
-                href="#how-it-works"
+              </Link>
+              <Link
+                href="/vaults"
                 className="group inline-flex h-11 px-5 items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg-card)]/40 backdrop-blur text-[14px] text-[var(--color-text)] hover:bg-[var(--color-bg-card)] hover:border-[var(--color-border-emphasis)] transition-all duration-200"
               >
-                How it works
+                Browse vaults
                 <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-              </a>
-              <Link
-                href="/dashboard"
+              </Link>
+              <a
+                href="#how-it-works"
                 className="hidden sm:inline-flex h-11 px-3 items-center text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
               >
-                View dashboard ↗
-              </Link>
+                How it works ↓
+              </a>
             </motion.div>
           </div>
 

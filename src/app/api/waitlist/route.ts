@@ -1,5 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { createHash } from "node:crypto";
 import { z } from "zod";
+import { Limits, clientKey, rateLimit } from "@/lib/ratelimit";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -13,6 +15,17 @@ const BodySchema = z.object({
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const limited = rateLimit(clientKey(request, "waitlist"), Limits.waitlist);
+  if (!limited.ok) {
+    return NextResponse.json(
+      { error: "too many signups" },
+      {
+        status: 429,
+        headers: { "retry-after": Math.ceil(limited.retryAfterMs / 1000).toString() },
+      },
+    );
+  }
+
   let raw: unknown = null;
   try {
     raw = await request.json();
@@ -29,16 +42,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   const { email } = parsed.data;
+  const domain = email.split("@")[1] ?? "unknown";
+  const emailHash = createHash("sha256").update(email).digest("hex").slice(0, 16);
 
-  // TODO: persist to Vercel KV / Supabase / Resend audience before mainnet cut.
-  // For now: structured log so deploy provider can scrape it.
+  // BD-07: never log raw email or UA — log structured, redacted record only.
+  // Persistence target (Vercel KV / Supabase / Resend audience) is the next decision.
   console.log(
     JSON.stringify({
       level: "info",
       event: "waitlist.signup",
-      email,
+      email_hash: emailHash,
+      email_domain: domain,
       ts: new Date().toISOString(),
-      ua: request.headers.get("user-agent") ?? null,
     }),
   );
 

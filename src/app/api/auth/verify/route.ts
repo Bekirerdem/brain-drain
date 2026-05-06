@@ -7,6 +7,7 @@ import {
   SESSION_TTL_SECONDS,
   verifyWalletSignature,
 } from "@/lib/auth";
+import { Limits, clientKey, rateLimit } from "@/lib/ratelimit";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -18,6 +19,17 @@ const BodySchema = z.object({
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const limited = rateLimit(clientKey(request, "auth-verify"), Limits.authVerify);
+  if (!limited.ok) {
+    return NextResponse.json(
+      { error: "too many verification attempts" },
+      {
+        status: 429,
+        headers: { "retry-after": Math.ceil(limited.retryAfterMs / 1000).toString() },
+      },
+    );
+  }
+
   const raw = await request.json().catch(() => null);
   const parsed = BodySchema.safeParse(raw);
   if (!parsed.success) {

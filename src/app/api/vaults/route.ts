@@ -16,6 +16,7 @@ import { z } from "zod";
 import { createVault } from "@/lib/vaults";
 import { getSupabaseAnon } from "@/lib/supabase";
 import { getSessionWallet } from "@/lib/auth";
+import { Limits, clientKey, rateLimit } from "@/lib/ratelimit";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -35,6 +36,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       { error: "auth required — sign in with Phantom first" },
       { status: 401 },
+    );
+  }
+
+  // Per-wallet upload throttle — Gemini embedding is the expensive part.
+  const limited = rateLimit(`vault-upload:${sessionWallet}`, Limits.vaultUpload);
+  if (!limited.ok) {
+    return NextResponse.json(
+      {
+        error: "rate limit exceeded — wait before mounting again",
+        retry_after_ms: limited.retryAfterMs,
+      },
+      { status: 429, headers: { "retry-after": Math.ceil(limited.retryAfterMs / 1000).toString() } },
     );
   }
 

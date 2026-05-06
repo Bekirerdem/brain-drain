@@ -37,6 +37,12 @@ const EnvSchema = z.object({
   RAG_INDEX_PATH: z.string().min(1).default(".cache/index.json"),
 
   NEXT_PUBLIC_APP_URL: z.string().url(),
+
+  // Supabase — multi-vault registry + per-vault index storage.
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(20),
+  // Service role key only present server-side; routes that mutate vaults need it.
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(20).optional(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

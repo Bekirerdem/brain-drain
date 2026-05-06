@@ -8,6 +8,11 @@ export interface RawDocument {
   readonly body: string;
 }
 
+export interface InMemoryFile {
+  readonly source: string;
+  readonly content: string;
+}
+
 const MARKDOWN_EXTENSIONS = [".md", ".mdx"] as const;
 const HIDDEN_PREFIX = ".";
 
@@ -37,6 +42,29 @@ export async function loadVault(vaultRoot: string): Promise<RawDocument[]> {
     if (body.length === 0) continue;
     documents.push({
       source: relative(vaultRoot, filePath).replaceAll("\\", "/"),
+      frontmatter: parsed.data as Record<string, unknown>,
+      body: parsed.content,
+    });
+  }
+  documents.sort((a, b) => a.source.localeCompare(b.source));
+  return documents;
+}
+
+/**
+ * Builds RawDocument[] from in-memory markdown files (e.g., from an upload
+ * route that received a JSON bundle). Same gray-matter parsing + sorting
+ * as loadVault, just without filesystem traversal.
+ */
+export function loadVaultFromFiles(files: readonly InMemoryFile[]): RawDocument[] {
+  const documents: RawDocument[] = [];
+  for (const file of files) {
+    const lower = file.source.toLowerCase();
+    if (!MARKDOWN_EXTENSIONS.some((ext) => lower.endsWith(ext))) continue;
+    const parsed = matter(file.content);
+    const body = parsed.content.trim();
+    if (body.length === 0) continue;
+    documents.push({
+      source: file.source.replaceAll("\\", "/"),
       frontmatter: parsed.data as Record<string, unknown>,
       body: parsed.content,
     });

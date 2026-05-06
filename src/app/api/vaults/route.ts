@@ -23,6 +23,7 @@ const LIST_LIMIT_MAX = 60;
 const ListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(LIST_LIMIT_MAX).default(LIST_LIMIT_DEFAULT),
   sort: z.enum(["earnings", "recent"]).default("earnings"),
+  owner: z.string().min(32).max(44).optional(),
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -57,24 +58,33 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const parsed = ListQuerySchema.safeParse({
     limit: sp.get("limit") ?? undefined,
     sort: sp.get("sort") ?? undefined,
+    owner: sp.get("owner") ?? undefined,
   });
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.message }, { status: 400 });
   }
-  const { limit, sort } = parsed.data;
+  const { limit, sort, owner } = parsed.data;
 
   const orderColumn = sort === "earnings" ? "total_earned_usdc" : "created_at";
   const supabase = getSupabaseAnon();
 
-  const res = await supabase
+  let query = supabase
     .from("vaults")
     .select(
       "id, slug, name, description, owner_wallet, payout_address, price_usdc, chunks_count, notes_count, total_earned_usdc, total_settlements, domains, created_at",
     )
-    .eq("public", true)
     .order(orderColumn, { ascending: false })
     .limit(limit);
 
+  if (owner) {
+    // Operator dashboard scope: include private vaults of this owner.
+    query = query.eq("owner_wallet", owner);
+  } else {
+    // Public directory: only public vaults.
+    query = query.eq("public", true);
+  }
+
+  const res = await query;
   if (res.error) {
     return NextResponse.json({ error: res.error.message }, { status: 500 });
   }

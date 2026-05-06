@@ -4,3 +4,17 @@ export {
   type VaultCreateInput,
   type VaultCreateResult,
 } from "./create";
+
+export {
+  getVaultBySlug,
+  getPublicVaultBySlug,
+  listPublicVaults,
+  incrementVaultEarnings,
+  type ListVaultsParams,
+} from "./load";
+
+export {
+  getVaultIndex,
+  invalidateVaultIndex,
+  clearVaultIndexCache,
+} from "./index-loader";

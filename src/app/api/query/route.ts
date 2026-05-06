@@ -4,6 +4,7 @@ import type { Address } from "viem";
 import { z } from "zod";
 import { embedText, getIndex, retrieveTopK } from "@/lib/rag";
 import { env } from "@/lib/env";
+import { zodFieldError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,11 @@ const handler = async (request: NextRequest): Promise<NextResponse> => {
   const raw = await request.json().catch(() => null);
   const parsed = QueryBodySchema.safeParse(raw);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.message }, { status: 400 });
+    const safe = zodFieldError(parsed.error, "legacy_query.body");
+    return NextResponse.json(
+      { error: safe.error, field: safe.field },
+      { status: safe.status },
+    );
   }
   const { query, k } = parsed.data;
 

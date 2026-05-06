@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getSellerPayouts, PayoutQuerySchema } from "@/lib/payouts";
+import { logAndSanitize, zodFieldError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
 
@@ -16,16 +17,28 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     before: sp.get("before") ?? undefined,
   });
   if (!raw.success) {
-    return NextResponse.json({ error: raw.error.message }, { status: 400 });
+    const safe = zodFieldError(raw.error, "payouts.query");
+    return NextResponse.json(
+      { error: safe.error, field: safe.field },
+      { status: safe.status },
+    );
   }
 
   const query = PayoutQuerySchema.parse(raw.data);
-  const payouts = await getSellerPayouts(query);
-
-  const last = payouts[payouts.length - 1];
-  return NextResponse.json({
-    count: payouts.length,
-    payouts,
-    cursor: last?.signature ?? null,
-  });
+  try {
+    const payouts = await getSellerPayouts(query);
+    const last = payouts[payouts.length - 1];
+    return NextResponse.json({
+      count: payouts.length,
+      payouts,
+      cursor: last?.signature ?? null,
+    });
+  } catch (err) {
+    const safe = logAndSanitize(err, {
+      event: "payouts.fetch",
+      publicMessage: "could not load payouts",
+      status: 502,
+    });
+    return NextResponse.json({ error: safe.error }, { status: safe.status });
+  }
 }

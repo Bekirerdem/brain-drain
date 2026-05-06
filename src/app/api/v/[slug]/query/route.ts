@@ -13,6 +13,7 @@ import type { Address } from "viem";
 import { embedText, retrieveTopK } from "@/lib/rag";
 import { env } from "@/lib/env";
 import { getPublicVaultBySlug, getVaultIndex } from "@/lib/vaults";
+import { logAndSanitize, zodFieldError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -50,9 +51,10 @@ export async function POST(
     const raw = await req.json().catch(() => null);
     const parsed = QueryBodySchema.safeParse(raw);
     if (!parsed.success) {
+      const safe = zodFieldError(parsed.error, "query.body");
       return NextResponse.json(
-        { error: parsed.error.message },
-        { status: 400 },
+        { error: safe.error, field: safe.field },
+        { status: safe.status },
       );
     }
     const { query, k } = parsed.data;
@@ -61,12 +63,12 @@ export async function POST(
     try {
       index = await getVaultIndex(vault.slug);
     } catch (err) {
-      return NextResponse.json(
-        {
-          error: `vault index unavailable: ${(err as Error).message}`,
-        },
-        { status: 503 },
-      );
+      const safe = logAndSanitize(err, {
+        event: "query.vault_index",
+        publicMessage: "vault index temporarily unavailable",
+        status: 503,
+      });
+      return NextResponse.json({ error: safe.error }, { status: safe.status });
     }
 
     const queryVector = await embedText(query);

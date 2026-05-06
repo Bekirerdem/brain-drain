@@ -2,11 +2,18 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import bs58 from "bs58";
 import { truncateAddress } from "@/lib/format";
 
-/* Minimal Phantom connector — uses window.solana directly, no
- * @solana/wallet-adapter scaffolding. v0 trust-the-wallet (no signMessage
- * round-trip yet); cryptographic sign-in is task #23 follow-up. */
+/* Phantom sign-in-with-Solana flow:
+ *   1. window.solana.connect() — get publicKey
+ *   2. POST /api/auth/challenge {wallet} — server stores nonce in Supabase, returns challenge string
+ *   3. window.solana.signMessage(challenge, 'utf8') — Phantom popup, user approves
+ *   4. POST /api/auth/verify {wallet, challenge, signature} — server verifies ed25519, sets bd_session cookie
+ *   5. State -> connected. All subsequent /api/* calls inherit the cookie.
+ *
+ * On mount, GET /api/auth/me checks for an existing valid session — no
+ * popup needed if the user already signed in this hour. */
 
 interface PhantomProvider {
   isPhantom?: boolean;
@@ -16,8 +23,11 @@ interface PhantomProvider {
     publicKey: { toBase58: () => string };
   }>;
   disconnect: () => Promise<void>;
+  signMessage: (
+    message: Uint8Array,
+    encoding?: "utf8" | "hex",
+  ) => Promise<{ signature: Uint8Array; publicKey: { toBase58: () => string } }>;
   on: (event: string, handler: (...args: unknown[]) => void) => void;
-  removeAllListeners?: () => void;
 }
 
 declare global {
@@ -35,7 +45,7 @@ type State =
   | { kind: "checking" }
   | { kind: "missing" }
   | { kind: "disconnected" }
-  | { kind: "connecting" }
+  | { kind: "connecting" } // connect → challenge → signMessage → verify
   | { kind: "connected"; wallet: string }
   | { kind: "error"; reason: string };
 
@@ -55,7 +65,7 @@ export function PhantomConnect({ onChange, className }: Props) {
     onChange(null);
   }, [onChange]);
 
-  // Initial probe — try silent reconnect if user was previously connected.
+  // Initial probe: server session is the source of truth.
   useEffect(() => {
     let cancelled = false;
     async function probe() {
@@ -65,8 +75,12 @@ export function PhantomConnect({ onChange, className }: Props) {
         return;
       }
       try {
-        const resp = await provider.connect({ onlyIfTrusted: true });
-        if (!cancelled) setConnected(resp.publicKey.toBase58());
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!res.ok) throw new Error(`session probe ${res.status}`);
+        const data = (await res.json()) as { wallet: string | null };
+        if (cancelled) return;
+        if (data.wallet) setConnected(data.wallet);
+        else setDisconnected();
       } catch {
         if (!cancelled) setDisconnected();
       }
@@ -77,26 +91,7 @@ export function PhantomConnect({ onChange, className }: Props) {
     };
   }, [setConnected, setDisconnected]);
 
-  // Listen for Phantom-side events (account change, manual disconnect).
-  useEffect(() => {
-    const provider = typeof window !== "undefined" ? window.solana : undefined;
-    if (!provider?.on) return;
-    const onConnect = () => {
-      if (provider.publicKey) setConnected(provider.publicKey.toBase58());
-    };
-    const onDisconnect = () => setDisconnected();
-    provider.on("connect", onConnect);
-    provider.on("disconnect", onDisconnect);
-    provider.on("accountChanged", (pk: unknown) => {
-      if (pk && typeof (pk as { toBase58?: () => string }).toBase58 === "function") {
-        setConnected((pk as { toBase58: () => string }).toBase58());
-      } else {
-        setDisconnected();
-      }
-    });
-  }, [setConnected, setDisconnected]);
-
-  async function onConnect() {
+  async function onConnect(): Promise<void> {
     const provider = window.solana;
     if (!provider?.isPhantom) {
       setState({ kind: "missing" });
@@ -104,23 +99,52 @@ export function PhantomConnect({ onChange, className }: Props) {
     }
     setState({ kind: "connecting" });
     try {
-      const resp = await provider.connect();
-      setConnected(resp.publicKey.toBase58());
+      const connectResp = await provider.connect();
+      const wallet = connectResp.publicKey.toBase58();
+
+      const challengeRes = await fetch("/api/auth/challenge", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ wallet }),
+      });
+      if (!challengeRes.ok) throw new Error(`challenge ${challengeRes.status}`);
+      const { challenge } = (await challengeRes.json()) as { challenge: string };
+
+      const signed = await provider.signMessage(
+        new TextEncoder().encode(challenge),
+        "utf8",
+      );
+      const signature = bs58.encode(signed.signature);
+
+      const verifyRes = await fetch("/api/auth/verify", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ wallet, challenge, signature }),
+      });
+      if (!verifyRes.ok) {
+        const data = (await verifyRes.json().catch(() => ({}))) as { error?: string };
+        throw new Error(data.error ?? `verify ${verifyRes.status}`);
+      }
+      setConnected(wallet);
     } catch (err) {
-      setState({ kind: "error", reason: (err as Error).message });
+      const reason = (err as Error).message ?? "sign-in failed";
+      setState({ kind: "error", reason });
     }
   }
 
-  async function onDisconnect() {
+  async function onDisconnect(): Promise<void> {
     const provider = window.solana;
     if (provider) await provider.disconnect().catch(() => {});
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
     setDisconnected();
   }
 
   if (state.kind === "checking") {
     return (
-      <div className={`text-mono-tight text-[12px] text-[var(--color-text-faint)] ${className ?? ""}`}>
-        checking wallet…
+      <div
+        className={`text-mono-tight text-[12px] text-[var(--color-text-faint)] ${className ?? ""}`}
+      >
+        checking session…
       </div>
     );
   }
@@ -170,14 +194,23 @@ export function PhantomConnect({ onChange, className }: Props) {
   }
 
   return (
-    <button
-      type="button"
-      onClick={onConnect}
-      disabled={state.kind === "connecting"}
-      className={`inline-flex h-10 px-5 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[13px] font-medium hover:brightness-110 hover:shadow-[0_0_24px_-6px_var(--color-accent)] transition-all duration-200 disabled:opacity-60 ${className ?? ""}`}
-    >
-      <span aria-hidden="true" className="text-[14px]">👻</span>
-      {state.kind === "connecting" ? "Connecting…" : "Connect Phantom"}
-    </button>
+    <div className={`inline-flex flex-col gap-1.5 ${className ?? ""}`}>
+      <button
+        type="button"
+        onClick={onConnect}
+        disabled={state.kind === "connecting"}
+        className="inline-flex h-10 px-5 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[13px] font-medium hover:brightness-110 hover:shadow-[0_0_24px_-6px_var(--color-accent)] transition-all duration-200 disabled:opacity-60"
+      >
+        <span aria-hidden="true" className="text-[14px]">
+          👻
+        </span>
+        {state.kind === "connecting" ? "Signing…" : "Connect Phantom"}
+      </button>
+      {state.kind === "error" && (
+        <p className="text-mono-tight text-[11px] text-[#ff8a8a]">
+          {state.reason}
+        </p>
+      )}
+    </div>
   );
 }

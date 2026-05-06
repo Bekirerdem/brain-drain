@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import { PhantomConnect } from "../../_components/PhantomConnect";
+import { truncateAddress } from "@/lib/format";
 
 const MAX_FILES = 100;
 const MAX_FILE_BYTES = 200_000;
@@ -19,7 +21,6 @@ interface FormState {
   name: string;
   description: string;
   slug: string;
-  ownerWallet: string;
   payoutAddress: string;
   priceUsdc: string;
   domains: string;
@@ -30,7 +31,6 @@ const INITIAL: FormState = {
   name: "",
   description: "",
   slug: "",
-  ownerWallet: "",
   payoutAddress: "",
   priceUsdc: "0.25",
   domains: "",
@@ -55,9 +55,10 @@ function slugify(s: string): string {
 
 export default function NewVaultPage() {
   const router = useRouter();
+  const [wallet, setWallet] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(INITIAL);
   const [slugDirty, setSlugDirty] = useState(false);
-  const [payoutMatchesOwner, setPayoutMatchesOwner] = useState(true);
+  const [payoutOverride, setPayoutOverride] = useState(false);
   const [state, setState] = useState<SubmitState>({ kind: "idle" });
 
   // Auto-derive slug from name unless user has edited slug manually.
@@ -66,11 +67,11 @@ export default function NewVaultPage() {
     setForm((f) => ({ ...f, slug: slugify(f.name) }));
   }, [form.name, slugDirty]);
 
-  // Auto-mirror owner -> payout unless user has overridden.
+  // Auto-mirror connected wallet -> payout unless user has overridden.
   useEffect(() => {
-    if (!payoutMatchesOwner) return;
-    setForm((f) => ({ ...f, payoutAddress: f.ownerWallet }));
-  }, [form.ownerWallet, payoutMatchesOwner]);
+    if (payoutOverride) return;
+    setForm((f) => ({ ...f, payoutAddress: wallet ?? "" }));
+  }, [wallet, payoutOverride]);
 
   const totalBytes = useMemo(
     () => form.files.reduce((sum, f) => sum + f.bytes, 0),
@@ -122,6 +123,10 @@ export default function NewVaultPage() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     if (state.kind === "submitting") return;
+    if (!wallet) {
+      setState({ kind: "error", reason: "connect wallet first" });
+      return;
+    }
     if (totalBytes > MAX_BUNDLE_BYTES) {
       setState({
         kind: "error",
@@ -132,12 +137,13 @@ export default function NewVaultPage() {
     }
     setState({ kind: "submitting" });
 
+    // ownerWallet is set server-side from the session cookie — body's value
+    // is ignored. We send it for completeness; never trusted by the route.
     const body = {
       slug: form.slug,
       name: form.name,
       description: form.description || undefined,
-      ownerWallet: form.ownerWallet.trim(),
-      payoutAddress: form.payoutAddress.trim(),
+      payoutAddress: form.payoutAddress.trim() || wallet,
       priceUsdc: Number(form.priceUsdc) || 0.25,
       domains: form.domains
         .split(",")
@@ -159,6 +165,14 @@ export default function NewVaultPage() {
         vault?: { slug: string };
       };
       if (!res.ok) {
+        if (res.status === 401) {
+          setState({
+            kind: "error",
+            reason:
+              "session expired — disconnect Phantom and reconnect to refresh signature",
+          });
+          return;
+        }
         setState({
           kind: "error",
           reason: data.error ?? `request failed (${res.status})`,
@@ -200,199 +214,205 @@ export default function NewVaultPage() {
             </em>
           </h1>
           <p className="mt-5 max-w-2xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
-            Pick a directory of markdown files (Obsidian, Notion export,
-            engineering wiki, anything). Brain Drain chunks + embeds it,
-            mounts an x402-gated endpoint, and routes USDC settlements
-            straight to your Solana address.
+            Connect Phantom to prove wallet ownership, then drop a directory
+            of markdown files. Brain Drain chunks + embeds it, mounts an
+            x402-gated endpoint, and routes USDC settlements straight to your
+            Solana address.
           </p>
         </motion.div>
 
-        <form
-          onSubmit={onSubmit}
-          className="mt-12 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/60 backdrop-blur-md p-7 lg:p-9 space-y-7"
-        >
-          <Field
-            label="Vault name"
-            required
-            error={errFor(state, "name")}
-            input={
-              <input
-                type="text"
-                required
-                maxLength={80}
-                placeholder="e.g. React patterns vault"
-                value={form.name}
-                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                className="form-input"
-              />
-            }
-          />
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 pb-7 border-b border-[var(--color-border)]">
+          <div>
+            <p className="text-mono-tight text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-faint)]">
+              {wallet ? "Authenticated wallet" : "Step 1 — connect wallet"}
+            </p>
+            {wallet && (
+              <p className="mt-2 text-mono-tight text-[13px] text-[var(--color-text)]">
+                Vault will be owned by{" "}
+                <span className="text-[var(--color-accent)]">
+                  {truncateAddress(wallet)}
+                </span>
+              </p>
+            )}
+          </div>
+          <PhantomConnect onChange={setWallet} />
+        </div>
 
-          <Field
-            label="Slug (URL path)"
-            hint={`/vaults/${form.slug || "your-slug"}`}
-            error={errFor(state, "slug")}
-            input={
-              <input
-                type="text"
-                required
-                pattern="^[a-z0-9-]+$"
-                minLength={3}
-                maxLength={64}
-                placeholder="auto from name"
-                value={form.slug}
-                onChange={(e) => {
-                  setSlugDirty(true);
-                  setForm((f) => ({ ...f, slug: e.target.value }));
-                }}
-                className="form-input"
-              />
-            }
-          />
-
-          <Field
-            label="Description"
-            hint="optional — what's in here, who it's for"
-            input={
-              <textarea
-                maxLength={500}
-                rows={3}
-                placeholder="Lived experience across X, Y, Z. Decision logs with tradeoffs."
-                value={form.description}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, description: e.target.value }))
-                }
-                className="form-input resize-none"
-              />
-            }
-          />
-
-          <div className="grid sm:grid-cols-2 gap-5">
+        {!wallet ? (
+          <DisconnectedPanel />
+        ) : (
+          <form
+            onSubmit={onSubmit}
+            className="mt-8 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/60 backdrop-blur-md p-7 lg:p-9 space-y-7"
+          >
             <Field
-              label="Owner wallet"
+              label="Vault name"
               required
-              hint="your Solana address (base58, 32–44 chars)"
-              error={errFor(state, "ownerWallet")}
+              error={errFor(state, "name")}
               input={
                 <input
                   type="text"
                   required
-                  minLength={32}
-                  maxLength={44}
-                  placeholder="2SUm7fDR…PAYMPb3L"
-                  value={form.ownerWallet}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, ownerWallet: e.target.value }))
-                  }
-                  className="form-input text-mono-tight text-[13px]"
+                  maxLength={80}
+                  placeholder="e.g. React patterns vault"
+                  value={form.name}
+                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                  className="form-input"
                 />
               }
             />
+
+            <Field
+              label="Slug (URL path)"
+              hint={`/vaults/${form.slug || "your-slug"}`}
+              error={errFor(state, "slug")}
+              input={
+                <input
+                  type="text"
+                  required
+                  pattern="^[a-z0-9-]+$"
+                  minLength={3}
+                  maxLength={64}
+                  placeholder="auto from name"
+                  value={form.slug}
+                  onChange={(e) => {
+                    setSlugDirty(true);
+                    setForm((f) => ({ ...f, slug: e.target.value }));
+                  }}
+                  className="form-input"
+                />
+              }
+            />
+
+            <Field
+              label="Description"
+              hint="optional — what's in here, who it's for"
+              input={
+                <textarea
+                  maxLength={500}
+                  rows={3}
+                  placeholder="Lived experience across X, Y, Z. Decision logs with tradeoffs."
+                  value={form.description}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, description: e.target.value }))
+                  }
+                  className="form-input resize-none"
+                />
+              }
+            />
+
             <Field
               label="Payout address"
               required
               hint={
-                payoutMatchesOwner
-                  ? "matches owner — toggle to override"
-                  : "USDC settlements land here"
+                payoutOverride
+                  ? "USDC settlements land here"
+                  : `defaults to connected wallet (${truncateAddress(wallet)}) — toggle to override`
               }
               error={errFor(state, "payoutAddress")}
               input={
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    required
+                    minLength={32}
+                    maxLength={44}
+                    placeholder="default: owner wallet"
+                    value={form.payoutAddress}
+                    disabled={!payoutOverride}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, payoutAddress: e.target.value }))
+                    }
+                    className="form-input text-mono-tight text-[13px]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setPayoutOverride(!payoutOverride)}
+                    className="text-mono-tight text-[11px] uppercase tracking-[0.16em] text-[var(--color-text-faint)] hover:text-[var(--color-text-muted)] transition-colors"
+                  >
+                    {payoutOverride ? "← reset to wallet" : "use different address →"}
+                  </button>
+                </div>
+              }
+            />
+
+            <Field
+              label="Price per query (USDC)"
+              hint="0.05 – 5.00 · operator-controlled"
+              error={errFor(state, "priceUsdc")}
+              input={
                 <input
-                  type="text"
-                  required
-                  minLength={32}
-                  maxLength={44}
-                  placeholder="default: owner wallet"
-                  value={form.payoutAddress}
-                  onChange={(e) => {
-                    setPayoutMatchesOwner(false);
-                    setForm((f) => ({ ...f, payoutAddress: e.target.value }));
-                  }}
-                  className="form-input text-mono-tight text-[13px]"
+                  type="number"
+                  min={0.05}
+                  max={5}
+                  step={0.05}
+                  value={form.priceUsdc}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, priceUsdc: e.target.value }))
+                  }
+                  className="form-input tabular-nums"
                 />
               }
             />
-          </div>
 
-          <Field
-            label="Price per query (USDC)"
-            hint="0.05 – 5.00 · operator-controlled"
-            error={errFor(state, "priceUsdc")}
-            input={
-              <input
-                type="number"
-                min={0.05}
-                max={5}
-                step={0.05}
-                value={form.priceUsdc}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, priceUsdc: e.target.value }))
-                }
-                className="form-input tabular-nums"
-              />
-            }
-          />
-
-          <Field
-            label="Domains"
-            hint="comma-separated tags — e.g. solana, x402, mcp"
-            input={
-              <input
-                type="text"
-                maxLength={300}
-                placeholder="solana, rag, x402"
-                value={form.domains}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, domains: e.target.value }))
-                }
-                className="form-input"
-              />
-            }
-          />
-
-          <Field
-            label={`Markdown bundle ${form.files.length > 0 ? `· ${form.files.length} files · ${(totalBytes / 1024).toFixed(1)} KB` : ""}`}
-            required
-            hint="select multiple .md / .mdx files"
-            error={errFor(state, "files")}
-            input={
-              <input
-                type="file"
-                multiple
-                accept=".md,.mdx,text/markdown"
-                onChange={(e) => onPickFiles(e.target.files)}
-                className="form-input file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-pill)] file:border file:border-[var(--color-border-strong)] file:bg-[var(--color-bg-card)] file:text-[var(--color-text)] file:text-[12px] file:cursor-pointer hover:file:bg-[var(--color-bg-card-hover)]"
-              />
-            }
-          />
-
-          <div className="flex flex-wrap items-center gap-4 pt-2">
-            <button
-              type="submit"
-              disabled={
-                state.kind === "submitting" ||
-                form.files.length === 0 ||
-                form.name.length === 0 ||
-                form.ownerWallet.length === 0 ||
-                form.payoutAddress.length === 0
+            <Field
+              label="Domains"
+              hint="comma-separated tags — e.g. solana, x402, mcp"
+              input={
+                <input
+                  type="text"
+                  maxLength={300}
+                  placeholder="solana, rag, x402"
+                  value={form.domains}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, domains: e.target.value }))
+                  }
+                  className="form-input"
+                />
               }
-              className="inline-flex h-11 px-7 items-center rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {state.kind === "submitting" ? "Indexing…" : "Mount vault"}
-            </button>
-            <p className="text-mono-tight text-[11px] text-[var(--color-text-faint)] flex-1">
-              First pass embeds + uploads ~30 s for 100 chunks. Re-mount any
-              time to pick up edits.
-            </p>
-          </div>
+            />
 
-          {state.kind === "error" && !state.field && (
-            <p className="text-mono-tight text-[12px] text-[#ff8a8a]">
-              error · {state.reason}
-            </p>
-          )}
-        </form>
+            <Field
+              label={`Markdown bundle ${form.files.length > 0 ? `· ${form.files.length} files · ${(totalBytes / 1024).toFixed(1)} KB` : ""}`}
+              required
+              hint="select multiple .md / .mdx files"
+              error={errFor(state, "files")}
+              input={
+                <input
+                  type="file"
+                  multiple
+                  accept=".md,.mdx,text/markdown"
+                  onChange={(e) => onPickFiles(e.target.files)}
+                  className="form-input file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-pill)] file:border file:border-[var(--color-border-strong)] file:bg-[var(--color-bg-card)] file:text-[var(--color-text)] file:text-[12px] file:cursor-pointer hover:file:bg-[var(--color-bg-card-hover)]"
+                />
+              }
+            />
+
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <button
+                type="submit"
+                disabled={
+                  state.kind === "submitting" ||
+                  form.files.length === 0 ||
+                  form.name.length === 0
+                }
+                className="inline-flex h-11 px-7 items-center rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {state.kind === "submitting" ? "Indexing…" : "Mount vault"}
+              </button>
+              <p className="text-mono-tight text-[11px] text-[var(--color-text-faint)] flex-1">
+                First pass embeds + uploads ~30 s for 100 chunks. Re-mount any
+                time to pick up edits.
+              </p>
+            </div>
+
+            {state.kind === "error" && !state.field && (
+              <p className="text-mono-tight text-[12px] text-[#ff8a8a]">
+                error · {state.reason}
+              </p>
+            )}
+          </form>
+        )}
       </div>
 
       <style jsx global>{`
@@ -424,11 +444,35 @@ export default function NewVaultPage() {
         .form-input::placeholder {
           color: var(--color-text-faint);
         }
+        .form-input:disabled {
+          opacity: 0.55;
+        }
         .form-input:focus {
           border-color: var(--color-accent);
         }
       `}</style>
     </section>
+  );
+}
+
+function DisconnectedPanel() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 320, damping: 28 }}
+      className="mt-8 rounded-[var(--radius-card)] border border-dashed border-[var(--color-border-strong)] px-6 py-14 text-center"
+    >
+      <p className="text-eyebrow">Wallet identity required</p>
+      <p className="mt-4 text-[var(--color-text-muted)] text-sm max-w-md mx-auto leading-[1.55]">
+        Sign a one-shot challenge with Phantom so the server knows the vault
+        is yours. No fees, no on-chain transaction — just an off-chain
+        signature that proves you control the wallet you&apos;re mounting under.
+      </p>
+      <p className="mt-5 text-mono-tight text-[11px] uppercase tracking-[0.18em] text-[var(--color-text-faint)]">
+        ed25519 sig over server-issued nonce · 5-min TTL
+      </p>
+    </motion.div>
   );
 }
 

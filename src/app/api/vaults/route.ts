@@ -1,18 +1,21 @@
 /**
  * /api/vaults
- *   POST  — operator uploads a markdown bundle, server creates the vault.
- *   GET   — public list of vaults (paginated, sorted by total_earned_usdc).
+ *   POST  — operator uploads a markdown bundle. Authenticated: ownerWallet
+ *           is taken from the session cookie, body's value is overridden.
+ *   GET   — public list of vaults; ?owner= filter requires session match.
  *
- * AUTH NOTE (v0): the POST body carries `ownerWallet` and the server trusts
- * it. Cryptographic wallet signature verification (sign-in-with-Solana) is
- * task #23 — once Phantom auth is wired, this route validates the signed
- * nonce against `ownerWallet` before forwarding to createVault().
+ * AUTH (post-BD-01/BD-02 hardening):
+ *   - POST requires bd_session cookie. The wallet is server-derived; clients
+ *     cannot mount a vault under another wallet's identity.
+ *   - GET ?owner=<wallet> requires session.wallet === owner. Otherwise the
+ *     branch always falls back to public-only reads via the anon RLS path.
  */
 
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createVault } from "@/lib/vaults";
 import { getSupabaseAnon } from "@/lib/supabase";
+import { getSessionWallet } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -27,6 +30,14 @@ const ListQuerySchema = z.object({
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const sessionWallet = getSessionWallet(request);
+  if (!sessionWallet) {
+    return NextResponse.json(
+      { error: "auth required — sign in with Phantom first" },
+      { status: 401 },
+    );
+  }
+
   let raw: unknown = null;
   try {
     raw = await request.json();
@@ -34,7 +45,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "invalid JSON body" }, { status: 400 });
   }
 
-  const result = await createVault(raw);
+  // Server is the source of truth for ownerWallet. Body's claim is ignored.
+  const merged =
+    raw && typeof raw === "object"
+      ? { ...raw, ownerWallet: sessionWallet }
+      : { ownerWallet: sessionWallet };
+
+  const result = await createVault(merged);
   if (!result.ok) {
     const status = result.reason.includes("already taken") ? 409 : 400;
     return NextResponse.json(
@@ -65,6 +82,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
   const { limit, sort, owner } = parsed.data;
 
+  // Owner-scoped reads require a matching session — protects private vaults
+  // from being enumerated by anyone who knows another wallet's address.
+  if (owner) {
+    const sessionWallet = getSessionWallet(request);
+    if (sessionWallet !== owner) {
+      return NextResponse.json(
+        { error: "auth required to view this wallet's vaults" },
+        { status: 401 },
+      );
+    }
+  }
+
   const orderColumn = sort === "earnings" ? "total_earned_usdc" : "created_at";
   const supabase = getSupabaseAnon();
 
@@ -77,10 +106,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     .limit(limit);
 
   if (owner) {
-    // Operator dashboard scope: include private vaults of this owner.
+    // Authenticated owner branch: include the wallet's private vaults too.
     query = query.eq("owner_wallet", owner);
   } else {
-    // Public directory: only public vaults.
+    // Anonymous: public-only, RLS-bound.
     query = query.eq("public", true);
   }
 

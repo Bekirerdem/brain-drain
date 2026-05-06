@@ -16,6 +16,27 @@ export type Database = {
   };
   public: {
     Tables: {
+      auth_challenges: {
+        Row: {
+          challenge: string;
+          created_at: string;
+          expires_at: string;
+          wallet: string;
+        };
+        Insert: {
+          challenge: string;
+          created_at?: string;
+          expires_at?: string;
+          wallet: string;
+        };
+        Update: {
+          challenge?: string;
+          created_at?: string;
+          expires_at?: string;
+          wallet?: string;
+        };
+        Relationships: [];
+      };
       vaults: {
         Row: {
           chunks_count: number;

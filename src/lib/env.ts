@@ -43,6 +43,10 @@ const EnvSchema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(20),
   // Service role key only present server-side; routes that mutate vaults need it.
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(20).optional(),
+
+  // 32-byte hex secret used to HMAC-sign session cookies after wallet auth.
+  // Generate: bun -e 'console.log(require("crypto").randomBytes(32).toString("hex"))'
+  AUTH_SECRET: z.string().min(32).optional(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

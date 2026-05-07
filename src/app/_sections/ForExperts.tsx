@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { SPRINGS } from "@/lib/motion/presets";
+
+const MotionLink = motion(Link);
 
 const STEPS = [
   {
@@ -124,18 +127,24 @@ function MountCallout() {
       </p>
 
       <div className="mt-7 space-y-3">
-        <Link
+        <MotionLink
           href="/vaults/new"
-          className="block w-full h-11 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)] transition-all duration-200 grid place-items-center"
+          whileHover={{ scale: 1.02, y: -1 }}
+          whileTap={{ scale: 0.98 }}
+          transition={SPRINGS.snappy}
+          className="block w-full h-11 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)] grid place-items-center"
         >
           Mount your vault →
-        </Link>
-        <Link
+        </MotionLink>
+        <MotionLink
           href="/vaults"
-          className="block w-full h-11 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg)]/40 text-[14px] text-[var(--color-text)] hover:bg-[var(--color-bg-card)] hover:border-[var(--color-border-emphasis)] transition-colors grid place-items-center"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          transition={SPRINGS.snappy}
+          className="block w-full h-11 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg)]/40 text-[14px] text-[var(--color-text)] hover:bg-[var(--color-bg-card)] hover:border-[var(--color-border-emphasis)] grid place-items-center"
         >
           Browse public vaults
-        </Link>
+        </MotionLink>
       </div>
 
       <ul className="mt-8 space-y-2.5 text-[12.5px] text-[var(--color-text-muted)] leading-[1.55]">

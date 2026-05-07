@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import type { PayoutEvent } from "@/lib/payouts";
 import {
   formatUsdc,
@@ -11,11 +12,34 @@ import {
   truncateSignature,
   type SolanaCluster,
 } from "@/lib/format";
+import { OFFSETS, SPRINGS, STAGGER } from "@/lib/motion/presets";
 import { AnimatedNumber } from "./AnimatedNumber";
 
 const POLL_INTERVAL_MS = 10_000;
 const FEED_VISIBLE = 5;
 const HIGHLIGHT_MS = 2_000;
+
+/* ─────────────────────────────────────────────────────────
+ * LIVEACTIVITY ENTRANCE STORYBOARD (fires on viewport enter)
+ *
+ * Eyebrow + headline + body copy stay server-rendered in
+ * LiveActivity.tsx (no entrance animation — they read as static
+ * label content). The choreographed pieces are the client-owned
+ * stat stripe + feed rows that this file renders.
+ *
+ *    0ms   blank — stat stripe + feed invisible
+ *  200ms   stage 1: stat stripe — 4 cells stagger 60ms each
+ *  460ms   stage 2: feed rows — visible 5 rows stagger 50ms each
+ *  720ms   trailing meta paragraph fades in
+ * ───────────────────────────────────────────────────────── */
+const ENTRANCE = {
+  stripe: 200,
+  feed:   460,
+  meta:   720,
+} as const;
+
+const FEED_ROW_STAGGER_MS = 50;
+const STRIPE_CELL_STAGGER = STAGGER.normal;
 
 type Props = {
   initial: PayoutEvent[];
@@ -30,6 +54,25 @@ export function LiveActivityClient({ initial, network }: Props) {
   const seenRef = useRef<Set<string>>(
     new Set(initial.map((p) => p.signature)),
   );
+
+  const reduced = useReducedMotion();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(wrapperRef, { once: true, amount: 0.1 });
+  const [stage, setStage] = useState(0);
+
+  useEffect(() => {
+    if (reduced) {
+      setStage(99);
+      return;
+    }
+    if (!inView) return;
+    const timers: ReturnType<typeof setTimeout>[] = [
+      setTimeout(() => setStage(1), ENTRANCE.stripe),
+      setTimeout(() => setStage(2), ENTRANCE.feed),
+      setTimeout(() => setStage(3), ENTRANCE.meta),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [inView, reduced]);
 
   const fetchPayouts = useCallback(async () => {
     try {
@@ -82,8 +125,8 @@ export function LiveActivityClient({ initial, network }: Props) {
   const visible = payouts.slice(0, FEED_VISIBLE);
 
   return (
-    <>
-      <StatStripe stats={stats} now={now} />
+    <div ref={wrapperRef}>
+      <StatStripe stats={stats} now={now} stage={stage} />
 
       {visible.length === 0 ? (
         <EmptyState />
@@ -93,16 +136,25 @@ export function LiveActivityClient({ initial, network }: Props) {
           highlighted={highlighted}
           network={network}
           now={now}
+          stage={stage}
         />
       )}
 
-      <p className="mt-6 text-mono-tight text-[11px] text-[var(--color-text-faint)]">
+      <motion.p
+        initial={{ opacity: 0, y: OFFSETS.rise }}
+        animate={{
+          opacity: stage >= 3 ? 1 : 0,
+          y: stage >= 3 ? 0 : OFFSETS.rise,
+        }}
+        transition={SPRINGS.smooth}
+        className="mt-6 text-mono-tight text-[11px] text-[var(--color-text-faint)]"
+      >
         Showing latest {visible.length} of {payouts.length} settlements ·{" "}
         <a href="/dashboard" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
           full history in dashboard ↗
         </a>
-      </p>
-    </>
+      </motion.p>
+    </div>
   );
 }
 
@@ -139,7 +191,15 @@ type StatItem = {
   staticValue?: string;
 };
 
-function StatStripe({ stats, now }: { stats: Stats; now: number }) {
+function StatStripe({
+  stats,
+  now,
+  stage,
+}: {
+  stats: Stats;
+  now: number;
+  stage: number;
+}) {
   const items: StatItem[] = [
     {
       label: "Volume settled",
@@ -177,8 +237,20 @@ function StatStripe({ stats, now }: { stats: Stats; now: number }) {
   ];
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[var(--color-border)] border-y border-[var(--color-border)]">
-      {items.map((s) => (
-        <div key={s.label} className="bg-[var(--color-bg)] px-5 py-6 lg:px-6 lg:py-7">
+      {items.map((s, i) => (
+        <motion.div
+          key={s.label}
+          initial={{ opacity: 0, y: OFFSETS.rise }}
+          animate={{
+            opacity: stage >= 1 ? 1 : 0,
+            y: stage >= 1 ? 0 : OFFSETS.rise,
+          }}
+          transition={{
+            ...SPRINGS.smooth,
+            delay: stage >= 1 ? i * STRIPE_CELL_STAGGER : 0,
+          }}
+          className="bg-[var(--color-bg)] px-5 py-6 lg:px-6 lg:py-7"
+        >
           <p className="text-eyebrow">{s.label}</p>
           {s.numeric ? (
             <AnimatedNumber
@@ -196,7 +268,7 @@ function StatStripe({ stats, now }: { stats: Stats; now: number }) {
           <p className="text-mono-tight text-[11px] mt-1 text-[var(--color-text-faint)]">
             {s.caption}
           </p>
-        </div>
+        </motion.div>
       ))}
     </div>
   );
@@ -207,11 +279,13 @@ function ActivityFeed({
   highlighted,
   network,
   now,
+  stage,
 }: {
   rows: PayoutEvent[];
   highlighted: Set<string>;
   network: SolanaCluster;
   now: number;
+  stage: number;
 }) {
   return (
     <div className="mt-10 rounded-[var(--radius-card)] border border-[var(--color-border)] overflow-hidden">
@@ -223,13 +297,15 @@ function ActivityFeed({
         <span className="text-eyebrow text-right">Time</span>
       </div>
       <ul className="divide-y divide-[var(--color-border)]">
-        {rows.map((row) => (
+        {rows.map((row, i) => (
           <FeedRow
             key={row.signature}
             row={row}
+            index={i}
             isNew={highlighted.has(row.signature)}
             network={network}
             now={now}
+            stage={stage}
           />
         ))}
       </ul>
@@ -239,20 +315,33 @@ function ActivityFeed({
 
 function FeedRow({
   row,
+  index,
   isNew,
   network,
   now,
+  stage,
 }: {
   row: PayoutEvent;
+  index: number;
   isNew: boolean;
   network: SolanaCluster;
   now: number;
+  stage: number;
 }) {
   const flashClass = isNew
     ? "bg-[rgba(25,251,155,0.08)] animate-[fade-up_400ms_var(--ease-out-expo)]"
     : "hover:bg-[var(--color-bg-card)]/40";
   return (
-    <li
+    <motion.li
+      initial={{ opacity: 0, y: OFFSETS.rise }}
+      animate={{
+        opacity: stage >= 2 ? 1 : 0,
+        y: stage >= 2 ? 0 : OFFSETS.rise,
+      }}
+      transition={{
+        ...SPRINGS.smooth,
+        delay: stage >= 2 ? (index * FEED_ROW_STAGGER_MS) / 1000 : 0,
+      }}
       className={`grid grid-cols-[1.6fr_1.4fr_1fr_0.9fr] sm:grid-cols-[1.6fr_1.4fr_1.4fr_1fr_0.9fr] gap-3 sm:gap-4 px-4 sm:px-5 lg:px-6 py-3.5 transition-colors duration-300 ${flashClass}`}
     >
       <a
@@ -302,7 +391,7 @@ function FeedRow({
       <span className="text-mono-tight text-[12px] text-[var(--color-text-faint)] text-right tabular-nums">
         {timeAgo(row.blockTime, now)}
       </span>
-    </li>
+    </motion.li>
   );
 }
 

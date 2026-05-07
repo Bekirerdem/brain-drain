@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { SPRINGS } from "@/lib/motion/presets";
 import { OrbitVisual } from "../_components/OrbitVisual";
 
+const MotionLink = motion(Link);
+
 /* ─────────────────────────────────────────────────────────
  * HERO ENTRANCE STORYBOARD
  *
@@ -115,20 +117,26 @@ export function Hero() {
               animate={{ opacity: stage >= 4 ? 1 : 0, y: stage >= 4 ? 0 : 12 }}
               transition={FADE.spring}
             >
-              <Link
+              <MotionLink
                 href="/vaults/new"
-                className="group inline-flex h-11 px-6 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)] transition-all duration-200"
+                whileHover={{ scale: 1.02, y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={SPRINGS.snappy}
+                className="group inline-flex h-11 px-6 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)]"
               >
                 Mount your vault
                 <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-              </Link>
-              <Link
+              </MotionLink>
+              <MotionLink
                 href="/vaults"
-                className="group inline-flex h-11 px-5 items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg-card)]/40 backdrop-blur text-[14px] text-[var(--color-text)] hover:bg-[var(--color-bg-card)] hover:border-[var(--color-border-emphasis)] transition-all duration-200"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={SPRINGS.snappy}
+                className="group inline-flex h-11 px-5 items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg-card)]/40 backdrop-blur text-[14px] text-[var(--color-text)] hover:bg-[var(--color-bg-card)] hover:border-[var(--color-border-emphasis)]"
               >
                 Browse vaults
                 <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-              </Link>
+              </MotionLink>
               <a
                 href="#how-it-works"
                 className="hidden sm:inline-flex h-11 px-3 items-center text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"

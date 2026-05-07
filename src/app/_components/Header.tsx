@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { useMotionValueEvent, useScroll } from "framer-motion";
 
 const NAV_ITEMS = [
   { label: "Vaults", href: "/vaults" },
@@ -8,10 +12,25 @@ const NAV_ITEMS = [
 ] as const;
 
 const GITHUB_URL = "https://github.com/Bekirerdem/brain-drain";
+const SCROLL_THRESHOLD = 24;
 
 export function Header() {
+  const { scrollY } = useScroll();
+  const [scrolled, setScrolled] = useState(false);
+
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const next = y > SCROLL_THRESHOLD;
+    if (next !== scrolled) setScrolled(next);
+  });
+
+  const shellClass = scrolled
+    ? "bg-[rgba(10,10,10,0.78)] backdrop-blur-xl border-b border-[var(--color-border)]"
+    : "bg-[rgba(10,10,10,0.32)] backdrop-blur-md border-b border-transparent";
+
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-xl bg-[rgba(10,10,10,0.72)] border-b border-[var(--color-border)]">
+    <header
+      className={`sticky top-0 z-40 transition-[background-color,backdrop-filter,border-color] duration-200 ${shellClass}`}
+    >
       <div className="mx-auto max-w-[1280px] px-6 lg:px-10 h-16 flex items-center justify-between">
         <Link
           href="/"

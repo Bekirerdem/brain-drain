@@ -33,12 +33,10 @@ export function ForExperts() {
       <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
         <div className="grid lg:grid-cols-[1fr_1fr] gap-12 lg:gap-20 items-start">
           <div>
-            <p className="text-eyebrow">For vault operators</p>
+            <p className="text-eyebrow text-[var(--color-accent)]/80">For vault operators</p>
             <h2 className="text-display mt-6 text-[clamp(36px,5.5vw,68px)] text-[var(--color-text)]">
-              Mount your vault.{" "}
-              <em className="not-italic font-normal text-[var(--color-accent)]">
-                Get paid.
-              </em>
+              Mount your vault.
+              <span className="block text-[var(--color-text-muted)]">Get paid per query.</span>
             </h2>
             <p className="mt-6 max-w-xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
               The decision log you already keep is the corpus AI agents
@@ -115,10 +113,7 @@ function MountCallout() {
     >
       <p className="text-eyebrow">Live now · devnet</p>
       <h3 className="mt-4 text-display text-[clamp(22px,3vw,28px)] text-[var(--color-text)]">
-        Drop your markdown.{" "}
-        <em className="not-italic font-normal text-[var(--color-accent)]">
-          Get an endpoint.
-        </em>
+        Drop your markdown. Get an endpoint.
       </h3>
       <p className="mt-3 text-[14px] leading-[1.6] text-[var(--color-text-muted)] max-w-sm">
         No waitlist, no approval queue, no gating. Mount a vault now and

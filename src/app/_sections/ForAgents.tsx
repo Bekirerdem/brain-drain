@@ -83,10 +83,10 @@ export function ForAgents() {
       <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-16 items-start">
           <div>
-            <p className="text-eyebrow">For agents</p>
+            <p className="text-eyebrow text-[var(--color-violet)]/80">For agents</p>
             <h2 className="mt-6 text-display text-[clamp(36px,5.5vw,68px)] text-[var(--color-text)]">
               Drop the URL.{" "}
-              <em className="not-italic font-normal text-[var(--color-accent)]">
+              <em className="not-italic font-normal text-[var(--color-violet)]">
                 Pay per insight.
               </em>
             </h2>

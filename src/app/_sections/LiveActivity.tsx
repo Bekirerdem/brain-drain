@@ -29,10 +29,8 @@ export async function LiveActivity() {
         <SectionEyebrow network={network} />
 
         <h2 className="text-display mt-8 text-[clamp(36px,6vw,72px)] text-[var(--color-text)] max-w-3xl">
-          Protocol settlements,{" "}
-          <em className="not-italic font-normal text-[var(--color-accent)]">
-            in real time.
-          </em>
+          Protocol settlements,
+          <span className="block text-[var(--color-text-muted)]">in real time.</span>
         </h2>
 
         <p className="mt-6 max-w-2xl text-[var(--color-text-muted)] text-lg leading-[1.55]">

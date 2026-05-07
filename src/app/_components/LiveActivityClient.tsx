@@ -415,12 +415,12 @@ function FeedRow({
           href={solscanAddressUrl(row.payer, network)}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-mono-tight text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors truncate"
+          className="text-mono-tight text-[13px] text-[var(--color-violet-dim)] hover:text-[var(--color-violet)] transition-colors truncate"
         >
           {truncateAddress(row.payer)}
         </a>
       )}
-      <span className="text-mono-tight text-[13px] text-[var(--color-text)] text-right tabular-nums">
+      <span className="text-mono-tight text-[13px] text-[var(--color-amber)] text-right tabular-nums">
         +${formatUsdc(row.amountUsdc)}
       </span>
       <span className="text-mono-tight text-[12px] text-[var(--color-text-faint)] text-right tabular-nums">

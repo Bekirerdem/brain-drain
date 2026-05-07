@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { CodeTabs } from "../_components/CodeTabs";
+import { AgentQuickstart } from "../_components/AgentQuickstart";
 
 const STEPS = [
   {
@@ -116,9 +117,7 @@ export function ForAgents() {
             transition={{ type: "spring", stiffness: 280, damping: 30 }}
           >
             <CodeTabs tabs={CODE_TABS} />
-            <p className="mt-4 text-mono-tight text-[11px] uppercase tracking-[0.18em] text-[var(--color-text-faint)] text-right">
-              endpoint live · /api/mcp
-            </p>
+            <AgentQuickstart />
           </motion.div>
         </div>
       </div>

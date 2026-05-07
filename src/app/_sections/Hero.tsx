@@ -148,7 +148,7 @@ export function Hero() {
           </div>
 
           <motion.div
-            className="relative order-first lg:order-last"
+            className="relative order-last"
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{
               opacity: stage >= 5 ? 1 : 0,

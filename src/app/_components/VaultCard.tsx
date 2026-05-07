@@ -32,7 +32,7 @@ export function VaultCard({ vault, index = 0 }: Props) {
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="text-display text-[clamp(18px,2vw,22px)] text-[var(--color-text)] truncate">
+            <h3 className="text-display text-[clamp(18px,2vw,22px)] text-[var(--color-text)] line-clamp-2">
               {vault.name}
             </h3>
             <p className="mt-1 text-mono-tight text-[11px] text-[var(--color-text-faint)]">

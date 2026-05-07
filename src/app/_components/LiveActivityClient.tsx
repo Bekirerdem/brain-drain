@@ -364,7 +364,7 @@ function FeedRow({
 }) {
   const flashClass = isNew
     ? "bg-[rgba(25,251,155,0.08)] animate-[fade-up_400ms_var(--ease-out-expo)]"
-    : "hover:bg-[var(--color-bg-card)]/40";
+    : "hover:bg-[var(--color-bg-card)]/70 hover:border-l-2 hover:border-l-[var(--color-accent)]/40";
   return (
     <motion.li
       initial={{ opacity: 0, y: OFFSETS.rise }}

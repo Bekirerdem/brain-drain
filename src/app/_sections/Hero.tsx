@@ -44,7 +44,7 @@ const HERO_STATS = [
   { label: "Confirmation", value: "~400ms", caption: "Solana devnet" },
   { label: "Starting at", value: "0.05 USDC", caption: "operator-set price" },
   { label: "Per-vault routing", value: "x402", caption: "no platform custody" },
-  { label: "Open source", value: "MIT", caption: "audit-ready" },
+  { label: "Agent surface", value: "MCP", caption: "drop-in for any runtime" },
 ] as const;
 
 export function Hero() {
@@ -90,10 +90,11 @@ export function Hero() {
               }}
               transition={HEADLINE.spring}
             >
-              The protocol AI agents pay{" "}
+              AI agents pay you{" "}
               <br className="hidden md:block" aria-hidden="true" />
+              when they{" "}
               <em className="not-italic font-normal text-[var(--color-accent)]">
-                vault operators through.
+                cite your knowledge.
               </em>
             </motion.h1>
 

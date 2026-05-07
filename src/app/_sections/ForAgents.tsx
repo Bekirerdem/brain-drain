@@ -81,36 +81,9 @@ export function ForAgents() {
       <div className="bg-grain-overlay" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
-        <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-16 items-start">
-          <div>
-            <p className="text-eyebrow text-[var(--color-violet)]/80">For agents</p>
-            <h2 className="mt-6 text-display text-[clamp(36px,5.5vw,68px)] text-[var(--color-text)]">
-              Drop the URL.{" "}
-              <em className="not-italic font-normal text-[var(--color-violet)]">
-                Pay per insight.
-              </em>
-            </h2>
-            <p className="mt-6 max-w-lg text-[var(--color-text-muted)] text-lg leading-[1.55]">
-              No SDK lock-in. No key handling. The MCP server speaks the same
-              wire format as every other modern agent tool — your runtime drops
-              it in like any other capability.
-            </p>
-
-            <ol className="mt-12 space-y-7">
-              {STEPS.map((step, i) => (
-                <AgentStep key={step.n} step={step} index={i} />
-              ))}
-            </ol>
-
-            <p className="mt-12 text-mono-tight text-[12px] text-[var(--color-text-faint)] max-w-md leading-[1.6]">
-              Devnet endpoint live now. Mainnet config is one env flag —
-              the same code path. Idempotency on repeated signatures,
-              replay protection in KV — same chunk, same price, no
-              double-charge.
-            </p>
-          </div>
-
+        <div className="grid lg:grid-cols-[1.25fr_0.85fr] gap-12 lg:gap-16 items-start">
           <motion.div
+            className="lg:order-1 order-last"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -119,6 +92,29 @@ export function ForAgents() {
             <CodeTabs tabs={CODE_TABS} />
             <AgentQuickstart />
           </motion.div>
+
+          <div className="lg:order-2 order-first lg:pt-2">
+            <p className="text-eyebrow text-[var(--color-violet)]/80">For agents</p>
+            <h2 className="mt-6 text-display-md text-[var(--color-text)]">
+              Drop the URL.
+              <span className="block text-[var(--color-violet)]">Pay per insight.</span>
+            </h2>
+            <p className="text-lead mt-6 max-w-md">
+              No SDK lock-in. No key handling. The MCP server speaks the same
+              wire format as every other modern agent tool.
+            </p>
+
+            <ol className="mt-10 space-y-6">
+              {STEPS.map((step, i) => (
+                <AgentStep key={step.n} step={step} index={i} />
+              ))}
+            </ol>
+
+            <p className="mt-10 text-mono-tight text-[12px] text-[var(--color-text-faint)] max-w-sm leading-[1.6]">
+              Devnet endpoint live now. Mainnet config is one env flag — same
+              code path. Idempotency + replay protection in KV.
+            </p>
+          </div>
         </div>
       </div>
     </section>

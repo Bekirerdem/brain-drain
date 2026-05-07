@@ -20,30 +20,28 @@ export async function LiveActivity() {
   return (
     <section
       id="live"
-      className="bg-aurora bg-grain relative overflow-hidden border-t border-[var(--color-border)]"
+      className="relative overflow-hidden border-t border-[var(--color-border)] bg-[#08080b]"
     >
-      <div className="bg-aurora-canvas opacity-60" aria-hidden="true" />
-      <div className="bg-grain-overlay" aria-hidden="true" />
+      <div className="bg-grain-overlay opacity-60" aria-hidden="true" />
 
-      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
-        <SectionEyebrow network={network} />
-
-        <h2 className="text-display mt-8 text-[clamp(36px,6vw,72px)] text-[var(--color-text)] max-w-3xl">
-          Protocol settlements,
-          <span className="block text-[var(--color-text-muted)]">in real time.</span>
-        </h2>
-
-        <p className="mt-6 max-w-2xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
-          Every paid query is an on-chain SPL transfer from the buyer agent's
-          wallet to a vault operator's payout address. The feed below merges
-          settlements across every public vault on the protocol, polling{" "}
-          <span className="text-mono-tight text-[var(--color-text)]">/api/payouts</span>{" "}
-          every 10 seconds — no mocks, no proxies, just on-chain truth.
-        </p>
-
-        <div className="mt-12 lg:mt-14">
-          <LiveActivityClient initial={initial} network={network} />
+      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-16 pb-20 lg:pt-20 lg:pb-24">
+        <div className="flex flex-wrap items-end justify-between gap-y-4 gap-x-10 mb-10 pb-6 border-b border-[var(--color-border)]">
+          <div className="flex items-center gap-5">
+            <SectionEyebrow network={network} />
+            <p className="text-mono-tight text-[12px] text-[var(--color-text-muted)] max-w-md leading-[1.55]">
+              On-chain SPL transfers. Polled every 10s.{" "}
+              <span className="text-[var(--color-text)]">/api/payouts</span>.
+            </p>
+          </div>
+          <h2
+            id="live-headline"
+            className="text-mono-tight text-[12px] uppercase tracking-[0.22em] text-[var(--color-text-faint)]"
+          >
+            Network feed · cross-vault
+          </h2>
         </div>
+
+        <LiveActivityClient initial={initial} network={network} />
       </div>
     </section>
   );

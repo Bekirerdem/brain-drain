@@ -13,7 +13,9 @@ import {
   type SolanaCluster,
 } from "@/lib/format";
 import { OFFSETS, SPRINGS, STAGGER } from "@/lib/motion/presets";
+import { useLiveEvents } from "@/lib/live-events/context";
 import { AnimatedNumber } from "./AnimatedNumber";
+import { SettlementPacket } from "./SettlementPacket";
 
 const POLL_INTERVAL_MS = 10_000;
 const FEED_VISIBLE = 5;
@@ -74,26 +76,36 @@ export function LiveActivityClient({ initial, network }: Props) {
     return () => timers.forEach(clearTimeout);
   }, [inView, reduced]);
 
+  const { push, recent } = useLiveEvents();
+  const headSig = recent[0]?.signature ?? null;
+
   const fetchPayouts = useCallback(async () => {
     try {
       const res = await fetch("/api/payouts?limit=20", { cache: "no-store" });
       if (!res.ok) return;
       const data: { payouts: PayoutEvent[] } = await res.json();
       const incoming = data.payouts;
-      const newSigs = incoming
-        .map((p) => p.signature)
-        .filter((sig) => !seenRef.current.has(sig));
-      if (newSigs.length > 0) {
-        newSigs.forEach((sig) => seenRef.current.add(sig));
+      const newOnes = incoming.filter(
+        (p) => !seenRef.current.has(p.signature),
+      );
+      if (newOnes.length > 0) {
+        newOnes.forEach((p) => {
+          seenRef.current.add(p.signature);
+          push({
+            signature: p.signature,
+            vaultSlug: p.vaultSlug,
+            ts: Date.now(),
+          });
+        });
         setHighlighted((prev) => {
           const next = new Set(prev);
-          newSigs.forEach((sig) => next.add(sig));
+          newOnes.forEach((p) => next.add(p.signature));
           return next;
         });
         setTimeout(() => {
           setHighlighted((prev) => {
             const next = new Set(prev);
-            newSigs.forEach((sig) => next.delete(sig));
+            newOnes.forEach((p) => next.delete(p.signature));
             return next;
           });
         }, HIGHLIGHT_MS);
@@ -102,7 +114,7 @@ export function LiveActivityClient({ initial, network }: Props) {
     } catch {
       // network blip — next tick will retry
     }
-  }, []);
+  }, [push]);
 
   useEffect(() => {
     if (!polling) return;
@@ -126,7 +138,7 @@ export function LiveActivityClient({ initial, network }: Props) {
 
   return (
     <div ref={wrapperRef}>
-      <StatStripe stats={stats} now={now} stage={stage} />
+      <StatStripe stats={stats} now={now} stage={stage} headSig={headSig} />
 
       {visible.length === 0 ? (
         <EmptyState />
@@ -137,6 +149,7 @@ export function LiveActivityClient({ initial, network }: Props) {
           network={network}
           now={now}
           stage={stage}
+          reduced={!!reduced}
         />
       )}
 
@@ -195,11 +208,24 @@ function StatStripe({
   stats,
   now,
   stage,
+  headSig,
 }: {
   stats: Stats;
   now: number;
   stage: number;
+  headSig: string | null;
 }) {
+  const [kickerActive, setKickerActive] = useState(false);
+  const lastBumpedSig = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!headSig || headSig === lastBumpedSig.current) return;
+    lastBumpedSig.current = headSig;
+    setKickerActive(true);
+    const t = setTimeout(() => setKickerActive(false), 300);
+    return () => clearTimeout(t);
+  }, [headSig]);
+
   const items: StatItem[] = [
     {
       label: "Volume settled",
@@ -249,7 +275,9 @@ function StatStripe({
             ...SPRINGS.smooth,
             delay: stage >= 1 ? i * STRIPE_CELL_STAGGER : 0,
           }}
-          className="bg-[var(--color-bg)] px-5 py-6 lg:px-6 lg:py-7"
+          className={`bg-[var(--color-bg)] px-5 py-6 lg:px-6 lg:py-7 transition-[box-shadow] duration-300 ${
+            kickerActive ? "shadow-[inset_0_0_0_1px_var(--color-accent)]" : ""
+          }`}
         >
           <p className="text-eyebrow">{s.label}</p>
           {s.numeric ? (
@@ -258,6 +286,7 @@ function StatStripe({
               format={s.numeric.format}
               prefix={s.numeric.prefix}
               delay={s.numeric.delay}
+              bumpOn={headSig}
               className="text-display text-[clamp(22px,3vw,32px)] mt-3 text-[var(--color-text)] tabular-nums block"
             />
           ) : (
@@ -280,12 +309,14 @@ function ActivityFeed({
   network,
   now,
   stage,
+  reduced,
 }: {
   rows: PayoutEvent[];
   highlighted: Set<string>;
   network: SolanaCluster;
   now: number;
   stage: number;
+  reduced: boolean;
 }) {
   return (
     <div className="mt-10 rounded-[var(--radius-card)] border border-[var(--color-border)] overflow-hidden">
@@ -306,6 +337,7 @@ function ActivityFeed({
             network={network}
             now={now}
             stage={stage}
+            reduced={reduced}
           />
         ))}
       </ul>
@@ -320,6 +352,7 @@ function FeedRow({
   network,
   now,
   stage,
+  reduced,
 }: {
   row: PayoutEvent;
   index: number;
@@ -327,6 +360,7 @@ function FeedRow({
   network: SolanaCluster;
   now: number;
   stage: number;
+  reduced: boolean;
 }) {
   const flashClass = isNew
     ? "bg-[rgba(25,251,155,0.08)] animate-[fade-up_400ms_var(--ease-out-expo)]"
@@ -342,8 +376,9 @@ function FeedRow({
         ...SPRINGS.smooth,
         delay: stage >= 2 ? (index * FEED_ROW_STAGGER_MS) / 1000 : 0,
       }}
-      className={`grid grid-cols-[1.6fr_1.4fr_1fr_0.9fr] sm:grid-cols-[1.6fr_1.4fr_1.4fr_1fr_0.9fr] gap-3 sm:gap-4 px-4 sm:px-5 lg:px-6 py-3.5 transition-colors duration-300 ${flashClass}`}
+      className={`relative grid grid-cols-[1.6fr_1.4fr_1fr_0.9fr] sm:grid-cols-[1.6fr_1.4fr_1.4fr_1fr_0.9fr] gap-3 sm:gap-4 px-4 sm:px-5 lg:px-6 py-3.5 transition-colors duration-300 ${flashClass}`}
     >
+      {isNew && !reduced && <SettlementPacket />}
       <a
         href={solscanTxUrl(row.signature, network)}
         target="_blank"

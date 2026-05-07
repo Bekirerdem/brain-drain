@@ -13,7 +13,10 @@
  * - Pure SVG. No JS animation tick. Hardware-accelerated, hidden when reduced-motion.
  * ───────────────────────────────────────────────────────── */
 
-import { useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { DURATION_MS } from "@/lib/motion/presets";
+import { useLiveEvents } from "@/lib/live-events/context";
 
 type Props = { active: boolean };
 
@@ -22,6 +25,19 @@ const VB_H = 380;
 
 export function OrbitVisual({ active }: Props) {
   const reduced = useReducedMotion();
+  const { recent } = useLiveEvents();
+  const [pulsing, setPulsing] = useState(false);
+  const lastSigRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (reduced) return;
+    const head = recent[0]?.signature ?? null;
+    if (!head || head === lastSigRef.current) return;
+    lastSigRef.current = head;
+    setPulsing(true);
+    const t = setTimeout(() => setPulsing(false), DURATION_MS.reveal);
+    return () => clearTimeout(t);
+  }, [recent, reduced]);
 
   return (
     <div className="relative w-full">
@@ -63,7 +79,7 @@ export function OrbitVisual({ active }: Props) {
           <path id="path-settle" d="M 324 190 L 404 190" />
         </defs>
 
-        {/* Brain Drain glow halo */}
+        {/* Brain Drain glow halo — base always-on, pulse layer on settlements */}
         <circle
           cx="262"
           cy="190"
@@ -72,6 +88,17 @@ export function OrbitVisual({ active }: Props) {
           opacity={active ? 1 : 0}
           style={{ transition: "opacity 600ms ease-out" }}
         />
+        {pulsing && !reduced && (
+          <motion.circle
+            cx="262"
+            cy="190"
+            r="120"
+            fill="url(#brain-glow)"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.7, 0] }}
+            transition={{ duration: DURATION_MS.reveal / 1000, ease: "easeOut" }}
+          />
+        )}
 
         {/* Path strokes (faint guide lines) */}
         <use
@@ -139,17 +166,23 @@ export function OrbitVisual({ active }: Props) {
           label="Agent"
           sublabel="CDP MPC"
         />
-        <Node
-          cx={262}
-          cy={190}
-          r={62}
-          stroke="#19fb9b"
-          fill="rgba(25,251,155,0.06)"
-          glow
-          icon={<NodeIcon kind="vault" />}
-          label="Brain Drain"
-          sublabel="x402 + RAG"
-        />
+        <motion.g
+          style={{ originX: "262px", originY: "190px" }}
+          animate={pulsing && !reduced ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+          transition={{ duration: DURATION_MS.reveal / 1000, ease: "easeOut" }}
+        >
+          <Node
+            cx={262}
+            cy={190}
+            r={62}
+            stroke="#19fb9b"
+            fill="rgba(25,251,155,0.06)"
+            glow
+            icon={<NodeIcon kind="vault" />}
+            label="Brain Drain"
+            sublabel="x402 + RAG"
+          />
+        </motion.g>
         <Node
           cx={440}
           cy={190}

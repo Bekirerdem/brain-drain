@@ -25,25 +25,23 @@ export async function LiveActivity() {
       <div className="bg-aurora-canvas opacity-60" aria-hidden="true" />
       <div className="bg-grain-overlay" aria-hidden="true" />
 
-      <div className="relative pt-32 pb-32 lg:pt-44 lg:pb-44">
-        <div className="mx-auto max-w-[1280px] px-6 lg:px-10">
-          <SectionEyebrow network={network} />
+      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
+        <SectionEyebrow network={network} />
 
-          <h2 className="text-display mt-8 text-[clamp(36px,6vw,72px)] text-[var(--color-text)] max-w-3xl">
-            Protocol settlements,
-            <span className="block text-[var(--color-text-muted)]">in real time.</span>
-          </h2>
+        <h2 className="text-display mt-8 text-[clamp(36px,6vw,72px)] text-[var(--color-text)] max-w-3xl">
+          Protocol settlements,
+          <span className="block text-[var(--color-text-muted)]">in real time.</span>
+        </h2>
 
-          <p className="mt-6 max-w-2xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
-            Every paid query is an on-chain SPL transfer from the buyer agent's
-            wallet to a vault operator's payout address. The feed below merges
-            settlements across every public vault on the protocol, polling{" "}
-            <span className="text-mono-tight text-[var(--color-text)]">/api/payouts</span>{" "}
-            every 10 seconds — no mocks, no proxies, just on-chain truth.
-          </p>
-        </div>
+        <p className="mt-6 max-w-2xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
+          Every paid query is an on-chain SPL transfer from the buyer agent's
+          wallet to a vault operator's payout address. The feed below merges
+          settlements across every public vault on the protocol, polling{" "}
+          <span className="text-mono-tight text-[var(--color-text)]">/api/payouts</span>{" "}
+          every 10 seconds — no mocks, no proxies, just on-chain truth.
+        </p>
 
-        <div className="mt-12 lg:mt-14 px-4 sm:px-6 lg:px-12">
+        <div className="mt-12 lg:mt-14">
           <LiveActivityClient initial={initial} network={network} />
         </div>
       </div>

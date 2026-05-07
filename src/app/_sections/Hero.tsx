@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { SPRINGS } from "@/lib/motion/presets";
 import { OrbitVisual } from "../_components/OrbitVisual";
 
 /* ─────────────────────────────────────────────────────────
@@ -28,11 +29,11 @@ const TIMING = {
 
 const HEADLINE = {
   offsetY: 16,
-  spring: { type: "spring" as const, stiffness: 320, damping: 28 },
+  spring: SPRINGS.headline,
 };
 
 const FADE = {
-  spring: { type: "spring" as const, stiffness: 300, damping: 30 },
+  spring: SPRINGS.smooth,
 };
 
 const CARD_STAGGER_MS = 80;

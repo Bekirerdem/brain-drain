@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Header } from "./_components/Header";
 import { Footer } from "./_components/Footer";
+import { LiveEventsProvider } from "@/lib/live-events/context";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -50,9 +51,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <body className="min-h-screen flex flex-col bg-[var(--color-bg)] text-[var(--color-text)]">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <LiveEventsProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </LiveEventsProvider>
       </body>
     </html>
   );

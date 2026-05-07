@@ -1,6 +1,5 @@
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { PublicKey } from "@solana/web3.js";
-import { env } from "../env";
 import { atomicToUsdc, getUsdcMint } from "../solana/usdc";
 import {
   getParsedTransaction,
@@ -11,9 +10,12 @@ import type { PayoutEvent, PayoutQuery } from "./types";
 
 const RPC_THROTTLE_MS = 150;
 
-export async function getSellerPayouts(query: PayoutQuery): Promise<PayoutEvent[]> {
+export async function getSellerPayouts(
+  seller: string,
+  query: PayoutQuery,
+  vaultSlug: string | null = null,
+): Promise<PayoutEvent[]> {
   const mintAddress = getUsdcMint();
-  const seller = env.SELLER_SOLANA_ADDRESS;
   const sellerAta = getAssociatedTokenAddressSync(
     new PublicKey(mintAddress),
     new PublicKey(seller),
@@ -30,7 +32,7 @@ export async function getSellerPayouts(query: PayoutQuery): Promise<PayoutEvent[
     if (i > 0) await sleep(RPC_THROTTLE_MS);
     const tx = await getParsedTransaction(sig.signature);
     if (!tx || tx.meta?.err) continue;
-    const event = extractPayout(tx, sig.signature, seller, mintAddress);
+    const event = extractPayout(tx, sig.signature, seller, mintAddress, vaultSlug);
     if (event) events.push(event);
   }
   return events;
@@ -41,6 +43,7 @@ function extractPayout(
   signature: string,
   seller: string,
   mint: string,
+  vaultSlug: string | null,
 ): PayoutEvent | null {
   const pre = tx.meta?.preTokenBalances ?? [];
   const post = tx.meta?.postTokenBalances ?? [];
@@ -61,6 +64,8 @@ function extractPayout(
     blockTime: tx.blockTime ?? 0,
     slot: tx.slot,
     payer,
+    recipient: seller,
+    vaultSlug,
     amountAtomic: delta.toString(),
     amountUsdc: atomicToUsdc(delta),
     mint,

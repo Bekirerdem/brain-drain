@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getSellerPayouts, PayoutQuerySchema } from "@/lib/payouts";
+import { getNetworkPayouts, PayoutQuerySchema } from "@/lib/payouts";
 import { logAndSanitize, zodFieldError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const query = PayoutQuerySchema.parse(raw.data);
   try {
-    const payouts = await getSellerPayouts(query);
+    const payouts = await getNetworkPayouts(query);
     const last = payouts[payouts.length - 1];
     return NextResponse.json({
       count: payouts.length,

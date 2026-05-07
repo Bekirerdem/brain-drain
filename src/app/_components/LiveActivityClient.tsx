@@ -215,8 +215,9 @@ function ActivityFeed({
 }) {
   return (
     <div className="mt-10 rounded-[var(--radius-card)] border border-[var(--color-border)] overflow-hidden">
-      <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr] gap-4 px-5 lg:px-6 py-3 border-b border-[var(--color-border)] bg-[var(--color-bg-elevated)]">
+      <div className="grid grid-cols-[1.6fr_1.4fr_1.4fr_1fr_0.9fr] gap-4 px-5 lg:px-6 py-3 border-b border-[var(--color-border)] bg-[var(--color-bg-elevated)]">
         <span className="text-eyebrow">Signature</span>
+        <span className="text-eyebrow">Vault</span>
         <span className="text-eyebrow">Payer</span>
         <span className="text-eyebrow text-right">Amount</span>
         <span className="text-eyebrow text-right">Time</span>
@@ -252,7 +253,7 @@ function FeedRow({
     : "hover:bg-[var(--color-bg-card)]/40";
   return (
     <li
-      className={`grid grid-cols-[2fr_1.5fr_1fr_1fr] gap-4 px-5 lg:px-6 py-3.5 transition-colors duration-300 ${flashClass}`}
+      className={`grid grid-cols-[1.6fr_1.4fr_1.4fr_1fr_0.9fr] gap-4 px-5 lg:px-6 py-3.5 transition-colors duration-300 ${flashClass}`}
     >
       <a
         href={solscanTxUrl(row.signature, network)}
@@ -262,6 +263,23 @@ function FeedRow({
       >
         {truncateSignature(row.signature)}
       </a>
+      {row.vaultSlug ? (
+        <a
+          href={`/vaults/${row.vaultSlug}`}
+          className="text-mono-tight text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors truncate"
+        >
+          {row.vaultSlug}
+        </a>
+      ) : (
+        <a
+          href={solscanAddressUrl(row.recipient, network)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-mono-tight text-[13px] text-[var(--color-text-faint)] hover:text-[var(--color-text-muted)] transition-colors truncate"
+        >
+          {truncateAddress(row.recipient)}
+        </a>
+      )}
       {row.payer === "unknown" ? (
         <span className="text-mono-tight text-[13px] text-[var(--color-text-faint)] truncate">
           unknown

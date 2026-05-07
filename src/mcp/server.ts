@@ -56,7 +56,7 @@ export function createMcpServer(): McpServer {
     },
     async ({ limit, before }) => {
       const query = PayoutQuerySchema.parse({ limit, before });
-      const payouts = await getSellerPayouts(query);
+      const payouts = await getSellerPayouts(env.SELLER_SOLANA_ADDRESS, query, null);
       return {
         content: [{ type: "text", text: JSON.stringify(payouts, null, 2) }],
         structuredContent: { count: payouts.length, payouts },

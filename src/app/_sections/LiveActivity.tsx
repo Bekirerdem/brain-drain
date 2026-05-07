@@ -1,5 +1,5 @@
 import { env } from "@/lib/env";
-import { getSellerPayouts, type PayoutEvent } from "@/lib/payouts";
+import { getNetworkPayouts, type PayoutEvent } from "@/lib/payouts";
 import type { SolanaCluster } from "@/lib/format";
 import { LiveActivityClient } from "../_components/LiveActivityClient";
 
@@ -7,7 +7,7 @@ const INITIAL_LIMIT = 20;
 
 async function loadInitial(): Promise<PayoutEvent[]> {
   try {
-    return await getSellerPayouts({ limit: INITIAL_LIMIT });
+    return await getNetworkPayouts({ limit: INITIAL_LIMIT });
   } catch {
     return [];
   }
@@ -37,9 +37,10 @@ export async function LiveActivity() {
 
         <p className="mt-6 max-w-2xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
           Every paid query is an on-chain SPL transfer from the buyer agent's
-          wallet to the vault operator's payout address. The feed below polls{" "}
+          wallet to a vault operator's payout address. The feed below merges
+          settlements across every public vault on the protocol, polling{" "}
           <span className="text-mono-tight text-[var(--color-text)]">/api/payouts</span>{" "}
-          every 10 seconds — no mocks, no proxies, just Helius parsed-tx truth.
+          every 10 seconds — no mocks, no proxies, just on-chain truth.
         </p>
 
         <div className="mt-12 lg:mt-14">

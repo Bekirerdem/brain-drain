@@ -9,6 +9,8 @@ export const PayoutEventSchema = z.object({
   blockTime: z.number().int(),
   slot: z.number().int(),
   payer: SolanaAddressSchema.or(z.literal("unknown")),
+  recipient: SolanaAddressSchema,
+  vaultSlug: z.string().nullable(),
   amountAtomic: z.string(),
   amountUsdc: z.number(),
   mint: SolanaAddressSchema,

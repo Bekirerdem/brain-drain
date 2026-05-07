@@ -5,6 +5,7 @@ import { ForAgents } from "./_sections/ForAgents";
 import { WhyBrainDrain } from "./_sections/WhyBrainDrain";
 import { SystemMap } from "./_sections/SystemMap";
 import { LiveActivity } from "./_sections/LiveActivity";
+import { EndingRecap } from "./_sections/EndingRecap";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -19,6 +20,7 @@ export default function Home() {
       <WhyBrainDrain />
       <SystemMap />
       <LiveActivity />
+      <EndingRecap />
     </>
   );
 }

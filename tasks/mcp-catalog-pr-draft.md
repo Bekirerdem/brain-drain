@@ -8,6 +8,11 @@ List **Brain Drain MCP** in solana.new's official ecosystem catalog
 (`cli/data/solana-mcps.json`) so SendAI + Superteam users discover it as a
 ready-to-install Solana MCP. Distribution before Day 9 hackathon submission.
 
+> **State (2026-05-09):** MCP is now multi-vault (v0.2.0). `brain_drain_query`
+> and `brain_drain_payouts` (single-seller) have been removed. Replacement
+> tools are `brain_drain_list_vaults`, `brain_drain_query_vault`, and
+> `brain_drain_vault_payouts`. PR copy below reflects this.
+
 ## Pre-flight checklist (do these BEFORE PR)
 
 - [ ] Make `Bekirerdem/brain-drain` repo **public** on GitHub (currently
@@ -29,11 +34,11 @@ Add this object at the **end** of the `mcps` array (before the closing `]`):
   "id": "brain-drain-mcp",
   "name": "Brain Drain MCP",
   "repo": "Bekirerdem/brain-drain",
-  "description": "Pay-per-query knowledge MCP — agents settle USDC on Solana for top-k snippets from expert markdown vaults",
+  "description": "Multi-vault knowledge MCP — agents discover public vaults, then settle USDC per-vault on Solana for top-k snippets. Each vault is its own seller; Brain Drain never custodies USDC.",
   "category": "data",
   "setup_command": "claude mcp add brain-drain --transport http https://brain-drain-iota.vercel.app/api/mcp",
   "url": "https://github.com/Bekirerdem/brain-drain",
-  "keywords": ["x402", "rag", "knowledge", "marketplace", "vault", "obsidian", "embeddings", "gemini", "agent", "micropayment", "data"]
+  "keywords": ["x402", "rag", "knowledge", "marketplace", "multi-vault", "vault", "obsidian", "embeddings", "gemini", "agent", "micropayment", "data"]
 }
 ```
 
@@ -83,28 +88,36 @@ Name: Brain Drain MCP
 Repo: https://github.com/Bekirerdem/brain-drain
 Maintainer: @Bekirerdem
 Category: data
-Secrets required: none for read-only `brain_drain_payouts`; `X-Payment` header required for the paid `brain_drain_query` tool
+Secrets required: none for read-only tools; the buyer's CDP wallet credentials are used by `brain_drain_query_vault` to sign the per-vault USDC transfer
 
 ## What it is
 
-Brain Drain is an x402 + RAG reference implementation on Solana. AI agents
-discover the tool via MCP, see price metadata in the tool's `_meta` field,
-sign a USDC SPL transfer through their CDP wallet, and receive top-k
-snippets from a curated markdown vault — all in one round trip with
-on-chain confirmation in ~400ms.
+Brain Drain is an x402 + RAG marketplace on Solana. AI agents discover
+public vaults via MCP, see each vault's price + payout address in the
+catalog, sign a USDC SPL transfer to the chosen vault's wallet through
+their CDP wallet, and receive top-k snippets from that vault's index —
+all in one round trip with on-chain confirmation in ~400ms.
 
-Built for Colosseum Frontier 2026. v0 is single-seller (the maintainer's
-vault) by design — proves the protocol works end-to-end. v1 opens
-per-seller upload + payouts.
+Each vault is its own seller. Brain Drain never custodies USDC; the
+buyer transfers directly to `vault.payout_address` per call.
+
+Built for Colosseum Frontier 2026. v0.2.0 is multi-vault: anyone can
+mount a vault, set their own price, and start earning.
 
 ## Tools registered
 
-- `brain_drain_query` — paid (0.25 USDC). Returns top-k cosine similarity
-  results over Gemini 3072d embeddings. Price metadata exposed in `_meta`
-  so agents confirm cost before calling.
-- `brain_drain_payouts` — free, read-only. Seller's USDC inbox via Helius
-  parsed-tx. Signature, payer, amount, time. Useful for live earnings
-  dashboards.
+- `brain_drain_list_vaults` — free, read-only. Returns the public vault
+  catalog (slug, name, domains, price_usdc, payout_address, chunks_count,
+  total_earned_usdc, total_settlements). Optional `domain` filter, `limit`,
+  and `sort` (`earnings` | `recent`). Call this first to discover vaults.
+- `brain_drain_query_vault` — paid (price varies per vault). Resolves
+  the vault by `slug`, settles USDC to its payout address via the buyer's
+  CDP wallet, then returns top-k cosine similarity results over Gemini
+  3072d embeddings.
+- `brain_drain_vault_payouts` — free, read-only. Lists recent USDC
+  settlements to a specific vault's payout address (signature, payer,
+  amount, time). Useful for verifying earnings track record + freshness
+  before paying.
 
 ## Live
 

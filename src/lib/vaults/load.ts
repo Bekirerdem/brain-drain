@@ -50,9 +50,10 @@ export async function listPublicVaults(params: ListVaultsParams = {}): Promise<V
 
 /**
  * Best-effort denormalized counter update. Race-prone under concurrent
- * settlements (read-then-write), but on-chain `/api/payouts` is the
- * source of truth — these fields exist for fast directory sort, not
- * accounting. Wire from the x402 onPaid hook once available.
+ * settlements (read-then-write), but on-chain settlement history is the
+ * source of truth — these fields exist for fast directory sort and agent
+ * signal (kazanan, dolu, taze), not accounting. x402-next has no onPaid
+ * hook; the route handler calls this fire-and-forget on success.
  */
 export async function incrementVaultEarnings(
   slug: string,
@@ -70,6 +71,7 @@ export async function incrementVaultEarnings(
     .update({
       total_earned_usdc: Number(current.data.total_earned_usdc) + amountUsdc,
       total_settlements: current.data.total_settlements + 1,
+      last_settlement_at: new Date().toISOString(),
     })
     .eq("slug", slug);
 }

@@ -12,7 +12,11 @@ import { withX402, type Network } from "x402-next";
 import type { Address } from "viem";
 import { embedText, retrieveTopK } from "@/lib/rag";
 import { env } from "@/lib/env";
-import { getPublicVaultBySlug, getVaultIndex } from "@/lib/vaults";
+import {
+  getPublicVaultBySlug,
+  getVaultIndex,
+  incrementVaultEarnings,
+} from "@/lib/vaults";
 import { logAndSanitize, zodFieldError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
@@ -75,6 +79,18 @@ export async function POST(
     const results = retrieveTopK(queryVector, index.entries, {
       k: k ?? TOP_K_DEFAULT,
     });
+
+    // Fire-and-forget — x402-next settles payment after this handler
+    // returns 2xx, so reaching this point implies the buyer paid. Failure
+    // here only desyncs the denormalized counter, not the on-chain truth.
+    void incrementVaultEarnings(vault.slug, Number(vault.price_usdc)).catch(
+      (err) => {
+        console.error(
+          `[query] failed to update vault stats for ${vault.slug}:`,
+          err,
+        );
+      },
+    );
 
     return NextResponse.json({
       vault: {

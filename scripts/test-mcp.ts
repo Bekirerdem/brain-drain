@@ -29,9 +29,19 @@ async function call(body: JsonRpcRequest): Promise<unknown> {
   return res.json();
 }
 
+function usage(): never {
+  console.error(
+    'Usage:\n' +
+      '  bun scripts/test-mcp.ts list\n' +
+      '  bun scripts/test-mcp.ts list_vaults [--domain <tag>]\n' +
+      '  bun scripts/test-mcp.ts vault_payouts <slug> [limit]\n' +
+      '  bun scripts/test-mcp.ts query_vault <slug> "<question>"',
+  );
+  process.exit(1);
+}
+
 async function main(): Promise<void> {
   const tool = process.argv[2];
-  const question = process.argv[3] ?? "What did Bekir learn about Solana CPI patterns";
 
   if (tool === "list") {
     const result = await call({ jsonrpc: "2.0", id: 1, method: "tools/list" });
@@ -39,30 +49,56 @@ async function main(): Promise<void> {
     return;
   }
 
-  if (tool === "payouts") {
+  if (tool === "list_vaults") {
+    const domainFlag = process.argv.indexOf("--domain");
+    const domain = domainFlag >= 0 ? process.argv[domainFlag + 1] : undefined;
+    const args: Record<string, unknown> = {};
+    if (domain) args.domain = domain;
     const result = await call({
       jsonrpc: "2.0",
       id: 2,
       method: "tools/call",
-      params: { name: "brain_drain_payouts", arguments: { limit: 5 } },
+      params: { name: "brain_drain_list_vaults", arguments: args },
     });
     console.log(JSON.stringify(result, null, 2));
     return;
   }
 
-  if (tool === "query") {
+  if (tool === "vault_payouts") {
+    const slug = process.argv[3];
+    if (!slug) usage();
+    const limit = process.argv[4] ? Number(process.argv[4]) : 5;
     const result = await call({
       jsonrpc: "2.0",
       id: 3,
       method: "tools/call",
-      params: { name: "brain_drain_query", arguments: { question } },
+      params: {
+        name: "brain_drain_vault_payouts",
+        arguments: { slug, limit },
+      },
     });
     console.log(JSON.stringify(result, null, 2));
     return;
   }
 
-  console.error('Usage: bun scripts/test-mcp.ts <list|payouts|query> ["question"]');
-  process.exit(1);
+  if (tool === "query_vault") {
+    const slug = process.argv[3];
+    const question = process.argv[4];
+    if (!slug || !question) usage();
+    const result = await call({
+      jsonrpc: "2.0",
+      id: 4,
+      method: "tools/call",
+      params: {
+        name: "brain_drain_query_vault",
+        arguments: { slug, question },
+      },
+    });
+    console.log(JSON.stringify(result, null, 2));
+    return;
+  }
+
+  usage();
 }
 
 main().catch((error) => {

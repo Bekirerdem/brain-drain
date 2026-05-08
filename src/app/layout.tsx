@@ -20,23 +20,23 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://brain-drain-iota.vercel.app"),
   title: {
-    default: "Brain Drain — x402 + RAG reference implementation on Solana",
+    default: "Brain Drain — AI agents pay experts they cite",
     template: "%s · Brain Drain",
   },
   description:
-    "The protocol AI agents pay vault operators through. x402 + RAG reference implementation on Solana — 0.25 USDC per cited snippet, ~400ms confirmation. v1 opens upload to anyone running a maintained vault.",
+    "AI agents finally pay the experts they cite. Mount your decision log on Solana — ~400ms on-chain settlement, USDC straight to your wallet.",
   openGraph: {
-    title: "Brain Drain — x402 + RAG on Solana",
+    title: "Brain Drain — AI agents pay experts they cite",
     description:
-      "The protocol AI agents pay vault operators through. 0.25 USDC per snippet, ~400ms on-chain confirmation.",
+      "Mount your decision log on Solana. Get USDC every time an AI cites your work — ~400ms on-chain settlement, straight to your wallet.",
     type: "website",
     siteName: "Brain Drain",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Brain Drain — x402 + RAG on Solana",
+    title: "Brain Drain — AI agents pay experts they cite",
     description:
-      "The protocol AI agents pay vault operators through. 0.25 USDC per snippet, ~400ms on-chain confirmation.",
+      "Mount your decision log on Solana. Get USDC every time an AI cites your work — ~400ms on-chain settlement, straight to your wallet.",
     creator: "@l3ekirerdem",
   },
   robots: { index: true, follow: true },

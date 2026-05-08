@@ -90,10 +90,10 @@ export function Hero() {
               }}
               transition={HEADLINE.spring}
             >
-              The protocol AI agents pay{" "}
+              AI agents finally pay{" "}
               <br className="hidden md:block" aria-hidden="true" />
               <em className="not-italic font-normal text-[var(--color-accent)]">
-                vault operators through.
+                the experts they cite.
               </em>
             </motion.h1>
 
@@ -103,12 +103,10 @@ export function Hero() {
               animate={{ opacity: stage >= 3 ? 1 : 0, y: stage >= 3 ? 0 : 12 }}
               transition={FADE.spring}
             >
-              Mount any markdown corpus, get an{" "}
-              <span className="text-mono-tight text-[var(--color-text)]">x402 + RAG</span>{" "}
-              endpoint, earn USDC every time an AI agent cites it. Per-vault
-              routing on Solana — Brain Drain itself never custodies the
-              funds, settlements land in the operator&apos;s wallet in{" "}
-              <span className="text-mono-tight text-[var(--color-text)]">~400ms</span>.
+              Mount your decision log on Solana. Get USDC every time an AI
+              cites your work —{" "}
+              <span className="text-mono-tight text-[var(--color-text)]">~400ms</span>{" "}
+              on-chain settlement, straight to your wallet.
             </motion.p>
 
             <motion.div

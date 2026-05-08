@@ -48,9 +48,9 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-5 max-w-sm text-[13px] leading-[1.6] text-[var(--color-text-muted)]">
-              An x402 + RAG marketplace on Solana. Anyone can mount a markdown
-              vault, set a price, and earn USDC every time an AI agent cites
-              it. Brain Drain itself never custodies the funds.
+              AI agents finally pay the experts they cite. Mount a decision
+              log on Solana, set your price, earn USDC straight to your
+              wallet — Brain Drain never custodies the funds.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-2">
               <span className="text-mono-tight text-[10px] uppercase tracking-[0.18em] text-[var(--color-text-faint)]">

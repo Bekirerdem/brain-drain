@@ -35,7 +35,8 @@ function usage(): never {
       '  bun scripts/test-mcp.ts list\n' +
       '  bun scripts/test-mcp.ts list_vaults [--domain <tag>]\n' +
       '  bun scripts/test-mcp.ts vault_payouts <slug> [limit]\n' +
-      '  bun scripts/test-mcp.ts query_vault <slug> "<question>"',
+      '  bun scripts/test-mcp.ts query_vault <slug> "<question>"\n' +
+      '  bun scripts/test-mcp.ts submit_feedback <slug> <signature> <true|false>',
   );
   process.exit(1);
 }
@@ -92,6 +93,25 @@ async function main(): Promise<void> {
       params: {
         name: "brain_drain_query_vault",
         arguments: { slug, question },
+      },
+    });
+    console.log(JSON.stringify(result, null, 2));
+    return;
+  }
+
+  if (tool === "submit_feedback") {
+    const slug = process.argv[3];
+    const signature = process.argv[4];
+    const usefulArg = process.argv[5];
+    if (!slug || !signature || !usefulArg) usage();
+    const useful = usefulArg === "true";
+    const result = await call({
+      jsonrpc: "2.0",
+      id: 5,
+      method: "tools/call",
+      params: {
+        name: "brain_drain_submit_feedback",
+        arguments: { slug, signature, useful },
       },
     });
     console.log(JSON.stringify(result, null, 2));

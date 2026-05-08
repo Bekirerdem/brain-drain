@@ -22,7 +22,7 @@ const NODES = [
   { id: "agent", x: 60, y: 90, w: 140, h: 70, label: "Agent", tech: "MCP client", color: "violet" },
   { id: "cdp", x: 250, y: 90, w: 160, h: 70, label: "CDP Wallet", tech: "MPC threshold", color: "violet" },
   { id: "mcp", x: 460, y: 90, w: 170, h: 70, label: "MCP server", tech: "/api/mcp · HTTP", color: "accent" },
-  { id: "x402", x: 680, y: 90, w: 180, h: 70, label: "x402 gateway", tech: "/api/query · Zod", color: "accent" },
+  { id: "x402", x: 680, y: 90, w: 180, h: 70, label: "x402 gateway", tech: "/api/v/[slug]/query · Zod", color: "accent" },
   { id: "solana", x: 910, y: 90, w: 180, h: 70, label: "Solana RPC", tech: "Helius · raw JSON-RPC", color: "amber" },
   { id: "phantom", x: 910, y: 430, w: 180, h: 70, label: "Phantom Cash", tech: "USDC payout", color: "amber" },
   { id: "rag", x: 460, y: 290, w: 170, h: 70, label: "RAG index", tech: "Gemini · 3072d cosine", color: "accent" },

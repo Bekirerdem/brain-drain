@@ -10,7 +10,7 @@ const STEPS = [
     body: (
       <>
         The MCP server exposes{" "}
-        <code className="text-mono-tight text-[var(--color-text)]">brain_drain_query</code>{" "}
+        <code className="text-mono-tight text-[var(--color-text)]">brain_drain_query_vault</code>{" "}
         with price metadata in <code className="text-mono-tight text-[var(--color-text)]">_meta</code>.
         Agents confirm cost before they call — no surprise charges, no mid-flight 402s.
       </>
@@ -20,10 +20,10 @@ const STEPS = [
       label: "MCP tools/list response",
       lines: [
         "{",
-        '  "name": "brain_drain_query",',
-        '  "title": "Query Bekir\'s operator vault",',
+        '  "name": "brain_drain_query_vault",',
+        '  "title": "Query a Brain Drain vault (paid)",',
         '  "_meta": {',
-        '    "priceUsdc": __PRICE__,',
+        '    "priceVaries": true,',
         '    "currency": "USDC",',
         '    "network": "solana-devnet"',
         "  }",
@@ -73,7 +73,7 @@ const STEPS = [
       lang: "log",
       label: "Buyer terminal — settlement",
       lines: [
-        "[buyer] target: /api/query",
+        "[buyer] target: /api/v/bekir-erdem/query",
         "[buyer] probe: 402 · price=__PRICE__ USDC",
         "[buyer] signer: TransactionModifyingSigner (MPC)",
         "[buyer] X-Payment header attached",

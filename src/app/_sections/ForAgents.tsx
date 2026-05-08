@@ -40,12 +40,12 @@ const CODE_TABS = [
     label: "Raw HTTP",
     language: "bash · paid query",
     code: `# 1. Probe — receive 402 with payment requirements
-curl -i -X POST https://brain-drain-iota.vercel.app/api/query \\
+curl -i -X POST https://brain-drain-iota.vercel.app/api/v/bekir-erdem/query \\
   -H "content-type: application/json" \\
   -d '{ "query": "Why x402 on Solana, not Base?" }'
 
 # 2. Sign USDC transfer with your CDP wallet, then retry:
-curl -X POST https://brain-drain-iota.vercel.app/api/query \\
+curl -X POST https://brain-drain-iota.vercel.app/api/v/bekir-erdem/query \\
   -H "content-type: application/json" \\
   -H "X-Payment: <base64-signed-tx>" \\
   -d '{ "query": "Why x402 on Solana, not Base?" }'`,
@@ -59,7 +59,7 @@ import { cdpAccountToSvmSigner } from "@/lib/cdp";
 
 const buyer = await getOrCreateBuyerAccount();
 const client = createX402Client({
-  endpoint: "https://brain-drain-iota.vercel.app/api/query",
+  endpoint: "https://brain-drain-iota.vercel.app/api/v/bekir-erdem/query",
   signer: cdpAccountToSvmSigner(buyer),
   maxPriceUsdc: 0.25,
 });

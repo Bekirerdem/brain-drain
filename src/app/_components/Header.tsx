@@ -43,12 +43,6 @@ export function Header() {
           <span className="hidden sm:inline text-mono-tight text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-faint)] group-hover:text-[var(--color-text-muted)] transition-colors">
             x402 + RAG protocol
           </span>
-          <span
-            className="hidden lg:inline-flex items-center px-2 h-5 rounded-[var(--radius-pill)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 text-mono-tight text-[9px] uppercase tracking-[0.18em] text-[var(--color-accent)] ml-1"
-            aria-label="MIT licensed open source"
-          >
-            MIT
-          </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">

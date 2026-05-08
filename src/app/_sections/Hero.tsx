@@ -44,7 +44,7 @@ const HERO_STATS = [
   { label: "Confirmation", value: "~400ms", caption: "Solana devnet" },
   { label: "Starting at", value: "0.05 USDC", caption: "operator-set price" },
   { label: "Per-vault routing", value: "x402", caption: "no platform custody" },
-  { label: "Agent surface", value: "MCP", caption: "drop-in for any runtime" },
+  { label: "Open source", value: "MIT", caption: "audit-ready" },
 ] as const;
 
 export function Hero() {
@@ -70,8 +70,8 @@ export function Hero() {
       <div className="bg-aurora-canvas" aria-hidden="true" />
       <div className="bg-grain-overlay" aria-hidden="true" />
 
-      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-16 pb-24 lg:pt-28 lg:pb-36">
-        <div className="grid lg:grid-cols-[2fr_1fr] gap-10 lg:gap-14 items-center">
+      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-16 pb-24 lg:pt-24 lg:pb-32">
+        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-12 lg:gap-16 items-center">
           <div>
             <motion.div
               initial={{ opacity: 0, y: -8 }}
@@ -82,7 +82,7 @@ export function Hero() {
             </motion.div>
 
             <motion.h1
-              className="text-display-xl mt-10 text-[var(--color-text)] max-w-[18ch]"
+              className="text-display mt-8 text-[clamp(40px,7vw,96px)] text-[var(--color-text)]"
               initial={{ opacity: 0, y: HEADLINE.offsetY }}
               animate={{
                 opacity: stage >= 2 ? 1 : 0,
@@ -90,15 +90,15 @@ export function Hero() {
               }}
               transition={HEADLINE.spring}
             >
-              AI agents pay you{" "}
+              The protocol AI agents pay{" "}
+              <br className="hidden md:block" aria-hidden="true" />
               <em className="not-italic font-normal text-[var(--color-accent)]">
-                when they cite
-              </em>{" "}
-              your knowledge.
+                vault operators through.
+              </em>
             </motion.h1>
 
             <motion.p
-              className="text-lead mt-8 max-w-xl"
+              className="mt-7 max-w-xl text-[var(--color-text-muted)] text-lg lg:text-xl leading-[1.55]"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: stage >= 3 ? 1 : 0, y: stage >= 3 ? 0 : 12 }}
               transition={FADE.spring}
@@ -147,43 +147,40 @@ export function Hero() {
           </div>
 
           <motion.div
-            className="relative order-last hidden lg:block scale-90 origin-top-right"
-            initial={{ opacity: 0, scale: 0.86 }}
+            className="relative order-first lg:order-last"
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{
-              opacity: stage >= 5 ? 0.92 : 0,
-              scale: stage >= 5 ? 0.9 : 0.86,
+              opacity: stage >= 5 ? 1 : 0,
+              scale: stage >= 5 ? 1 : 0.96,
             }}
             transition={{ type: "spring", stiffness: 220, damping: 30 }}
-            aria-hidden="true"
           >
             <OrbitVisual active={stage >= 5} />
           </motion.div>
         </div>
 
-        <div className="mt-24 lg:mt-32 flex flex-wrap items-baseline gap-x-10 gap-y-5 border-t border-[var(--color-border)] pt-7">
+        <div className="mt-20 lg:mt-28 grid grid-cols-2 sm:grid-cols-4 gap-px bg-[var(--color-border)] border-y border-[var(--color-border)]">
           {HERO_STATS.map((stat, i) => (
             <motion.div
               key={stat.label}
-              className="flex items-baseline gap-2"
-              initial={{ opacity: 0, y: 8 }}
+              className="bg-[var(--color-bg)] px-5 py-6 lg:px-6 lg:py-7"
+              initial={{ opacity: 0, y: 12 }}
               animate={{
                 opacity: stage >= 6 ? 1 : 0,
-                y: stage >= 6 ? 0 : 8,
+                y: stage >= 6 ? 0 : 12,
               }}
               transition={{
                 ...FADE.spring,
                 delay: stage >= 6 ? (i * CARD_STAGGER_MS) / 1000 : 0,
               }}
             >
-              <span className="text-mono-tight text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-faint)]">
-                {stat.label}
-              </span>
-              <span className="text-mono-tight text-[14px] text-[var(--color-text)] tabular-nums">
+              <p className="text-eyebrow">{stat.label}</p>
+              <p className="text-display text-[clamp(22px,3vw,32px)] mt-3 text-[var(--color-text)] tabular-nums">
                 {stat.value}
-              </span>
-              <span className="hidden md:inline text-mono-tight text-[10px] uppercase tracking-[0.18em] text-[var(--color-text-dim)]">
-                · {stat.caption}
-              </span>
+              </p>
+              <p className="text-mono-tight text-[11px] mt-1 text-[var(--color-text-faint)]">
+                {stat.caption}
+              </p>
             </motion.div>
           ))}
         </div>

@@ -60,8 +60,10 @@ export function SystemMap() {
       <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
         <p className="text-eyebrow">System map</p>
         <h2 className="text-display mt-6 text-[clamp(36px,5.5vw,68px)] text-[var(--color-text)] max-w-3xl">
-          Every component,
-          <span className="block text-[var(--color-text-muted)]">one viewport.</span>
+          Every component,{" "}
+          <em className="not-italic font-normal text-[var(--color-accent)]">
+            one viewport.
+          </em>
         </h2>
         <p className="mt-6 max-w-2xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
           The full Brain Drain runtime: build-time vault indexing on the bottom

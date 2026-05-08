@@ -8,11 +8,10 @@ const SOCIAL_LINKS = [
 
 const ECOSYSTEM_LINKS = [
   { label: "Solana", href: "https://solana.com" },
-  { label: "x402", href: "https://x402.org" },
-  { label: "MCP", href: "https://modelcontextprotocol.io" },
   { label: "Coinbase CDP", href: "https://portal.cdp.coinbase.com" },
-  { label: "Helius", href: "https://helius.dev" },
   { label: "Phantom", href: "https://phantom.app" },
+  { label: "Helius", href: "https://helius.dev" },
+  { label: "x402", href: "https://x402.org" },
 ] as const;
 
 export function Footer() {

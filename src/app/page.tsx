@@ -1,11 +1,10 @@
 import { Hero } from "./_sections/Hero";
-import { HowItWorks } from "./_sections/HowItWorks";
+import { BuiltOn } from "./_sections/BuiltOn";
+import { LiveActivity } from "./_sections/LiveActivity";
 import { ForExperts } from "./_sections/ForExperts";
 import { ForAgents } from "./_sections/ForAgents";
-import { WhyBrainDrain } from "./_sections/WhyBrainDrain";
+import { HowItWorks } from "./_sections/HowItWorks";
 import { SystemMap } from "./_sections/SystemMap";
-import { LiveActivity } from "./_sections/LiveActivity";
-import { EndingRecap } from "./_sections/EndingRecap";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -14,13 +13,12 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <HowItWorks />
+      <BuiltOn />
+      <LiveActivity />
       <ForExperts />
       <ForAgents />
-      <WhyBrainDrain />
+      <HowItWorks />
       <SystemMap />
-      <LiveActivity />
-      <EndingRecap />
     </>
   );
 }

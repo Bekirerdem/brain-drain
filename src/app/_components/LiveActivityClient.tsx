@@ -364,7 +364,7 @@ function FeedRow({
 }) {
   const flashClass = isNew
     ? "bg-[rgba(25,251,155,0.08)] animate-[fade-up_400ms_var(--ease-out-expo)]"
-    : "hover:bg-[var(--color-bg-card)]/70 hover:border-l-2 hover:border-l-[var(--color-accent)]/40";
+    : "hover:bg-[var(--color-bg-card)]/40";
   return (
     <motion.li
       initial={{ opacity: 0, y: OFFSETS.rise }}
@@ -415,12 +415,12 @@ function FeedRow({
           href={solscanAddressUrl(row.payer, network)}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-mono-tight text-[13px] text-[var(--color-violet-dim)] hover:text-[var(--color-violet)] transition-colors truncate"
+          className="text-mono-tight text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors truncate"
         >
           {truncateAddress(row.payer)}
         </a>
       )}
-      <span className="text-mono-tight text-[13px] text-[var(--color-amber)] text-right tabular-nums">
+      <span className="text-mono-tight text-[13px] text-[var(--color-text)] text-right tabular-nums">
         +${formatUsdc(row.amountUsdc)}
       </span>
       <span className="text-mono-tight text-[12px] text-[var(--color-text-faint)] text-right tabular-nums">

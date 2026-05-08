@@ -43,6 +43,7 @@ const FILES_MAX = 200;
 const FILE_CONTENT_MAX_BYTES = 200_000;
 const TOTAL_BUNDLE_MAX_BYTES = 5_000_000;
 const DOMAINS_MAX = 12;
+const PREVIEW_CONTENT_MAX = 600;
 
 export const VaultCreateInputSchema = z.object({
   slug: z
@@ -139,6 +140,17 @@ export async function createVault(
     return { ok: false, reason: `storage upload failed: ${upload.error.message}` };
   }
 
+  // Surface the first chunk as a free teaser so agents can preview the
+  // vault's voice + density via list_vaults before paying. Trimmed to keep
+  // catalog responses small.
+  const previewChunks = chunks.slice(0, 1).map((c) => ({
+    id: c.id,
+    heading: c.heading,
+    content: c.content.length > PREVIEW_CONTENT_MAX
+      ? `${c.content.slice(0, PREVIEW_CONTENT_MAX)}…`
+      : c.content,
+  }));
+
   const insert: VaultInsert = {
     slug: input.slug,
     name: input.name,
@@ -150,6 +162,7 @@ export async function createVault(
     notes_count: docs.length,
     domains: input.domains,
     public: input.public,
+    preview_chunks: previewChunks,
   };
 
   const inserted = await admin

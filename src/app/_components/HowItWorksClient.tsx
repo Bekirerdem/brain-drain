@@ -86,9 +86,9 @@ const STEPS = [
     title: "Snippets stream back",
     body: (
       <>
-        Cosine similarity over a 152-chunk indexed vault returns the top-3 most relevant
-        passages with citations. Payment proof returned alongside — fully auditable. Single
-        round trip, ~3.4 s end-to-end.
+        Cosine similarity over the vault&apos;s embedded chunks returns the top-K most
+        relevant passages with citations. Payment proof returned alongside — fully
+        auditable. Single round trip, ~3.4 s end-to-end.
       </>
     ),
     artifact: {

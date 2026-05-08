@@ -102,9 +102,13 @@ export function ForAgents() {
             </ol>
 
             <p className="mt-12 text-mono-tight text-[12px] text-[var(--color-text-faint)] max-w-md leading-[1.6]">
-              Devnet endpoint live now. Mainnet cuts over Day 7. Idempotency on
-              repeated signatures, replay protection in KV — same chunk, same
-              price, no double-charge.
+              Devnet endpoint live now. Mainnet path is one env flag —{" "}
+              <code className="text-mono-tight text-[var(--color-text-muted)]">
+                SOLANA_NETWORK=mainnet-beta
+              </code>
+              {" "}— protocol logic is identical. Idempotency on repeated
+              signatures, replay protection — same chunk, same price, no
+              double-charge.
             </p>
           </div>
 

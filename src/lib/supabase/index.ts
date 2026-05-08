@@ -1,2 +1,9 @@
 export * from "./client";
-export type { Database, Vault, VaultInsert, VaultUpdate, Json } from "./types";
+export type {
+  Database,
+  Json,
+  PreviewChunk,
+  Vault,
+  VaultInsert,
+  VaultUpdate,
+} from "./types";

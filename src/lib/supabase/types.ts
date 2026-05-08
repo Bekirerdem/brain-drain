@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 // Auto-generated via Supabase MCP `generate_typescript_types`.
 // Regenerate when the schema changes.
 
@@ -62,10 +61,12 @@ export type Database = {
           description: string | null;
           domains: string[];
           id: string;
+          last_settlement_at: string | null;
           name: string;
           notes_count: number;
           owner_wallet: string;
           payout_address: string;
+          preview_chunks: Json;
           price_usdc: number;
           public: boolean;
           slug: string;
@@ -79,10 +80,12 @@ export type Database = {
           description?: string | null;
           domains?: string[];
           id?: string;
+          last_settlement_at?: string | null;
           name: string;
           notes_count?: number;
           owner_wallet: string;
           payout_address: string;
+          preview_chunks?: Json;
           price_usdc?: number;
           public?: boolean;
           slug: string;
@@ -96,10 +99,12 @@ export type Database = {
           description?: string | null;
           domains?: string[];
           id?: string;
+          last_settlement_at?: string | null;
           name?: string;
           notes_count?: number;
           owner_wallet?: string;
           payout_address?: string;
+          preview_chunks?: Json;
           price_usdc?: number;
           public?: boolean;
           slug?: string;
@@ -129,3 +134,9 @@ export type Database = {
 export type Vault = Database["public"]["Tables"]["vaults"]["Row"];
 export type VaultInsert = Database["public"]["Tables"]["vaults"]["Insert"];
 export type VaultUpdate = Database["public"]["Tables"]["vaults"]["Update"];
+
+export interface PreviewChunk {
+  readonly id: string;
+  readonly heading: string | null;
+  readonly content: string;
+}

@@ -54,6 +54,38 @@ export type Database = {
         };
         Relationships: [];
       };
+      vault_feedback: {
+        Row: {
+          created_at: string;
+          id: string;
+          signature: string;
+          useful: boolean;
+          vault_slug: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          signature: string;
+          useful: boolean;
+          vault_slug: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          signature?: string;
+          useful?: boolean;
+          vault_slug?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "vault_feedback_vault_slug_fkey";
+            columns: ["vault_slug"];
+            isOneToOne: false;
+            referencedRelation: "vaults";
+            referencedColumns: ["slug"];
+          },
+        ];
+      };
       vaults: {
         Row: {
           chunks_count: number;
@@ -73,6 +105,8 @@ export type Database = {
           total_earned_usdc: number;
           total_settlements: number;
           updated_at: string;
+          useful_count: number;
+          useful_rate: number | null;
         };
         Insert: {
           chunks_count?: number;
@@ -92,6 +126,8 @@ export type Database = {
           total_earned_usdc?: number;
           total_settlements?: number;
           updated_at?: string;
+          useful_count?: number;
+          useful_rate?: number | null;
         };
         Update: {
           chunks_count?: number;
@@ -111,6 +147,8 @@ export type Database = {
           total_earned_usdc?: number;
           total_settlements?: number;
           updated_at?: string;
+          useful_count?: number;
+          useful_rate?: number | null;
         };
         Relationships: [];
       };
@@ -134,6 +172,11 @@ export type Database = {
 export type Vault = Database["public"]["Tables"]["vaults"]["Row"];
 export type VaultInsert = Database["public"]["Tables"]["vaults"]["Insert"];
 export type VaultUpdate = Database["public"]["Tables"]["vaults"]["Update"];
+
+export type VaultFeedback =
+  Database["public"]["Tables"]["vault_feedback"]["Row"];
+export type VaultFeedbackInsert =
+  Database["public"]["Tables"]["vault_feedback"]["Insert"];
 
 export interface PreviewChunk {
   readonly id: string;

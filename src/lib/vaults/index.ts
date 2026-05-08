@@ -18,3 +18,10 @@ export {
   invalidateVaultIndex,
   clearVaultIndexCache,
 } from "./index-loader";
+
+export {
+  submitVaultFeedback,
+  FeedbackBodySchema,
+  type FeedbackBody,
+  type FeedbackResult,
+} from "./feedback";

@@ -4,6 +4,8 @@ export type {
   Json,
   PreviewChunk,
   Vault,
+  VaultFeedback,
+  VaultFeedbackInsert,
   VaultInsert,
   VaultUpdate,
 } from "./types";

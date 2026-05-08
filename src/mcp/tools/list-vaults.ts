@@ -34,6 +34,8 @@ interface VaultSummary {
   readonly total_settlements: number;
   readonly last_settlement_at: string | null;
   readonly dormant: boolean;
+  readonly useful_count: number;
+  readonly useful_rate: number | null;
   readonly created_at: string;
   readonly preview_chunks: readonly PreviewChunk[];
 }
@@ -44,7 +46,7 @@ export function registerListVaults(server: McpServer): void {
     {
       title: "List public Brain Drain vaults",
       description:
-        'Return the public catalog of Brain Drain vaults. Each vault is a paid knowledge source with its own price (USDC) and Solana payout address. Free and read-only — call this to discover vaults before paying brain_drain_query_vault. Each entry includes earnings stats (total_earned_usdc, total_settlements, last_settlement_at, dormant) and free preview_chunks so agents can sample voice + density before paying. Optional `domain` filters by domain tag (e.g. "Solana"); `sort` accepts "earnings" (default) or "recent".',
+        'Return the public catalog of Brain Drain vaults. Each vault is a paid knowledge source with its own price (USDC) and Solana payout address. Free and read-only — call this to discover vaults before paying brain_drain_query_vault. Each entry includes earnings stats (total_earned_usdc, total_settlements, last_settlement_at, dormant), satisfaction signals (useful_count, useful_rate), and free preview_chunks so agents can sample voice + density before paying. Optional `domain` filters by domain tag (e.g. "Solana"); `sort` accepts "earnings" (default) or "recent".',
       inputSchema: InputSchema,
       annotations: { readOnlyHint: true, destructiveHint: false },
     },
@@ -80,6 +82,8 @@ function toVaultSummary(v: Vault): VaultSummary {
     total_settlements: v.total_settlements,
     last_settlement_at: v.last_settlement_at,
     dormant: isDormant(v.last_settlement_at),
+    useful_count: v.useful_count,
+    useful_rate: v.useful_rate === null ? null : Number(v.useful_rate),
     created_at: v.created_at,
     preview_chunks: parsePreviewChunks(v.preview_chunks),
   };

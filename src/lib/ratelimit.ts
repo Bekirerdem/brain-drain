@@ -33,6 +33,7 @@ export const Limits = {
   authChallenge: { capacity: 30, intervalMs: 60 * 1000 } satisfies Limit,
   authVerify: { capacity: 10, intervalMs: 60 * 1000 } satisfies Limit,
   waitlist: { capacity: 5, intervalMs: 10 * 60 * 1000 } satisfies Limit,
+  vaultFeedback: { capacity: 30, intervalMs: 10 * 60 * 1000 } satisfies Limit,
 } as const;
 
 export async function rateLimit(

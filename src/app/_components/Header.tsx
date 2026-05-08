@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useMotionValueEvent, useScroll } from "framer-motion";
@@ -8,7 +9,6 @@ const NAV_ITEMS = [
   { label: "Vaults", href: "/vaults" },
   { label: "Live", href: "/#live" },
   { label: "Protocol", href: "/#how-it-works" },
-  { label: "Dashboard", href: "/dashboard" },
 ] as const;
 
 const GITHUB_URL = "https://github.com/Bekirerdem/brain-drain";
@@ -34,14 +34,19 @@ export function Header() {
       <div className="mx-auto max-w-[1280px] px-6 lg:px-10 h-16 flex items-center justify-between">
         <Link
           href="/"
-          className="flex items-baseline gap-2 group select-none"
+          className="flex items-center gap-2.5 group select-none"
           aria-label="Brain Drain home"
         >
+          <Image
+            src="/BD-logo.png"
+            alt=""
+            width={2816}
+            height={1536}
+            priority
+            className="h-7 w-auto"
+          />
           <span className="text-display text-[16px] tracking-[-0.02em]">
             Brain Drain<span className="text-[var(--color-accent)]">.</span>
-          </span>
-          <span className="hidden sm:inline text-mono-tight text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-faint)] group-hover:text-[var(--color-text-muted)] transition-colors">
-            x402 + RAG protocol
           </span>
         </Link>
 

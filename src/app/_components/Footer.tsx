@@ -1,9 +1,17 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const SOCIAL_LINKS = [
   { label: "GitHub", href: "https://github.com/Bekirerdem/brain-drain" },
-  { label: "X", href: "https://x.com/l3ekirerdem" },
+  { label: "X / Twitter", href: "https://x.com/l3ekirerdem" },
   { label: "Telegram", href: "https://t.me/Bekirerdem" },
+] as const;
+
+const PROTOCOL_LINKS = [
+  { label: "Browse vaults", href: "/vaults" },
+  { label: "Mount your vault", href: "/vaults/new" },
+  { label: "Live settlements", href: "/#live" },
+  { label: "How it works", href: "/#how-it-works" },
 ] as const;
 
 const ECOSYSTEM_LINKS = [
@@ -12,28 +20,80 @@ const ECOSYSTEM_LINKS = [
   { label: "Phantom", href: "https://phantom.app" },
   { label: "Helius", href: "https://helius.dev" },
   { label: "x402", href: "https://x402.org" },
+  { label: "MCP", href: "https://modelcontextprotocol.io" },
 ] as const;
+
+const BOUNTIES = [
+  "x402 Integration",
+  "Multi-Protocol Agent Hub",
+  "CDP Embedded Wallets",
+];
 
 export function Footer() {
   return (
     <footer className="relative border-t border-[var(--color-border)] mt-32">
-      <div className="mx-auto max-w-[1280px] px-6 lg:px-10 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-6">
-          <div className="col-span-2">
-            <Link href="/" className="inline-flex items-baseline gap-2">
+      <div className="mx-auto max-w-[1280px] px-6 lg:px-10 py-16 lg:py-20">
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-10 md:gap-8">
+          <div className="col-span-2 md:col-span-5">
+            <Link href="/" className="inline-flex items-center gap-2.5">
+              <Image
+                src="/BD-logo.png"
+                alt=""
+                width={2816}
+                height={1536}
+                className="h-8 w-auto"
+              />
               <span className="text-display text-[18px] tracking-[-0.02em]">
                 Brain Drain<span className="text-[var(--color-accent)]">.</span>
               </span>
             </Link>
-            <p className="mt-4 max-w-sm text-[13px] leading-[1.6] text-[var(--color-text-muted)]">
-              An x402 + RAG reference implementation. The vault running here is mine — v1 opens per-seller upload + payouts to everyone.
+            <p className="mt-5 max-w-sm text-[13px] leading-[1.6] text-[var(--color-text-muted)]">
+              An x402 + RAG marketplace on Solana. Anyone can mount a markdown
+              vault, set a price, and earn USDC every time an AI agent cites
+              it. Brain Drain itself never custodies the funds.
             </p>
-            <p className="mt-6 text-mono-tight text-[11px] uppercase tracking-[0.18em] text-[var(--color-text-faint)]">
-              Made by Bekir Erdem · Bursa · in 11 days
-            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-2">
+              <span className="text-mono-tight text-[10px] uppercase tracking-[0.18em] text-[var(--color-text-faint)]">
+                Built for
+              </span>
+              <a
+                href="https://www.colosseum.com/frontier"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-mono-tight text-[11px] uppercase tracking-[0.16em] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+              >
+                Colosseum Frontier 2026
+              </a>
+            </div>
+            <ul className="mt-3 flex flex-wrap gap-1.5">
+              {BOUNTIES.map((b) => (
+                <li
+                  key={b}
+                  className="inline-flex items-center px-2 h-5 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg)]/60 text-mono-tight text-[10px] text-[var(--color-text-muted)]"
+                >
+                  {b}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div>
+          <div className="md:col-span-3">
+            <p className="text-eyebrow">Protocol</p>
+            <ul className="mt-4 space-y-2.5">
+              {PROTOCOL_LINKS.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="md:col-span-2">
             <p className="text-eyebrow">Ecosystem</p>
             <ul className="mt-4 space-y-2.5">
               {ECOSYSTEM_LINKS.map((item) => (
@@ -51,7 +111,7 @@ export function Footer() {
             </ul>
           </div>
 
-          <div>
+          <div className="md:col-span-2">
             <p className="text-eyebrow">Connect</p>
             <ul className="mt-4 space-y-2.5">
               {SOCIAL_LINKS.map((item) => (
@@ -66,14 +126,6 @@ export function Footer() {
                   </a>
                 </li>
               ))}
-              <li>
-                <Link
-                  href="/dashboard"
-                  className="text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-                >
-                  Dashboard
-                </Link>
-              </li>
             </ul>
           </div>
         </div>
@@ -82,18 +134,19 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-4">
           <p className="text-mono-tight text-[11px] text-[var(--color-text-faint)]">
-            © 2026 Brain Drain. All rights reserved.
-          </p>
-          <p className="text-mono-tight text-[11px] text-[var(--color-text-faint)]">
-            Built for{" "}
+            © 2026 Brain Drain · Made by{" "}
             <a
-              href="https://colosseum.com/frontier"
+              href="https://x.com/l3ekirerdem"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
             >
-              Colosseum Frontier 2026
+              Bekir Erdem
             </a>
+            {" "}in Bursa · MIT licensed
+          </p>
+          <p className="text-mono-tight text-[11px] text-[var(--color-text-faint)]">
+            Live on Solana devnet · mainnet path is one env flag
           </p>
         </div>
       </div>

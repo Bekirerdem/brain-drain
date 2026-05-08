@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import type { PayoutEvent } from "@/lib/payouts";
@@ -163,9 +164,9 @@ export function LiveActivityClient({ initial, network }: Props) {
         className="mt-6 text-mono-tight text-[11px] text-[var(--color-text-faint)]"
       >
         Showing latest {visible.length} of {payouts.length} settlements ·{" "}
-        <a href="/dashboard" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
-          full history in dashboard ↗
-        </a>
+        <Link href="/vaults" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
+          browse all vaults ↗
+        </Link>
       </motion.p>
     </div>
   );

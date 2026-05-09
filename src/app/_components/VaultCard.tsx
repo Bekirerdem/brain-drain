@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import type { Vault } from "@/lib/supabase";
+import { VAULT_CATEGORY_LABELS, type Vault } from "@/lib/supabase";
 import { formatUsdc, truncateAddress } from "@/lib/format";
 import { OFFSETS, SPRINGS, STAGGER } from "@/lib/motion/presets";
 
@@ -33,7 +33,10 @@ export function VaultCard({ vault, index = 0 }: Props) {
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="text-display text-[clamp(18px,2vw,22px)] text-[var(--color-text)] truncate">
+            <span className="inline-flex items-center h-5 px-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg)]/60 text-mono-tight text-[9px] uppercase tracking-[0.18em] text-[var(--color-text-muted)]">
+              {VAULT_CATEGORY_LABELS[vault.category]}
+            </span>
+            <h3 className="mt-2 text-display text-[clamp(18px,2vw,22px)] text-[var(--color-text)] truncate">
               {vault.name}
             </h3>
             <p className="mt-1 text-mono-tight text-[11px] text-[var(--color-text-faint)]">

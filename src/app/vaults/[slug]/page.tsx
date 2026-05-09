@@ -9,6 +9,7 @@ import {
   truncateAddress,
   type SolanaCluster,
 } from "@/lib/format";
+import { VAULT_CATEGORY_LABELS } from "@/lib/supabase";
 import { VaultProbeWidget } from "../../_components/VaultProbeWidget";
 
 export const dynamic = "force-dynamic";
@@ -69,7 +70,15 @@ export default async function VaultDetailPage({ params }: PageProps) {
 
         <div className="mt-6 grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-start">
           <div>
-            <p className="text-eyebrow">Operator vault</p>
+            <div className="flex items-center gap-2.5">
+              <p className="text-eyebrow">Operator vault</p>
+              <span
+                className="inline-flex items-center h-5 px-2.5 rounded-[var(--radius-pill)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 text-mono-tight text-[10px] uppercase tracking-[0.16em] text-[var(--color-accent)]"
+                title="Vault category"
+              >
+                {VAULT_CATEGORY_LABELS[vault.category]}
+              </span>
+            </div>
             <h1 className="mt-6 text-display text-[clamp(36px,6vw,72px)] text-[var(--color-text)] leading-[0.95]">
               {vault.name}
             </h1>

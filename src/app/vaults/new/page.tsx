@@ -6,6 +6,11 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { PhantomConnect } from "../../_components/PhantomConnect";
 import { truncateAddress } from "@/lib/format";
+import {
+  VAULT_CATEGORIES,
+  VAULT_CATEGORY_LABELS,
+  type VaultCategory,
+} from "@/lib/supabase";
 
 const MAX_FILES = 100;
 const MAX_FILE_BYTES = 200_000;
@@ -21,6 +26,7 @@ interface FormState {
   name: string;
   description: string;
   slug: string;
+  category: VaultCategory;
   payoutAddress: string;
   priceUsdc: string;
   domains: string;
@@ -31,6 +37,7 @@ const INITIAL: FormState = {
   name: "",
   description: "",
   slug: "",
+  category: "engineering",
   payoutAddress: "",
   priceUsdc: "0.25",
   domains: "",
@@ -143,6 +150,7 @@ export default function NewVaultPage() {
       slug: form.slug,
       name: form.name,
       description: form.description || undefined,
+      category: form.category,
       payoutAddress: form.payoutAddress.trim() || wallet,
       priceUsdc: Number(form.priceUsdc) || 0.25,
       domains: form.domains
@@ -302,6 +310,32 @@ export default function NewVaultPage() {
             />
 
             <Field
+              label="Category"
+              required
+              hint="top-level discovery axis — agents filter by this in /vaults and via MCP list_vaults"
+              error={errFor(state, "category")}
+              input={
+                <select
+                  required
+                  value={form.category}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      category: e.target.value as VaultCategory,
+                    }))
+                  }
+                  className="form-input cursor-pointer"
+                >
+                  {VAULT_CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {VAULT_CATEGORY_LABELS[c]}
+                    </option>
+                  ))}
+                </select>
+              }
+            />
+
+            <Field
               label="Payout address"
               required
               hint={
@@ -356,13 +390,13 @@ export default function NewVaultPage() {
             />
 
             <Field
-              label="Domains"
-              hint="comma-separated tags — e.g. solana, x402, mcp"
+              label="Tags"
+              hint="comma-separated, lowercase, hyphen-separated — max 8 (e.g. solana, news-trading, risk-model). Server normalizes automatically."
               input={
                 <input
                   type="text"
                   maxLength={300}
-                  placeholder="solana, rag, x402"
+                  placeholder="solana, news-trading, risk-model"
                   value={form.domains}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, domains: e.target.value }))

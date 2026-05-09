@@ -14,7 +14,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createVault } from "@/lib/vaults";
-import { getSupabaseAnon } from "@/lib/supabase";
+import { getSupabaseAnon, VAULT_CATEGORIES } from "@/lib/supabase";
 import { getSessionWallet } from "@/lib/auth";
 import { Limits, rateLimit } from "@/lib/ratelimit";
 import { logAndSanitize, zodFieldError } from "@/lib/errors";
@@ -29,6 +29,7 @@ const ListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(LIST_LIMIT_MAX).default(LIST_LIMIT_DEFAULT),
   sort: z.enum(["earnings", "recent"]).default("earnings"),
   owner: z.string().min(32).max(44).optional(),
+  category: z.enum(VAULT_CATEGORIES).optional(),
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -90,6 +91,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     limit: sp.get("limit") ?? undefined,
     sort: sp.get("sort") ?? undefined,
     owner: sp.get("owner") ?? undefined,
+    category: sp.get("category") ?? undefined,
   });
   if (!parsed.success) {
     const safe = zodFieldError(parsed.error, "vaults.list.query");
@@ -98,7 +100,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       { status: safe.status },
     );
   }
-  const { limit, sort, owner } = parsed.data;
+  const { limit, sort, owner, category } = parsed.data;
 
   // Owner-scoped reads require a matching session — protects private vaults
   // from being enumerated by anyone who knows another wallet's address.
@@ -118,7 +120,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   let query = supabase
     .from("vaults")
     .select(
-      "id, slug, name, description, owner_wallet, payout_address, price_usdc, chunks_count, notes_count, total_earned_usdc, total_settlements, domains, created_at",
+      "id, slug, name, description, category, owner_wallet, payout_address, price_usdc, chunks_count, notes_count, total_earned_usdc, total_settlements, domains, created_at",
     )
     .order(orderColumn, { ascending: false })
     .limit(limit);
@@ -130,6 +132,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Anonymous: public-only, RLS-bound.
     query = query.eq("public", true);
   }
+
+  if (category) query = query.eq("category", category);
 
   const res = await query;
   if (res.error) {

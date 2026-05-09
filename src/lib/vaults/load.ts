@@ -6,7 +6,11 @@
  * when service-role is available.
  */
 
-import { getSupabaseAdmin, type Vault } from "@/lib/supabase";
+import {
+  getSupabaseAdmin,
+  type Vault,
+  type VaultCategory,
+} from "@/lib/supabase";
 
 export async function getVaultBySlug(slug: string): Promise<Vault | null> {
   const admin = getSupabaseAdmin();
@@ -30,18 +34,21 @@ export async function getPublicVaultBySlug(slug: string): Promise<Vault | null> 
 export interface ListVaultsParams {
   readonly limit?: number;
   readonly sort?: "earnings" | "recent";
+  readonly category?: VaultCategory;
 }
 
 export async function listPublicVaults(params: ListVaultsParams = {}): Promise<Vault[]> {
-  const { limit = 24, sort = "earnings" } = params;
+  const { limit = 24, sort = "earnings", category } = params;
   const admin = getSupabaseAdmin();
   const orderColumn = sort === "earnings" ? "total_earned_usdc" : "created_at";
-  const res = await admin
+  let query = admin
     .from("vaults")
     .select("*")
     .eq("public", true)
     .order(orderColumn, { ascending: false })
     .limit(limit);
+  if (category) query = query.eq("category", category);
+  const res = await query;
   if (res.error) {
     throw new Error(`vaults list failed: ${res.error.message}`);
   }

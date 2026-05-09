@@ -26,11 +26,13 @@ import {
 import { env } from "@/lib/env";
 import {
   getSupabaseAdmin,
+  VAULT_CATEGORIES,
   VAULT_INDEX_BUCKET,
   vaultIndexPath,
   type Vault,
   type VaultInsert,
 } from "@/lib/supabase";
+import { normalizeTags } from "./tags";
 
 const SLUG_PATTERN = /^[a-z0-9-]+$/;
 const WALLET_LENGTH_MIN = 32;
@@ -53,6 +55,9 @@ export const VaultCreateInputSchema = z.object({
     .regex(SLUG_PATTERN, "slug must be kebab-case (a-z, 0-9, hyphen)"),
   name: z.string().min(1).max(NAME_MAX),
   description: z.string().max(DESCRIPTION_MAX).optional(),
+  category: z.enum(VAULT_CATEGORIES, {
+    message: "category must be one of the predefined vault categories",
+  }),
   ownerWallet: z.string().min(WALLET_LENGTH_MIN).max(WALLET_LENGTH_MAX),
   payoutAddress: z.string().min(WALLET_LENGTH_MIN).max(WALLET_LENGTH_MAX),
   priceUsdc: z.number().min(PRICE_MIN).max(PRICE_MAX).default(0.25),
@@ -151,16 +156,19 @@ export async function createVault(
       : c.content,
   }));
 
+  const { tags: normalizedDomains } = normalizeTags(input.domains);
+
   const insert: VaultInsert = {
     slug: input.slug,
     name: input.name,
     description: input.description ?? null,
+    category: input.category,
     owner_wallet: input.ownerWallet,
     payout_address: input.payoutAddress,
     price_usdc: input.priceUsdc,
     chunks_count: chunks.length,
     notes_count: docs.length,
-    domains: input.domains,
+    domains: normalizedDomains,
     public: input.public,
     preview_chunks: previewChunks,
   };

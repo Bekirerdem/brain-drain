@@ -2,13 +2,19 @@
  * brain_drain_list_vaults — public catalog discovery (free, read-only).
  *
  * Agents call this before paying brain_drain_query_vault so they can pick
- * a vault by domain, price, freshness, and earnings track record.
+ * a vault by category, domain tag, price, freshness, and earnings track
+ * record.
  */
 
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { listPublicVaults } from "@/lib/vaults";
-import type { PreviewChunk, Vault } from "@/lib/supabase";
+import {
+  VAULT_CATEGORIES,
+  type PreviewChunk,
+  type Vault,
+  type VaultCategory,
+} from "@/lib/supabase";
 
 const LIST_LIMIT_MAX = 50;
 const LIST_LIMIT_DEFAULT = 24;
@@ -16,6 +22,7 @@ const LIST_LIMIT_DEFAULT = 24;
 const DORMANT_THRESHOLD_MS = 30 * 24 * 60 * 60 * 1000;
 
 const InputSchema = {
+  category: z.enum(VAULT_CATEGORIES).optional(),
   domain: z.string().min(1).max(64).optional(),
   limit: z.number().int().min(1).max(LIST_LIMIT_MAX).optional(),
   sort: z.enum(["earnings", "recent"]).optional(),
@@ -25,6 +32,7 @@ interface VaultSummary {
   readonly slug: string;
   readonly name: string;
   readonly description: string | null;
+  readonly category: VaultCategory;
   readonly domains: readonly string[];
   readonly price_usdc: number;
   readonly payout_address: string;
@@ -46,14 +54,15 @@ export function registerListVaults(server: McpServer): void {
     {
       title: "List public Brain Drain vaults",
       description:
-        'Return the public catalog of Brain Drain vaults. Each vault is a paid knowledge source with its own price (USDC) and Solana payout address. Free and read-only — call this to discover vaults before paying brain_drain_query_vault. Each entry includes earnings stats (total_earned_usdc, total_settlements, last_settlement_at, dormant), satisfaction signals (useful_count, useful_rate), and free preview_chunks so agents can sample voice + density before paying. Optional `domain` filters by domain tag (e.g. "Solana"); `sort` accepts "earnings" (default) or "recent".',
+        'Return the public catalog of Brain Drain vaults. Each vault is a paid knowledge source with its own price (USDC) and Solana payout address. Free and read-only — call this to discover vaults before paying brain_drain_query_vault. Each entry includes a top-level `category` (engineering | trading | defi | research | productivity | design | legal | other), free-form `domains` tags, earnings stats (total_earned_usdc, total_settlements, last_settlement_at, dormant), satisfaction signals (useful_count, useful_rate), and free preview_chunks so agents can sample voice + density before paying. Filter by `category` (predefined enum) for top-level discovery, by `domain` (free-form tag like "solana") for fine-grained search; combine both. `sort` accepts "earnings" (default) or "recent".',
       inputSchema: InputSchema,
       annotations: { readOnlyHint: true, destructiveHint: false },
     },
-    async ({ domain, limit, sort }) => {
+    async ({ category, domain, limit, sort }) => {
       const vaults = await listPublicVaults({
         limit: limit ?? LIST_LIMIT_DEFAULT,
         sort: sort ?? "earnings",
+        category,
       });
       const filtered = domain
         ? vaults.filter((v) => v.domains.includes(domain))
@@ -73,6 +82,7 @@ function toVaultSummary(v: Vault): VaultSummary {
     slug: v.slug,
     name: v.name,
     description: v.description,
+    category: v.category,
     domains: v.domains,
     price_usdc: Number(v.price_usdc),
     payout_address: v.payout_address,

@@ -436,10 +436,15 @@ export default function NewVaultPage() {
           line-height: 1.55;
         }
         input[type="file"].form-input {
-          padding: 6px 6px 6px 0;
-          line-height: 30px;
+          display: flex;
+          align-items: center;
+          padding: 0 16px 0 6px;
           font-size: 12px;
           color: var(--color-text-muted);
+          cursor: pointer;
+        }
+        input[type="file"].form-input::file-selector-button {
+          margin-right: 14px;
         }
         .form-input::placeholder {
           color: var(--color-text-faint);

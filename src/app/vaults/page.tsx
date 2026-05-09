@@ -56,7 +56,7 @@ export default async function VaultsPage() {
         {vaults.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="mt-12 lg:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="mt-12 lg:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
             {vaults.map((v, i) => (
               <VaultCard key={v.id} vault={v} index={i} />
             ))}

@@ -18,6 +18,7 @@ export function VaultCard({ vault, index = 0 }: Props) {
 
   return (
     <motion.div
+      className="h-full"
       initial={{ opacity: 0, y: OFFSETS.rise }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
@@ -28,7 +29,7 @@ export function VaultCard({ vault, index = 0 }: Props) {
     >
       <Link
         href={`/vaults/${vault.slug}`}
-        className="group flex flex-col rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/50 backdrop-blur-sm p-6 lg:p-7 hover:border-[var(--color-border-strong)] hover:bg-[var(--color-bg-elevated)] transition-colors"
+        className="group flex h-full flex-col rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/50 backdrop-blur-sm p-6 lg:p-7 hover:border-[var(--color-border-strong)] hover:bg-[var(--color-bg-elevated)] transition-colors"
       >
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -68,7 +69,7 @@ export function VaultCard({ vault, index = 0 }: Props) {
           </ul>
         )}
 
-        <div className="mt-auto pt-5 grid grid-cols-3 gap-2 border-t border-[var(--color-border)] mt-5">
+        <div className="mt-auto pt-5 grid grid-cols-3 gap-2 border-t border-[var(--color-border)]">
           <Stat label="Earned" value={`$${formatUsdc(vault.total_earned_usdc)}`} />
           <Stat label="Settles" value={vault.total_settlements.toString()} />
           <Stat label="Chunks" value={vault.chunks_count.toString()} />

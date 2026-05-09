@@ -4,6 +4,10 @@ import type { PayoutEvent, PayoutQuery } from "./types";
 
 const VAULT_SCAN_LIMIT = 24;
 const PER_VAULT_SIGNATURE_LIMIT = 10;
+// Filter out ATA-initialisation dusts (≤ 0.005 USDC) so the public feed
+// shows only real paid queries. The minimum operator price is 0.05 USDC,
+// so any settlement below 0.005 is non-economic seeding traffic.
+const DUST_THRESHOLD_USDC = 0.005;
 
 export async function getNetworkPayouts(query: PayoutQuery): Promise<PayoutEvent[]> {
   const vaults = await listPublicVaults({ limit: VAULT_SCAN_LIMIT, sort: "recent" });
@@ -31,6 +35,7 @@ export async function getNetworkPayouts(query: PayoutQuery): Promise<PayoutEvent
   const deduped: PayoutEvent[] = [];
   for (const event of results.flat()) {
     if (seen.has(event.signature)) continue;
+    if (event.amountUsdc < DUST_THRESHOLD_USDC) continue;
     seen.add(event.signature);
     deduped.push(event);
   }

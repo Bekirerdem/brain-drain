@@ -84,15 +84,20 @@ export function ForAgents() {
           <div>
             <p className="text-eyebrow">For agents</p>
             <h2 className="mt-6 text-display text-[clamp(36px,5.5vw,68px)] text-[var(--color-text)]">
-              Drop the URL.{" "}
+              Stop hallucinating.{" "}
               <em className="not-italic font-normal text-[var(--color-accent)]">
-                Pay per insight.
-              </em>
+                Cite real experts.
+              </em>{" "}
+              Pay only what you use.
             </h2>
             <p className="mt-6 max-w-lg text-[var(--color-text-muted)] text-lg leading-[1.55]">
               No SDK lock-in. No key handling. The MCP server speaks the same
               wire format as every other modern agent tool — your runtime drops
-              it in like any other capability.
+              it in like any other capability. Works with{" "}
+              <span className="text-mono-tight text-[var(--color-text)]">
+                Claude Desktop, Cursor, Cline, Continue.dev, OpenCode
+              </span>
+              , and any custom MCP client.
             </p>
 
             <ol className="mt-12 space-y-7">

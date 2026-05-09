@@ -40,8 +40,8 @@ export function VaultCard({ vault, index = 0 }: Props) {
               /vaults/{vault.slug}
             </p>
           </div>
-          <span className="shrink-0 inline-flex items-center px-2.5 h-6 rounded-[var(--radius-pill)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 text-mono-tight text-[10px] uppercase tracking-[0.16em] text-[var(--color-accent)] tabular-nums">
-            ${formatUsdc(vault.price_usdc)}
+          <span className="shrink-0 inline-flex items-center px-2.5 h-6 rounded-[var(--radius-pill)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 text-mono-tight text-[10px] uppercase tracking-[0.16em] text-[var(--color-accent)] tabular-nums whitespace-nowrap">
+            ${formatUsdc(vault.price_usdc)} / query
           </span>
         </div>
 

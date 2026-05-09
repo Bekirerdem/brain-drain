@@ -44,7 +44,7 @@ const HERO_STATS = [
   { label: "Confirmation", value: "~400ms", caption: "Solana devnet" },
   { label: "Starting at", value: "0.05 USDC", caption: "operator-set price" },
   { label: "Per-vault routing", value: "x402", caption: "no platform custody" },
-  { label: "Open source", value: "MIT", caption: "audit-ready" },
+  { label: "Wallet auth", value: "MPC-signed", caption: "no key handling" },
 ] as const;
 
 export function Hero() {

@@ -88,6 +88,7 @@ export type Database = {
       };
       vaults: {
         Row: {
+          category: Database["public"]["Enums"]["vault_category"];
           chunks_count: number;
           created_at: string;
           description: string | null;
@@ -109,6 +110,7 @@ export type Database = {
           useful_rate: number | null;
         };
         Insert: {
+          category?: Database["public"]["Enums"]["vault_category"];
           chunks_count?: number;
           created_at?: string;
           description?: string | null;
@@ -130,6 +132,7 @@ export type Database = {
           useful_rate?: number | null;
         };
         Update: {
+          category?: Database["public"]["Enums"]["vault_category"];
           chunks_count?: number;
           created_at?: string;
           description?: string | null;
@@ -164,7 +167,17 @@ export type Database = {
         }[];
       };
     };
-    Enums: { [_ in never]: never };
+    Enums: {
+      vault_category:
+        | "engineering"
+        | "trading"
+        | "defi"
+        | "research"
+        | "productivity"
+        | "design"
+        | "legal"
+        | "other";
+    };
     CompositeTypes: { [_ in never]: never };
   };
 };
@@ -177,6 +190,32 @@ export type VaultFeedback =
   Database["public"]["Tables"]["vault_feedback"]["Row"];
 export type VaultFeedbackInsert =
   Database["public"]["Tables"]["vault_feedback"]["Insert"];
+
+export type VaultCategory = Database["public"]["Enums"]["vault_category"];
+
+/** Ordered for UI dropdowns + filter chips. `other` last. */
+export const VAULT_CATEGORIES = [
+  "engineering",
+  "trading",
+  "defi",
+  "research",
+  "productivity",
+  "design",
+  "legal",
+  "other",
+] as const satisfies readonly VaultCategory[];
+
+/** Display labels for UI (Title Case). */
+export const VAULT_CATEGORY_LABELS: Record<VaultCategory, string> = {
+  engineering: "Engineering",
+  trading: "Trading",
+  defi: "DeFi",
+  research: "Research",
+  productivity: "Productivity",
+  design: "Design",
+  legal: "Legal",
+  other: "Other",
+};
 
 export interface PreviewChunk {
   readonly id: string;

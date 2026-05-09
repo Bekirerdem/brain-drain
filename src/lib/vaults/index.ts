@@ -25,3 +25,10 @@ export {
   type FeedbackBody,
   type FeedbackResult,
 } from "./feedback";
+
+export {
+  normalizeTag,
+  normalizeTags,
+  TagLimits,
+  type NormalizeResult,
+} from "./tags";

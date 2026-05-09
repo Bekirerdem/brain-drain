@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { VAULT_CATEGORY_LABELS, type Vault } from "@/lib/supabase";
+// Import from /types directly — the supabase barrel re-exports the
+// admin/anon client modules which top-level import the server-only env
+// loader. Pulling that into a "use client" component bundles the env
+// schema into the browser and crashes at boot ("Invalid environment").
+import { VAULT_CATEGORY_LABELS, type Vault } from "@/lib/supabase/types";
 import { formatUsdc, truncateAddress } from "@/lib/format";
 import { OFFSETS, SPRINGS, STAGGER } from "@/lib/motion/presets";
 

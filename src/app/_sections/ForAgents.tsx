@@ -17,7 +17,7 @@ const STEPS = [
   {
     n: "03",
     title: "One round trip, snippet returned",
-    body: "402 quote → CDP signs → Helius confirms → top-3 snippets stream back with citations and tx hash. Auditable, idempotent, ~3.4s end-to-end.",
+    body: "402 quote → CDP signs → Helius confirms → top-K snippets stream back with citations and tx hash. Auditable, idempotent, ~3.4s end-to-end.",
   },
 ] as const;
 

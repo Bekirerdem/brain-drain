@@ -51,8 +51,8 @@ export function Problem() {
           Free RAG is noisy and unowned — nobody&apos;s on the hook to keep
           it accurate. Paid APIs lock you behind keys, terms, and an
           intermediary that takes a cut. Experts who actually know things
-          have no clean way to monetize their corpus, and agents have no
-          clean way to discover and pay them.
+          have no clean way to get paid for their decision logs, and agents
+          have no clean way to discover and pay them.
         </p>
 
         <ul className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--color-border)] border-y border-[var(--color-border)]">

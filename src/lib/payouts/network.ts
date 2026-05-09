@@ -9,9 +9,18 @@ export async function getNetworkPayouts(query: PayoutQuery): Promise<PayoutEvent
   const vaults = await listPublicVaults({ limit: VAULT_SCAN_LIMIT, sort: "recent" });
   if (vaults.length === 0) return [];
 
+  // Iterate oldest vault first. When two vaults share a payout_address
+  // (Bekir's test wallet, devnet seeding) the same on-chain transfer
+  // surfaces under each slug. Set-dedup keeps the FIRST occurrence, so
+  // ascending creation order means the original recipient vault wins
+  // the attribution rather than whichever vault was registered last.
+  const ordered = [...vaults].sort(
+    (a, b) => Date.parse(a.created_at) - Date.parse(b.created_at),
+  );
+
   const perVaultLimit = Math.min(query.limit, PER_VAULT_SIGNATURE_LIMIT);
   const results = await Promise.all(
-    vaults.map((v) =>
+    ordered.map((v) =>
       getSellerPayouts(v.payout_address, { limit: perVaultLimit }, v.slug).catch(
         () => [] as PayoutEvent[],
       ),

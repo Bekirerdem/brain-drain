@@ -10,9 +10,7 @@ import {
 } from "framer-motion";
 import { useEffect } from "react";
 
-const MOUNT_DURATION = 0.9;
 const UPDATE_DURATION = 0.4;
-const MOUNT_EASE = [0.16, 1, 0.3, 1] as const;
 const UPDATE_EASE = [0.33, 1, 0.68, 1] as const;
 const BUMP_DURATION = 0.32;
 const BUMP_SCALE = 1.04;
@@ -49,7 +47,10 @@ export function AnimatedNumber({
   bumpOn,
 }: Props) {
   const reduced = useReducedMotion();
-  const motionValue = useMotionValue(reduced ? value : 0);
+  // Initialize at the real value so the SSR HTML and the first paint
+  // both show the correct number — never $0.00 while hydration catches
+  // up. Updates after mount still animate via the useEffect below.
+  const motionValue = useMotionValue(value);
   const display = useTransform(
     motionValue,
     (latest) => `${prefix}${format(latest)}${suffix}`,
@@ -61,11 +62,11 @@ export function AnimatedNumber({
       motionValue.set(value);
       return;
     }
-    const isMount = motionValue.get() === 0 && value > 0;
+    if (motionValue.get() === value) return;
     const ctrls = animate(motionValue, value, {
-      duration: isMount ? MOUNT_DURATION : UPDATE_DURATION,
-      ease: isMount ? MOUNT_EASE : UPDATE_EASE,
-      delay: isMount ? delay : 0,
+      duration: UPDATE_DURATION,
+      ease: UPDATE_EASE,
+      delay,
     });
     return () => ctrls.stop();
     // eslint-disable-next-line react-hooks/exhaustive-deps

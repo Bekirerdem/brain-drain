@@ -25,9 +25,9 @@ const NODES = [
   { id: "x402", x: 680, y: 90, w: 180, h: 70, label: "x402 gateway", tech: "/api/v/[slug]/query · Zod", color: "accent" },
   { id: "solana", x: 910, y: 90, w: 180, h: 70, label: "Solana RPC", tech: "Helius · raw JSON-RPC", color: "amber" },
   { id: "phantom", x: 910, y: 430, w: 180, h: 70, label: "Phantom Cash", tech: "USDC payout", color: "amber" },
-  { id: "rag", x: 460, y: 290, w: 170, h: 70, label: "RAG index", tech: "Gemini · 3072d cosine", color: "accent" },
-  { id: "loader", x: 250, y: 290, w: 160, h: 70, label: "Vault loader", tech: "build-time chunk", color: "gray" },
-  { id: "vault", x: 60, y: 290, w: 140, h: 70, label: "Markdown vault", tech: "Obsidian · 25 notes", color: "gray" },
+  { id: "rag", x: 460, y: 290, w: 170, h: 70, label: "Per-vault RAG index", tech: "Gemini · 3072d cosine", color: "accent" },
+  { id: "loader", x: 250, y: 290, w: 160, h: 70, label: "Vault loader", tech: "Supabase Storage · chunk", color: "gray" },
+  { id: "vault", x: 60, y: 290, w: 140, h: 70, label: "Operator vaults", tech: "any markdown corpus", color: "gray" },
 ] as const;
 
 const EDGES = [
@@ -66,9 +66,10 @@ export function SystemMap() {
           </em>
         </h2>
         <p className="mt-6 max-w-2xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
-          The full Brain Drain runtime: build-time vault indexing on the bottom
-          row, runtime payment + retrieval on the top. Every box maps to a
-          file you can open on GitHub.
+          The full Brain Drain runtime: per-vault indexing on the bottom row
+          (operators upload markdown → Gemini embeds → Supabase persists),
+          payment + retrieval on the top. Every box maps to a file you can
+          open on GitHub.
         </p>
 
         <Legend />
@@ -186,9 +187,10 @@ export function SystemMap() {
         </motion.div>
 
         <p className="mt-6 text-mono-tight text-[12px] text-[var(--color-text-faint)] max-w-2xl leading-[1.6]">
-          Top row is what an AI agent triggers at request time. Bottom row is
-          what runs once at build (vault chunks → embeddings → on-disk index).
-          The accent green path is the on-the-wire flow you actually pay for.
+          Top row is what an AI agent triggers at request time. Bottom row
+          fires once per operator upload (markdown → chunked → Gemini
+          embeddings → per-vault index in Supabase Storage). The accent green
+          path is the on-the-wire flow you actually pay for.
         </p>
       </div>
     </section>

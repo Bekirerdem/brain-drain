@@ -41,7 +41,7 @@ export function ForExperts() {
               </em>
             </h2>
             <p className="mt-6 max-w-xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
-              The decision log you already keep is the corpus AI agents
+              The decision log you already keep is what AI agents
               hallucinate around today. Mount it as an x402 endpoint, set
               your price, get paid every time an agent cites it. No
               gatekeeping — every vault publishes its own metadata, agents

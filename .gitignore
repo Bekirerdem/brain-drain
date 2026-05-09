@@ -45,6 +45,9 @@ seed-vault/private/
 # RAG index cache (rebuildable from seed-vault/)
 .cache/
 
+# transient audit screenshots (local-only)
+.tmp-screenshots/
+
 # vercel
 .vercel
 

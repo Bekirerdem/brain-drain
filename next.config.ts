@@ -20,10 +20,6 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  outputFileTracingIncludes: {
-    "/api/mcp": ["./.cache/index.json"],
-    "/api/query": ["./.cache/index.json"],
-  },
   async headers() {
     return [
       {

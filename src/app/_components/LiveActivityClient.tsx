@@ -439,7 +439,7 @@ function EmptyState() {
         No agents have paid yet. Fire a query from the demo CLI to seed the feed:
       </p>
       <pre className="mt-5 inline-block px-4 py-2.5 rounded-[var(--radius-pill)] bg-[var(--color-bg-elevated)] border border-[var(--color-border)] text-mono-tight text-[12px] text-[var(--color-accent)]">
-        bun scripts/buy-query.ts &quot;your question&quot;
+        bun scripts/multi-buyer-traffic.ts
       </pre>
     </div>
   );

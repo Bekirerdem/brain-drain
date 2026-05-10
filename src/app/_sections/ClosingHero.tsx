@@ -131,15 +131,19 @@ function ClosingGlyph() {
         />
       </svg>
 
-      {/* Real bd-mark monogram, theme-aware invert. Sized to actually
-          carry the right column — 80% of the panel up to 420px. */}
+      {/* Real bd-mark monogram. Bekir wants the original black-stroke
+          version to carry this closing panel — overrides the default
+          theme-aware invert so the lockup reads dark even on the dark
+          surface, sitting against the accent radial glow behind it.
+          Sized larger than the header lockup so the closing breath
+          actually feels like a closing breath. */}
       <Image
         src="/bd-mark.png"
         alt=""
         width={2986}
         height={1408}
-        className="relative w-[80%] max-w-[420px] h-auto"
-        style={{ filter: "invert(var(--logo-invert))" }}
+        className="relative w-[92%] max-w-[520px] h-auto"
+        style={{ filter: "invert(0)" }}
       />
     </motion.div>
   );

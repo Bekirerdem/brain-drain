@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Audiowide } from "next/font/google";
+import { Geist, JetBrains_Mono, Audiowide } from "next/font/google";
 import { Header } from "./_components/Header";
 import { Footer } from "./_components/Footer";
 import { LiveEventsProvider } from "@/lib/live-events/context";
@@ -31,8 +31,10 @@ const geistSans = Geist({
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// JetBrains Mono — best-in-class for terminals, code blocks, and the
+// tabular-nums numbers we use across stat strips and the live feed.
+const jetBrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -92,7 +94,7 @@ export default function RootLayout({
       lang="en"
       data-theme="dark"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${audiowide.variable} antialiased`}
+      className={`${geistSans.variable} ${jetBrainsMono.variable} ${audiowide.variable} antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />

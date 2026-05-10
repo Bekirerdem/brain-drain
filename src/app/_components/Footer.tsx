@@ -37,11 +37,11 @@ export function Footer() {
           <div className="col-span-2 md:col-span-5">
             <Link href="/" className="inline-flex items-center gap-2.5">
               <Image
-                src="/BD-logo.png"
+                src="/bd-mark.png"
                 alt=""
                 width={2986}
                 height={1408}
-                className="h-16 w-auto invert"
+                className="h-20 w-auto invert"
               />
               <span className="text-brand text-[17px] uppercase tracking-[0.04em]">
                 Brain Drain<span className="text-[var(--color-accent)]">.</span>

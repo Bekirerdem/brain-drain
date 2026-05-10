@@ -38,18 +38,16 @@ export function Header() {
           aria-label="Brain Drain home"
         >
           <Image
-            src="/BD-logo.png"
+            src="/bd-mark.png"
             alt=""
             width={2986}
             height={1408}
             priority
-            // Background is now properly transparent (the prior
-            // export shipped a baked-in light-gray fill that was
-            // stripped via LockBits). No clip wrapper needed —
-            // the wide horizontal margins on the canvas are now
-            // genuinely empty. Invert keeps the black strokes
-            // legible on the dark theme.
-            className="h-12 w-auto invert"
+            // Cleaned + renamed (was BD-logo.png) so Vercel's image
+            // CDN definitely misses the old cache entry. Aggressive
+            // halo strip pushes the silhouette crisp; invert keeps
+            // black strokes legible on dark theme.
+            className="h-14 w-auto invert"
           />
           <span className="text-brand text-[15px] uppercase tracking-[0.04em]">
             Brain Drain<span className="text-[var(--color-accent)]">.</span>

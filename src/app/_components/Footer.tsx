@@ -153,19 +153,19 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-4">
           <p className="text-mono-tight text-[11px] text-[var(--color-text-faint)]">
-            © 2026 Brain Drain · Made by{" "}
+            © 2026 Brain Drain · MIT licensed · open source on{" "}
             <a
-              href="https://x.com/l3ekirerdem"
+              href="https://github.com/Bekirerdem/brain-drain"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
             >
-              Bekir Erdem
+              GitHub
             </a>
-            {" "}in Bursa · MIT licensed
           </p>
           <p className="text-mono-tight text-[11px] text-[var(--color-text-faint)]">
-            Live on Solana devnet · mainnet path is one env flag
+            The protocol AI agents pay vault operators through ·
+            Solana devnet
           </p>
         </div>
       </div>

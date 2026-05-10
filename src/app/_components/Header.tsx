@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { ThemeToggle } from "./ThemeToggle";
+import { GitHubStarButton } from "./GitHubStarButton";
 
 const NAV_ITEMS = [
   { label: "Vaults", href: "/vaults" },
@@ -12,7 +13,6 @@ const NAV_ITEMS = [
   { label: "Protocol", href: "/#how-it-works" },
 ] as const;
 
-const GITHUB_URL = "https://github.com/Bekirerdem/brain-drain";
 const SCROLL_THRESHOLD = 24;
 
 export function Header() {
@@ -67,14 +67,9 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <a
-            href={GITHUB_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex h-8 px-3 items-center text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-          >
-            GitHub
-          </a>
+          <span className="hidden sm:inline-flex">
+            <GitHubStarButton />
+          </span>
           <ThemeToggle />
           <Link
             href="/vaults/new"

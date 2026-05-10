@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SPRINGS } from "@/lib/motion/presets";
+import { BuiltOn } from "./BuiltOn";
 
 const MotionLink = motion(Link);
 
@@ -79,6 +80,13 @@ export function ClosingHero() {
 
           <ClosingGlyph />
         </div>
+      </div>
+
+      {/* Tech stack marquee tucked underneath the closing breath so the
+          ecosystem strip lives inside the closing rhythm instead of
+          stealing its own section block. */}
+      <div className="relative z-10">
+        <BuiltOn />
       </div>
     </section>
   );

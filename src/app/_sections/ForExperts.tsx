@@ -9,18 +9,18 @@ const MotionLink = motion(Link);
 const STEPS = [
   {
     n: "01",
-    title: "Point at your vault",
-    body: "Any directory of Markdown files. Obsidian, Notion export, internal wiki, your engineering decision log — anything where your hard-won knowledge already lives.",
+    title: "Drop your markdown",
+    body: "Obsidian export, Notion dump, decision log, war-story repo — any folder of .md files. Drag it into /vaults/new.",
   },
   {
     n: "02",
-    title: "Seed the embedding index",
-    body: "Drop the bundle in /vaults/new. Brain Drain chunks every page, runs Gemini embeddings, and persists a query-ready index in Supabase Storage. ~30 s for 100 chunks.",
+    title: "Get an x402 endpoint",
+    body: "Brain Drain chunks, embeds (Gemini 3072d), and mints a paid endpoint at /api/v/{your-slug}/query. ~30s for 100 chunks. No approval, no waitlist.",
   },
   {
     n: "03",
-    title: "Earn USDC per query",
-    body: "Get a paid x402 endpoint at /api/v/{your-slug}/query. Settlements route directly to your Solana address — Brain Drain never custodies funds. Operator picks the price.",
+    title: "USDC lands in your wallet",
+    body: "You set the price ($0.05–$5). Each cited query settles direct to your Solana address. Brain Drain never custodies funds.",
   },
 ] as const;
 
@@ -33,19 +33,18 @@ export function ForExperts() {
       <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
         <div className="grid lg:grid-cols-[1fr_1fr] gap-12 lg:gap-20 items-start">
           <div>
-            <p className="text-eyebrow">For vault operators</p>
+            <p className="text-eyebrow">For operators</p>
             <h2 className="text-display mt-6 text-[clamp(36px,5.5vw,68px)] text-[var(--color-text)]">
-              Mount your vault.{" "}
+              Your decision log{" "}
               <em className="not-italic font-normal text-[var(--color-accent)]">
-                Get paid.
+                is a paid API now.
               </em>
             </h2>
             <p className="mt-6 max-w-xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
-              The decision log you already keep is what AI agents
-              hallucinate around today. Mount it as an x402 endpoint, set
-              your price, get paid every time an agent cites it. No
-              gatekeeping — every vault publishes its own metadata, agents
-              pay (or don&apos;t) based on what they see.
+              The notes you already keep — engineering decisions, trading
+              war stories, market analysis — become an x402 endpoint. AI
+              agents pay USDC straight to your Solana wallet every time they
+              cite you. No middleman.
             </p>
 
             <ol className="mt-12 space-y-7">
@@ -53,11 +52,6 @@ export function ForExperts() {
                 <ExpertStep key={step.n} step={step} index={i} />
               ))}
             </ol>
-
-            <p className="mt-12 text-mono-tight text-[12px] text-[var(--color-text-faint)] max-w-md leading-[1.6]">
-              Multi-vault devnet live now. Mainnet config is one env flag —
-              `SOLANA_NETWORK=mainnet-beta` — protocol logic is identical.
-            </p>
           </div>
 
           <MountCallout />

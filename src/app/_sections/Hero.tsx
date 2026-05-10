@@ -41,10 +41,10 @@ const FADE = {
 const CARD_STAGGER_MS = 80;
 
 const HERO_STATS = [
-  { label: "Confirmation", value: "~400ms", caption: "Solana devnet" },
-  { label: "Starting at", value: "0.05 USDC", caption: "operator-set price" },
-  { label: "Per-vault routing", value: "x402", caption: "no platform custody" },
-  { label: "Wallet auth", value: "MPC-signed", caption: "no key handling" },
+  { label: "Settles in", value: "~400ms", caption: "Solana on-chain" },
+  { label: "From", value: "$0.05", caption: "operator-set price" },
+  { label: "Routes via", value: "x402", caption: "Brain Drain holds nothing" },
+  { label: "Drop into", value: "MCP", caption: "Claude · Cursor · Cline" },
 ] as const;
 
 export function Hero() {
@@ -90,10 +90,10 @@ export function Hero() {
               }}
               transition={HEADLINE.spring}
             >
-              AI agents finally pay{" "}
+              AI cites you.{" "}
               <br className="hidden md:block" aria-hidden="true" />
               <em className="not-italic font-normal text-[var(--color-accent)]">
-                the experts they cite.
+                USDC arrives.
               </em>
             </motion.h1>
 
@@ -103,10 +103,13 @@ export function Hero() {
               animate={{ opacity: stage >= 3 ? 1 : 0, y: stage >= 3 ? 0 : 12 }}
               transition={FADE.spring}
             >
-              Mount your decision log on Solana. Get USDC every time an AI
-              cites your work —{" "}
+              Your{" "}
+              <span className="text-mono-tight text-[var(--color-text)]">Claude&nbsp;Desktop</span>
+              , your{" "}
+              <span className="text-mono-tight text-[var(--color-text)]">Cursor</span>
+              , any MCP-speaking agent — they read your decision log and pay your Solana wallet directly.{" "}
               <span className="text-mono-tight text-[var(--color-text)]">~400ms</span>{" "}
-              on-chain settlement, straight to your wallet.
+              settlement, no platform custody.
             </motion.p>
 
             <motion.div

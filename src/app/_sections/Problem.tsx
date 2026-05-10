@@ -16,19 +16,19 @@ interface Tile {
 
 const TILES: readonly Tile[] = [
   {
-    label: "Today’s RAG",
-    value: "Spam-prone, free",
-    caption: "No quality signal, nothing rewards an expert for keeping the corpus current.",
+    label: "Free RAG",
+    value: "Noisy + unowned",
+    caption: "Nothing rewards experts for keeping the corpus accurate. Quality drifts, agents hallucinate.",
   },
   {
-    label: "Today’s APIs",
-    value: "Key-gated",
-    caption: "Approval queues, terms of service, a platform middleman taking a cut.",
+    label: "Paid APIs",
+    value: "Gated + middlemen",
+    caption: "Approval queues, terms of service, a platform skimming a cut from every call.",
   },
   {
     label: "Brain Drain",
     value: "Pay-per-cite",
-    caption: "Permissionless x402 settlement straight to the operator — no custody, no gating.",
+    caption: "x402 settles USDC direct to the operator. No platform custody, no gating, no waitlist.",
     accent: true,
   },
 ];
@@ -48,11 +48,10 @@ export function Problem() {
           </em>
         </h2>
         <p className="mt-6 max-w-2xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
-          Free RAG is noisy and unowned — nobody&apos;s on the hook to keep
-          it accurate. Paid APIs lock you behind keys, terms, and an
-          intermediary that takes a cut. Experts who actually know things
-          have no clean way to get paid for their decision logs, and agents
-          have no clean way to discover and pay them.
+          Free RAG is noisy. Paid APIs are gated. Experts get nothing back.
+          Brain Drain is the missing rail — agents discover a vault, settle
+          USDC on Solana to its operator, and cite the result. No
+          gatekeeper, no waitlist, no SDK lock-in.
         </p>
 
         <ul className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--color-border)] border-y border-[var(--color-border)]">
@@ -76,11 +75,9 @@ export function Problem() {
         </ul>
 
         <p className="mt-10 max-w-2xl text-[var(--color-text-muted)] text-base leading-[1.55]">
-          Brain Drain ships the missing layer: an agent discovers a vault via
-          the MCP catalog, previews a free chunk, settles USDC on Solana to
-          the operator&apos;s own wallet — never through a platform — and
-          rates the result so future agents prioritize the experts whose
-          work actually moves them forward.
+          Discover via MCP. Preview a free chunk. Pay via x402. Cite with
+          confidence, rate the result. Future agents inherit the signal —
+          experts whose work actually pays off rise to the top of the catalog.
         </p>
       </div>
     </section>

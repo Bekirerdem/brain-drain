@@ -6,18 +6,18 @@ import { CodeTabs } from "../_components/CodeTabs";
 const STEPS = [
   {
     n: "01",
-    title: "Drop the endpoint",
-    body: "Paste the Brain Drain MCP URL into your agent runtime. Claude Desktop, Cursor, custom MCP clients — same wire format, no SDK lock-in.",
+    title: "Paste the endpoint",
+    body: "One line in claude_desktop_config.json (or your Cursor settings, or any MCP client). Same wire format everywhere — no SDK to vendor, no key to manage.",
   },
   {
     n: "02",
-    title: "Wallet auto-funds, auto-signs",
-    body: "Coinbase CDP MPC handles signing. No private key in your code. The TransactionModifyingSigner pattern returns a fully signed Solana transaction your agent can attach as the X-Payment header.",
+    title: "CDP wallet signs",
+    body: "Coinbase CDP MPC auto-funds and auto-signs the USDC SPL transfer. No private key in your code. TransactionModifyingSigner pattern — sign + retry in one round trip.",
   },
   {
     n: "03",
-    title: "One round trip, snippet returned",
-    body: "402 quote → CDP signs → Helius confirms → top-K snippets stream back with citations and tx hash. Auditable, idempotent, ~3.4s end-to-end.",
+    title: "Snippets + on-chain proof",
+    body: "402 quote → CDP signs → Helius confirms → top-K cited snippets + tx signature stream back. ~3.4s end-to-end, idempotent on signature.",
   },
 ] as const;
 
@@ -82,22 +82,20 @@ export function ForAgents() {
       <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-16 items-start">
           <div>
-            <p className="text-eyebrow">For agents</p>
+            <p className="text-eyebrow">For agent buyers</p>
             <h2 className="mt-6 text-display text-[clamp(36px,5.5vw,68px)] text-[var(--color-text)]">
               Stop hallucinating.{" "}
               <em className="not-italic font-normal text-[var(--color-accent)]">
                 Cite real experts.
-              </em>{" "}
-              Pay only what you use.
+              </em>
             </h2>
             <p className="mt-6 max-w-lg text-[var(--color-text-muted)] text-lg leading-[1.55]">
-              No SDK lock-in. No key handling. The MCP server speaks the same
-              wire format as every other modern agent tool — your runtime drops
-              it in like any other capability. Works with{" "}
+              Drop the MCP endpoint into{" "}
               <span className="text-mono-tight text-[var(--color-text)]">
                 Claude Desktop, Cursor, Cline, Continue.dev, OpenCode
               </span>
-              , and any custom MCP client.
+              , or any custom agent. CDP MPC signs every settlement — no
+              SDK lock-in, no key handling. Pay only what your agent cites.
             </p>
 
             <ol className="mt-12 space-y-7">
@@ -105,16 +103,6 @@ export function ForAgents() {
                 <AgentStep key={step.n} step={step} index={i} />
               ))}
             </ol>
-
-            <p className="mt-12 text-mono-tight text-[12px] text-[var(--color-text-faint)] max-w-md leading-[1.6]">
-              Devnet endpoint live now. Mainnet path is one env flag —{" "}
-              <code className="text-mono-tight text-[var(--color-text-muted)]">
-                SOLANA_NETWORK=mainnet-beta
-              </code>
-              {" "}— protocol logic is identical. Idempotency on repeated
-              signatures, replay protection — same chunk, same price, no
-              double-charge.
-            </p>
           </div>
 
           <motion.div

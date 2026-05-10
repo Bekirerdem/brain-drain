@@ -433,13 +433,19 @@ export default function NewVaultPage() {
                   <input
                     id="vault-folder"
                     type="file"
+                    multiple
+                    // React JSX strips unknown lowercase boolean-ish attrs
+                    // (webkitdirectory, directory) on some toolchains, so we
+                    // set them imperatively on the DOM node. Without these
+                    // the browser falls back to a single-file picker even
+                    // though the label says "Choose folder".
+                    ref={(el) => {
+                      if (!el) return;
+                      el.setAttribute("webkitdirectory", "");
+                      el.setAttribute("directory", "");
+                    }}
                     onChange={(e) => onPickFiles(e.target.files)}
                     className="sr-only"
-                    {...({
-                      webkitdirectory: "",
-                      directory: "",
-                      multiple: true,
-                    } as Record<string, string | boolean>)}
                   />
 
                   <label

@@ -39,7 +39,7 @@ export function Footer() {
               <Image
                 src="/BD-logo.png"
                 alt=""
-                width={2982}
+                width={2986}
                 height={1408}
                 className="h-8 w-auto"
               />

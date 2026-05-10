@@ -12,6 +12,7 @@ import { truncateAddress } from "@/lib/format";
 // the browser and crashes at boot ("Invalid environment").
 import {
   VAULT_CATEGORIES,
+  VAULT_CATEGORY_HINTS,
   VAULT_CATEGORY_LABELS,
   type VaultCategory,
 } from "@/lib/supabase/types";
@@ -316,7 +317,7 @@ export default function NewVaultPage() {
             <Field
               label="Category"
               required
-              hint="top-level discovery axis — agents filter by this in /vaults and via MCP list_vaults"
+              hint={VAULT_CATEGORY_HINTS[form.category]}
               error={errFor(state, "category")}
               input={
                 <select
@@ -411,18 +412,33 @@ export default function NewVaultPage() {
             />
 
             <Field
-              label={`Markdown bundle ${form.files.length > 0 ? `· ${form.files.length} files · ${(totalBytes / 1024).toFixed(1)} KB` : ""}`}
+              label="Markdown bundle"
               required
-              hint="select multiple .md / .mdx files"
+              hint="select multiple .md / .mdx files — max 100 files, 200 KB each, 5 MB total"
               error={errFor(state, "files")}
               input={
-                <input
-                  type="file"
-                  multiple
-                  accept=".md,.mdx,text/markdown"
-                  onChange={(e) => onPickFiles(e.target.files)}
-                  className="form-input file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-pill)] file:border file:border-[var(--color-border-strong)] file:bg-[var(--color-bg-card)] file:text-[var(--color-text)] file:text-[12px] file:cursor-pointer hover:file:bg-[var(--color-bg-card-hover)]"
-                />
+                <div className="flex flex-wrap items-center gap-3">
+                  <label
+                    htmlFor="vault-files"
+                    className="inline-flex h-10 px-5 items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg-card)] text-[13px] text-[var(--color-text)] cursor-pointer hover:bg-[var(--color-bg-card-hover)] hover:border-[var(--color-accent)]/40 transition-colors"
+                  >
+                    <span aria-hidden="true">📄</span>
+                    {form.files.length === 0 ? "Choose .md files" : "Replace selection"}
+                  </label>
+                  <input
+                    id="vault-files"
+                    type="file"
+                    multiple
+                    accept=".md,.mdx,text/markdown"
+                    onChange={(e) => onPickFiles(e.target.files)}
+                    className="sr-only"
+                  />
+                  {form.files.length > 0 && (
+                    <span className="inline-flex items-center h-7 px-3 rounded-[var(--radius-pill)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 text-mono-tight text-[11px] text-[var(--color-accent)] tabular-nums">
+                      {form.files.length} file{form.files.length === 1 ? "" : "s"} · {(totalBytes / 1024).toFixed(1)} KB
+                    </span>
+                  )}
+                </div>
               }
             />
 

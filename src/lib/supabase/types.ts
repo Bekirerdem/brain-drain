@@ -217,6 +217,30 @@ export const VAULT_CATEGORY_LABELS: Record<VaultCategory, string> = {
   other: "Other",
 };
 
+/**
+ * Per-category helper text shown below the dropdown in /vaults/new.
+ * Draft copy — refine after operator review. Each line is one sentence,
+ * concrete enough that an uploader knows whether their corpus fits.
+ */
+export const VAULT_CATEGORY_HINTS: Record<VaultCategory, string> = {
+  engineering:
+    "Code, architecture decisions, debugging war stories, infra gotchas. Specific error messages, working snippets, named library versions.",
+  trading:
+    "Market analysis, signal frameworks, real PnL outcomes, anti-patterns. Tickers, mcap, timing data — not abstract advice.",
+  defi:
+    "Protocol design, tokenomics, on-chain mechanics. Pool math, liquidity strategies, governance trade-offs.",
+  research:
+    "Long-form research notes, paper synthesis, deep exploration. Citations plus your synthesis — not just summaries.",
+  productivity:
+    "Workflows, tooling stacks, agentic patterns. Reproducible setups, command sequences, the actual decision rule you use.",
+  design:
+    "UI/UX, brand, motion, design systems. Reference shots, anti-slop checks, component variants with rationale.",
+  legal:
+    "Precedent, contract patterns, jurisdiction notes. Citation-grade, redacted real cases, decision trees.",
+  other:
+    "Fits none of the above. Agents filter by category — 'other' has the lowest discovery, prefer a closer match where you can.",
+};
+
 export interface PreviewChunk {
   readonly id: string;
   readonly heading: string | null;

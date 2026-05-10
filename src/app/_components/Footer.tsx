@@ -41,7 +41,8 @@ export function Footer() {
                 alt=""
                 width={2986}
                 height={1408}
-                className="h-20 w-auto invert"
+                className="h-20 w-auto"
+                style={{ filter: "invert(var(--logo-invert))" }}
               />
               <span className="text-brand text-[17px] uppercase tracking-[0.04em]">
                 Brain Drain<span className="text-[var(--color-accent)]">.</span>

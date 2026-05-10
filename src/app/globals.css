@@ -22,6 +22,11 @@
   --color-amber: #fbbf24;
   --color-link: #dfcdf5;
 
+  /* Logo invert is tema-aware. Dark theme inverts (black strokes
+     become white on dark surface); light theme leaves the file
+     alone so the original strokes read naturally. */
+  --logo-invert: 1;
+
   --radius-card: 15px;
   --radius-pill: 9999px;
 
@@ -34,6 +39,33 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/*
+ * Light theme override. Activated by adding `data-theme="light"` to the
+ * <html> element (the inline init script in layout.tsx sets this before
+ * first paint to avoid a flash of incorrect theme). Color tokens are
+ * the only thing that swaps — accent (#19fb9b) is the same on both
+ * themes since it's the brand signal, but its perceived weight reads
+ * differently against #fff vs #0a0a0a, which is the desired effect.
+ */
+[data-theme="light"] {
+  --color-bg: #ffffff;
+  --color-bg-elevated: #f7f7f9;
+  --color-bg-card: #f0f0f3;
+  --color-bg-card-hover: #e7e7eb;
+
+  --color-text: #0a0a0a;
+  --color-text-muted: #4a4a55;
+  --color-text-faint: #6b6b7b;
+  --color-text-dim: #9a9aa6;
+
+  --color-border: rgba(10, 10, 10, 0.08);
+  --color-border-strong: rgba(10, 10, 10, 0.16);
+  --color-border-emphasis: rgba(10, 10, 10, 0.24);
+
+  --color-link: #5a3aa3;
+  --logo-invert: 0;
+}
+
 * {
   border-color: var(--color-border);
 }
@@ -41,6 +73,10 @@
 html {
   background: var(--color-bg);
   color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
 }
 
 body {

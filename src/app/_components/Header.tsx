@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useMotionValueEvent, useScroll } from "framer-motion";
+import { ThemeToggle } from "./ThemeToggle";
 
 const NAV_ITEMS = [
   { label: "Vaults", href: "/vaults" },
@@ -43,11 +44,13 @@ export function Header() {
             width={2986}
             height={1408}
             priority
-            // Cleaned + renamed (was BD-logo.png) so Vercel's image
-            // CDN definitely misses the old cache entry. Aggressive
-            // halo strip pushes the silhouette crisp; invert keeps
-            // black strokes legible on dark theme.
-            className="h-14 w-auto invert"
+            // Theme-aware invert: dark mode flips strokes to white
+            // for legibility, light mode leaves them alone so the
+            // original colors read against the white surface.
+            // --logo-invert is set to 1 (dark) / 0 (light) in
+            // globals.css so this stays declarative.
+            className="h-14 w-auto"
+            style={{ filter: "invert(var(--logo-invert))" }}
           />
           <span className="text-brand text-[15px] uppercase tracking-[0.04em]">
             Brain Drain<span className="text-[var(--color-accent)]">.</span>
@@ -75,6 +78,7 @@ export function Header() {
           >
             GitHub
           </a>
+          <ThemeToggle />
           <Link
             href="/vaults/new"
             className="inline-flex h-9 px-4 items-center rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[13px] font-medium hover:brightness-110 hover:shadow-[0_0_24px_-6px_var(--color-accent)] transition-all duration-200"

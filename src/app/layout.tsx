@@ -3,7 +3,27 @@ import { Geist, Geist_Mono, Audiowide } from "next/font/google";
 import { Header } from "./_components/Header";
 import { Footer } from "./_components/Footer";
 import { LiveEventsProvider } from "@/lib/live-events/context";
+import { ThemeProvider } from "@/lib/theme/context";
 import "./globals.css";
+
+// Runs before React hydrates. Reads stored theme (or falls back to the
+// OS preference) and stamps `data-theme` on <html>, so the first paint
+// already matches the user's choice — no flash from dark to light.
+const themeInitScript = `
+(function () {
+  try {
+    var saved = window.localStorage.getItem("bd-theme");
+    if (saved === "light" || saved === "dark") {
+      document.documentElement.dataset.theme = saved;
+      return;
+    }
+    var prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+    document.documentElement.dataset.theme = prefersLight ? "light" : "dark";
+  } catch (_) {
+    document.documentElement.dataset.theme = "dark";
+  }
+})();
+`;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -70,14 +90,21 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-theme="dark"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${audiowide.variable} antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="min-h-screen flex flex-col bg-[var(--color-bg)] text-[var(--color-text)]">
-        <LiveEventsProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </LiveEventsProvider>
+        <ThemeProvider>
+          <LiveEventsProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </LiveEventsProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

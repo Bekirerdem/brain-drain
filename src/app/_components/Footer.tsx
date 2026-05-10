@@ -45,7 +45,7 @@ export function Footer() {
         aria-hidden="true"
         className="pointer-events-none select-none absolute inset-x-0 bottom-0 z-0 overflow-hidden"
       >
-        <span className="block whitespace-nowrap text-brand uppercase tracking-[-0.02em] text-[clamp(96px,18vw,300px)] leading-[0.78] text-[var(--color-text)] opacity-[0.06] translate-y-[0.18em] text-center">
+        <span className="block whitespace-nowrap text-brand uppercase tracking-[-0.03em] text-[clamp(56px,11vw,180px)] leading-[0.82] text-[var(--color-text)] opacity-[0.13] translate-y-[0.16em] text-center">
           Brain&nbsp;Drain<span className="text-[var(--color-accent)] opacity-90">.</span>
         </span>
       </div>

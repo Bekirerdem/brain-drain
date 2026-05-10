@@ -131,13 +131,14 @@ function ClosingGlyph() {
         />
       </svg>
 
-      {/* Real bd-mark monogram, theme-aware invert */}
+      {/* Real bd-mark monogram, theme-aware invert. Sized to actually
+          carry the right column — 80% of the panel up to 420px. */}
       <Image
         src="/bd-mark.png"
         alt=""
         width={2986}
         height={1408}
-        className="relative w-[58%] max-w-[260px] h-auto"
+        className="relative w-[80%] max-w-[420px] h-auto"
         style={{ filter: "invert(var(--logo-invert))" }}
       />
     </motion.div>

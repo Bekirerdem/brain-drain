@@ -40,8 +40,8 @@ export function Header() {
           <Image
             src="/BD-logo.png"
             alt=""
-            width={2816}
-            height={1536}
+            width={2982}
+            height={1408}
             priority
             className="h-7 w-auto"
           />

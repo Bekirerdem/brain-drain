@@ -39,8 +39,8 @@ export function Footer() {
               <Image
                 src="/BD-logo.png"
                 alt=""
-                width={2816}
-                height={1536}
+                width={2982}
+                height={1408}
                 className="h-8 w-auto"
               />
               <span className="text-brand text-[17px] uppercase tracking-[0.04em]">

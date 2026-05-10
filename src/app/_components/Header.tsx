@@ -52,7 +52,7 @@ export function Header() {
             className="h-14 w-auto"
             style={{ filter: "invert(var(--logo-invert))" }}
           />
-          <span className="text-brand text-[15px] uppercase tracking-[0.04em]">
+          <span className="text-brand text-[20px] sm:text-[22px] uppercase tracking-[0.04em] leading-none">
             Brain Drain<span className="text-[var(--color-accent)]">.</span>
           </span>
         </Link>

@@ -31,8 +31,26 @@ const BOUNTIES = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-[var(--color-border)] mt-32">
-      <div className="mx-auto max-w-[1280px] px-6 lg:px-10 py-16 lg:py-20">
+    <footer className="relative border-t border-[var(--color-border)] mt-32 overflow-hidden">
+      {/*
+       * Giant brand watermark — solana.com / avax.network pattern.
+       * Sits behind the column content, runs full-width, clipped at the
+       * bottom edge. Audiowide via text-brand, opacity dialed to ~5-7%
+       * so the wordmark reads as a horizon line instead of competing
+       * with the actual nav. Pointer-events-none so it never steals
+       * clicks; aria-hidden because screen readers already see the
+       * brand in the lockup above.
+       */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute inset-x-0 bottom-0 z-0 overflow-hidden"
+      >
+        <span className="block whitespace-nowrap text-brand uppercase tracking-[-0.02em] text-[clamp(96px,18vw,300px)] leading-[0.78] text-[var(--color-text)] opacity-[0.06] translate-y-[0.18em] text-center">
+          Brain&nbsp;Drain<span className="text-[var(--color-accent)] opacity-90">.</span>
+        </span>
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 py-16 lg:py-20">
         <div className="grid grid-cols-2 md:grid-cols-12 gap-10 md:gap-8">
           <div className="col-span-2 md:col-span-5">
             <Link href="/" className="inline-flex items-center gap-2.5">
@@ -44,7 +62,7 @@ export function Footer() {
                 className="h-20 w-auto"
                 style={{ filter: "invert(var(--logo-invert))" }}
               />
-              <span className="text-brand text-[17px] uppercase tracking-[0.04em]">
+              <span className="text-brand text-[22px] sm:text-[26px] uppercase tracking-[0.04em] leading-none">
                 Brain Drain<span className="text-[var(--color-accent)]">.</span>
               </span>
             </Link>

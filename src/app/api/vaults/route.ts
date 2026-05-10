@@ -27,7 +27,10 @@ const LIST_LIMIT_MAX = 60;
 
 const ListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(LIST_LIMIT_MAX).default(LIST_LIMIT_DEFAULT),
-  sort: z.enum(["earnings", "recent"]).default("earnings"),
+  // Default "recent" so newly-mounted vaults always lead the list —
+  // matches the /vaults catalog page default. "earnings" still
+  // available for agents that want to rank by track record.
+  sort: z.enum(["earnings", "recent"]).default("recent"),
   owner: z.string().min(32).max(44).optional(),
   category: z.enum(VAULT_CATEGORIES).optional(),
 });

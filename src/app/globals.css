@@ -28,6 +28,7 @@
   --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
     Helvetica, Arial, sans-serif;
   --font-mono: var(--font-geist-mono), "SF Mono", Menlo, Monaco, Consolas, monospace;
+  --font-brand: var(--font-audiowide), "Orbitron", "Geist", sans-serif;
 
   --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -76,6 +77,17 @@ body {
   font-weight: 500;
   letter-spacing: -0.04em;
   line-height: 0.95;
+}
+
+/*
+ * Brand wordmark only — header + footer logo lockup. Audiowide is a
+ * loud display face; do NOT apply to body headings or copy.
+ */
+@utility text-brand {
+  font-family: var(--font-brand);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1;
 }
 
 @utility text-eyebrow {

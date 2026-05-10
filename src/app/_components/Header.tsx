@@ -45,7 +45,7 @@ export function Header() {
             priority
             className="h-7 w-auto"
           />
-          <span className="text-display text-[16px] tracking-[-0.02em]">
+          <span className="text-brand text-[15px] uppercase tracking-[0.04em]">
             Brain Drain<span className="text-[var(--color-accent)]">.</span>
           </span>
         </Link>

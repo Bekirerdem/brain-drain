@@ -43,7 +43,7 @@ export function Footer() {
                 height={1536}
                 className="h-8 w-auto"
               />
-              <span className="text-display text-[18px] tracking-[-0.02em]">
+              <span className="text-brand text-[17px] uppercase tracking-[0.04em]">
                 Brain Drain<span className="text-[var(--color-accent)]">.</span>
               </span>
             </Link>

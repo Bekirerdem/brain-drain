@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SPRINGS } from "@/lib/motion/presets";
@@ -84,9 +85,11 @@ export function ClosingHero() {
 }
 
 /**
- * Giant stylized "BD" glyph — same brand vocabulary as the lockup,
- * sized so it carries the right column on its own. Pure SVG so it
- * stays sharp at any breakpoint and respects the theme accent.
+ * Closing brand panel — the actual bd-mark monogram inside an
+ * accent-glow halo. Same logo asset as the header/footer (theme-
+ * aware invert via --logo-invert) so the brand stays consistent
+ * end to end. Concentric rings stay as ambient orbit decoration
+ * around the logo, not as a substitute for it.
  */
 function ClosingGlyph() {
   return (
@@ -95,51 +98,48 @@ function ClosingGlyph() {
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ type: "spring", stiffness: 220, damping: 26 }}
-      className="relative aspect-square w-full max-w-[420px] mx-auto lg:mx-0"
+      className="relative aspect-square w-full max-w-[420px] mx-auto lg:mx-0 flex items-center justify-center"
     >
-      <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(25,251,155,0.25),transparent_60%)]" />
+      {/* Soft accent glow behind the lockup */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(25,251,155,0.22),transparent_62%)]"
+      />
+
+      {/* Ambient orbit rings — pure decoration, lockup is the focus */}
       <svg
         viewBox="0 0 200 200"
         fill="none"
-        className="relative size-full"
+        className="absolute inset-0 size-full"
         aria-hidden="true"
       >
         <circle
           cx="100"
           cy="100"
-          r="90"
+          r="92"
           stroke="var(--color-border-strong)"
           strokeWidth="0.6"
         />
         <circle
           cx="100"
           cy="100"
-          r="64"
+          r="68"
           stroke="var(--color-accent)"
-          strokeOpacity="0.55"
-          strokeWidth="1"
+          strokeOpacity="0.45"
+          strokeWidth="0.9"
           strokeDasharray="2 6"
         />
-        <circle
-          cx="100"
-          cy="100"
-          r="38"
-          stroke="var(--color-accent)"
-          strokeWidth="1.5"
-        />
-        <text
-          x="100"
-          y="118"
-          textAnchor="middle"
-          fontFamily="var(--font-brand)"
-          fontSize="48"
-          fill="var(--color-text)"
-          letterSpacing="-2"
-        >
-          bd
-        </text>
-        <circle cx="100" cy="100" r="3" fill="var(--color-accent)" />
       </svg>
+
+      {/* Real bd-mark monogram, theme-aware invert */}
+      <Image
+        src="/bd-mark.png"
+        alt=""
+        width={2986}
+        height={1408}
+        className="relative w-[58%] max-w-[260px] h-auto"
+        style={{ filter: "invert(var(--logo-invert))" }}
+      />
     </motion.div>
   );
 }

@@ -44,15 +44,12 @@ export function Header() {
             width={2986}
             height={1408}
             priority
-            // Theme-aware invert: dark mode flips strokes to white
-            // for legibility, light mode leaves them alone so the
-            // original colors read against the white surface.
-            // --logo-invert is set to 1 (dark) / 0 (light) in
-            // globals.css so this stays declarative.
-            className="h-14 w-auto"
+            // Theme-aware invert via --logo-invert (1 dark / 0 light).
+            // Smaller on mobile so the lockup stops crowding the bar.
+            className="h-10 sm:h-14 w-auto"
             style={{ filter: "invert(var(--logo-invert))" }}
           />
-          <span className="text-brand text-[20px] sm:text-[22px] uppercase tracking-[0.04em] leading-none">
+          <span className="text-brand text-[16px] sm:text-[22px] uppercase tracking-[0.04em] leading-none whitespace-nowrap">
             Brain Drain<span className="text-[var(--color-accent)]">.</span>
           </span>
         </Link>
@@ -81,9 +78,9 @@ export function Header() {
           <ThemeToggle />
           <Link
             href="/vaults/new"
-            className="inline-flex h-9 px-4 items-center rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[13px] font-medium hover:brightness-110 hover:shadow-[0_0_24px_-6px_var(--color-accent)] transition-all duration-200"
+            className="inline-flex h-9 px-3 sm:px-4 items-center whitespace-nowrap rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[12.5px] sm:text-[13px] font-medium hover:brightness-110 hover:shadow-[0_0_24px_-6px_var(--color-accent)] transition-all duration-200"
           >
-            Mount vault
+            Mount<span className="hidden sm:inline">&nbsp;vault</span>
           </Link>
         </div>
       </div>

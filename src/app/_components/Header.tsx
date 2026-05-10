@@ -43,7 +43,12 @@ export function Header() {
             width={2986}
             height={1408}
             priority
-            className="h-7 w-auto"
+            // Logo is line-art black with a green accent. On a dark
+            // theme the black strokes vanish and only the accent
+            // reads — invert flips strokes to white so the wordmark
+            // reads cleanly. Larger size so it actually carries the
+            // lockup instead of being a stamp.
+            className="h-10 w-auto invert"
           />
           <span className="text-brand text-[15px] uppercase tracking-[0.04em]">
             Brain Drain<span className="text-[var(--color-accent)]">.</span>

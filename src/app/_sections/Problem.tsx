@@ -39,22 +39,16 @@ export function Problem() {
       id="why"
       className="relative overflow-hidden border-t border-[var(--color-border)]"
     >
-      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-24 lg:pt-28 lg:pb-28">
+      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-20 pb-20 lg:pt-24 lg:pb-24">
         <p className="text-eyebrow">Why Brain Drain</p>
-        <h2 className="text-display mt-6 text-[clamp(36px,5.5vw,68px)] text-[var(--color-text)] max-w-[900px] leading-[1.02]">
+        <h2 className="text-display mt-6 text-[clamp(36px,5.5vw,64px)] text-[var(--color-text)] max-w-[900px] leading-[1.04]">
           AI agents need facts. The web gives them{" "}
           <em className="not-italic font-normal text-[var(--color-accent)]">
             hallucinations.
           </em>
         </h2>
-        <p className="mt-6 max-w-2xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
-          Free RAG is noisy. Paid APIs are gated. Experts get nothing back.
-          Brain Drain is the missing rail — agents discover a vault, settle
-          USDC on Solana to its operator, and cite the result. No
-          gatekeeper, no waitlist, no SDK lock-in.
-        </p>
 
-        <ul className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--color-border)] border-y border-[var(--color-border)]">
+        <ul className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--color-border)] border-y border-[var(--color-border)]">
           {TILES.map((t) => (
             <li key={t.label} className="bg-[var(--color-bg)] px-6 py-7 lg:px-7 lg:py-8">
               <p className="text-eyebrow">{t.label}</p>
@@ -73,12 +67,6 @@ export function Problem() {
             </li>
           ))}
         </ul>
-
-        <p className="mt-10 max-w-2xl text-[var(--color-text-muted)] text-base leading-[1.55]">
-          Discover via MCP. Preview a free chunk. Pay via x402. Cite with
-          confidence, rate the result. Future agents inherit the signal —
-          experts whose work actually pays off rise to the top of the catalog.
-        </p>
       </div>
     </section>
   );

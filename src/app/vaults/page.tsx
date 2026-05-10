@@ -18,7 +18,11 @@ interface PageProps {
 
 export default async function VaultsPage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const allVaults = await listPublicVaults({ limit: 60, sort: "earnings" });
+  // Default sort is "recent" — newly mounted vaults surface above older
+  // ones so a fresh upload is visible without scrolling. Earnings rank
+  // is still available via /api/vaults?sort=earnings for clients that
+  // want it.
+  const allVaults = await listPublicVaults({ limit: 60, sort: "recent" });
   const selectedDomain = params.domain?.trim() || null;
 
   // Surface every domain across the catalog, ranked by frequency so the

@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getNetworkPayouts, PayoutQuerySchema } from "@/lib/payouts";
+import { getLedgerPayouts, PayoutQuerySchema } from "@/lib/payouts";
 import { logAndSanitize, zodFieldError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +26,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const query = PayoutQuerySchema.parse(raw.data);
   try {
-    const payouts = await getNetworkPayouts(query);
+    // DB-backed ledger replaces the RPC indexer here. Faucet drops and
+    // unrelated devnet USDC inbound to vault payout addresses no longer
+    // pollute the LiveActivity feed — only successful x402 query
+    // settlements are persisted to vault_settlements.
+    const payouts = await getLedgerPayouts(query);
     const last = payouts[payouts.length - 1];
     return NextResponse.json({
       count: payouts.length,

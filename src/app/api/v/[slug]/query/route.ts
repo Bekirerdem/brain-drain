@@ -17,6 +17,7 @@ import {
   getVaultIndex,
   incrementVaultEarnings,
 } from "@/lib/vaults";
+import { recordSettlement } from "@/lib/payouts";
 import { logAndSanitize, zodFieldError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
@@ -117,5 +118,41 @@ export async function POST(
     },
   });
 
-  return wrapped(request);
+  const response = await wrapped(request);
+
+  // After a successful settlement, x402-next attaches the payment
+  // receipt as an `x-payment-response` header (base64 JSON with the
+  // tx signature, payer, success bool). Persist it to the ledger so
+  // /api/payouts can serve a clean Brain-Drain-only feed instead of
+  // pulling every USDC inbound off-chain. Fire-and-forget — the
+  // buyer already has their 200 + snippets, ledger downtime must
+  // never block the response path.
+  if (response.status === 200) {
+    const xPaymentResponse = response.headers.get("x-payment-response");
+    if (xPaymentResponse) {
+      try {
+        const decoded = JSON.parse(
+          Buffer.from(xPaymentResponse, "base64").toString("utf8"),
+        ) as { transaction?: string; payer?: string; success?: boolean };
+        if (decoded.transaction && decoded.success !== false) {
+          void recordSettlement({
+            signature: decoded.transaction,
+            vaultSlug: vault.slug,
+            payer: decoded.payer ?? "unknown",
+            amountUsdc: Number(vault.price_usdc),
+          }).catch((err) => {
+            console.error(
+              `[query] settlement ledger insert failed for ${vault.slug}:`,
+              err,
+            );
+          });
+        }
+      } catch {
+        // Header malformed — settlement still happened on-chain, just
+        // not in the ledger this round. Buyer is unaffected.
+      }
+    }
+  }
+
+  return response;
 }

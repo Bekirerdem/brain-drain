@@ -86,6 +86,41 @@ export type Database = {
           },
         ];
       };
+      vault_settlements: {
+        Row: {
+          amount_usdc: number;
+          block_time: string;
+          created_at: string;
+          payer: string;
+          signature: string;
+          vault_slug: string;
+        };
+        Insert: {
+          amount_usdc: number;
+          block_time: string;
+          created_at?: string;
+          payer: string;
+          signature: string;
+          vault_slug: string;
+        };
+        Update: {
+          amount_usdc?: number;
+          block_time?: string;
+          created_at?: string;
+          payer?: string;
+          signature?: string;
+          vault_slug?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "vault_settlements_vault_slug_fkey";
+            columns: ["vault_slug"];
+            isOneToOne: false;
+            referencedRelation: "vaults";
+            referencedColumns: ["slug"];
+          },
+        ];
+      };
       vaults: {
         Row: {
           category: Database["public"]["Enums"]["vault_category"];

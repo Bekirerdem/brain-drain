@@ -13,7 +13,9 @@ export const PayoutEventSchema = z.object({
   vaultSlug: z.string().nullable(),
   amountAtomic: z.string(),
   amountUsdc: z.number(),
-  mint: SolanaAddressSchema,
+  // Mint may be empty when the source is the DB ledger (always USDC,
+  // not stored). Address-shape only enforced when present.
+  mint: SolanaAddressSchema.or(z.literal("")),
 });
 
 export type PayoutEvent = z.infer<typeof PayoutEventSchema>;

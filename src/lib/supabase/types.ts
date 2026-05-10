@@ -219,26 +219,27 @@ export const VAULT_CATEGORY_LABELS: Record<VaultCategory, string> = {
 
 /**
  * Per-category helper text shown below the dropdown in /vaults/new.
- * Draft copy — refine after operator review. Each line is one sentence,
- * concrete enough that an uploader knows whether their corpus fits.
+ * Operator-faced — sets the depth standard so uploads stay paid-grade.
+ * Alternate phrasings (English-only, punchy) lived in
+ * tasks/category-hints-draft.md.
  */
 export const VAULT_CATEGORY_HINTS: Record<VaultCategory, string> = {
   engineering:
-    "Code, architecture decisions, debugging war stories, infra gotchas. Specific error messages, working snippets, named library versions.",
+    "Spesifik debugging war story'leri, kullandığın gerçek kütüphane versiyonları, aldığın asıl error mesajıyla birlikte çalışan kod. Soyut pattern değil. Bir agent 'X kütüphanesi v2.3'te neden Y koştu' diye sorabiliyorsa ve cevabı bu vault'taysa — uyar.",
   trading:
-    "Market analysis, signal frameworks, real PnL outcomes, anti-patterns. Tickers, mcap, timing data — not abstract advice.",
+    "Gerçek PnL sonuçları, spesifik ticker ve timing, bifurcation verisiyle anti-pattern'lar. Soyut tavsiye veya 'long mu açayım' yorumu değil. Vakanın içinde '14 Nisan'da $HIGH 30 dakikada +%35 squeeze yaptı çünkü...' geçiyorsa — uyar.",
   defi:
-    "Protocol design, tokenomics, on-chain mechanics. Pool math, liquidity strategies, governance trade-offs.",
+    "Matematikle birlikte protokol mekaniği, gerekçeli governance kararları, likidite stratejisinin sonuç verileri. 'AMM nasıl çalışır' özeti değil. Citation-grade pool verisi + kendi yorumun.",
   research:
-    "Long-form research notes, paper synthesis, deep exploration. Citations plus your synthesis — not just summaries.",
+    "Citation'larla long-form sentez, başkalarının çalışmasının üzerine kendi çerçeven. Paper özeti değil. Okuyan yeni bir mental model'le ayrılıyorsa — uyar.",
   productivity:
-    "Workflows, tooling stacks, agentic patterns. Reproducible setups, command sequences, the actual decision rule you use.",
+    "Tekrarlanabilir kurulumlar, birebir komut dizileri, gerçekten uyguladığın karar kuralları. 'Şu aracı dene' listesi değil. Yabancı biri sıfırdan replicate edebiliyorsa — uyar.",
   design:
-    "UI/UX, brand, motion, design systems. Reference shots, anti-slop checks, component variants with rationale.",
+    "Referans ekranlar, anti-slop kontrolleri, hangi trade-off'u seçtiğini açıklayan component varyasyonları. 'Figma kullan' tarzı genel tavsiye değil. Agent yönlendirme yerine çalışan bir component pattern'i çekebiliyorsa — uyar.",
   legal:
-    "Precedent, contract patterns, jurisdiction notes. Citation-grade, redacted real cases, decision trees.",
+    "Citation-grade dava analizi, redacted gerçek emsal, yargı yetkisine özgü karar ağaçları. 'Avukatına danış' uyarısı değil. Bir hukuk asistanı bu vault'la araştırmasını kısaltabiliyorsa — uyar.",
   other:
-    "Fits none of the above. Agents filter by category — 'other' has the lowest discovery, prefer a closer match where you can.",
+    "Üst kategorilerden hiçbirine sığmıyor. Agent'lar kategoriye göre filtreliyor — 'other' en zayıf discovery'ye sahip. Yakın bir match varsa onu seç, scope kayarsa sonra yeniden kategorize et.",
 };
 
 export interface PreviewChunk {

@@ -36,15 +36,13 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-12 gap-10 md:gap-8">
           <div className="col-span-2 md:col-span-5">
             <Link href="/" className="inline-flex items-center gap-2.5">
-              <span className="inline-flex h-12 w-12 items-center justify-center overflow-hidden">
-                <Image
-                  src="/BD-logo.png"
-                  alt=""
-                  width={2986}
-                  height={1408}
-                  className="h-full w-auto max-w-none invert"
-                />
-              </span>
+              <Image
+                src="/BD-logo.png"
+                alt=""
+                width={2986}
+                height={1408}
+                className="h-16 w-auto invert"
+              />
               <span className="text-brand text-[17px] uppercase tracking-[0.04em]">
                 Brain Drain<span className="text-[var(--color-accent)]">.</span>
               </span>

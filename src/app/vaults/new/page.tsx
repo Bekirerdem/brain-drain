@@ -92,18 +92,31 @@ export default function NewVaultPage() {
 
   async function onPickFiles(picked: FileList | null): Promise<void> {
     if (!picked || picked.length === 0) return;
-    if (picked.length > MAX_FILES) {
+    // Filter to markdown FIRST — folder selection drags in every file
+    // (images, .canvas, .obsidian/) so the count check has to run on
+    // the post-filter set or any non-trivial vault breaks the limit.
+    const markdownFiles = Array.from(picked).filter((f) => {
+      const lower = f.name.toLowerCase();
+      return lower.endsWith(".md") || lower.endsWith(".mdx");
+    });
+    if (markdownFiles.length === 0) {
       setState({
         kind: "error",
-        reason: `Too many files (${picked.length}). Max ${MAX_FILES}.`,
+        reason: "No .md or .mdx files in selection.",
+        field: "files",
+      });
+      return;
+    }
+    if (markdownFiles.length > MAX_FILES) {
+      setState({
+        kind: "error",
+        reason: `Too many markdown files (${markdownFiles.length}). Max ${MAX_FILES}.`,
         field: "files",
       });
       return;
     }
     const next: SelectedFile[] = [];
-    for (const file of Array.from(picked)) {
-      const lower = file.name.toLowerCase();
-      if (!lower.endsWith(".md") && !lower.endsWith(".mdx")) continue;
+    for (const file of markdownFiles) {
       const content = await file.text();
       const bytes = new Blob([content]).size;
       if (bytes > MAX_FILE_BYTES) {
@@ -119,14 +132,6 @@ export default function NewVaultPage() {
         content,
         bytes,
       });
-    }
-    if (next.length === 0) {
-      setState({
-        kind: "error",
-        reason: "No .md or .mdx files in selection.",
-        field: "files",
-      });
-      return;
     }
     setForm((f) => ({ ...f, files: next }));
     setState({ kind: "idle" });
@@ -414,16 +419,35 @@ export default function NewVaultPage() {
             <Field
               label="Markdown bundle"
               required
-              hint="select multiple .md / .mdx files — max 100 files, 200 KB each, 5 MB total"
+              hint="folder picker drags in nested .md/.mdx (Obsidian-style vaults welcome) — max 100 markdown files, 200 KB each, 5 MB total"
               error={errFor(state, "files")}
               input={
                 <div className="flex flex-wrap items-center gap-3">
+                  <label
+                    htmlFor="vault-folder"
+                    className="inline-flex h-10 px-5 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/40 text-[13px] text-[var(--color-accent)] cursor-pointer hover:bg-[var(--color-accent)]/15 transition-colors"
+                  >
+                    <span aria-hidden="true">📁</span>
+                    Choose folder
+                  </label>
+                  <input
+                    id="vault-folder"
+                    type="file"
+                    onChange={(e) => onPickFiles(e.target.files)}
+                    className="sr-only"
+                    {...({
+                      webkitdirectory: "",
+                      directory: "",
+                      multiple: true,
+                    } as Record<string, string | boolean>)}
+                  />
+
                   <label
                     htmlFor="vault-files"
                     className="inline-flex h-10 px-5 items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg-card)] text-[13px] text-[var(--color-text)] cursor-pointer hover:bg-[var(--color-bg-card-hover)] hover:border-[var(--color-accent)]/40 transition-colors"
                   >
                     <span aria-hidden="true">📄</span>
-                    {form.files.length === 0 ? "Choose .md files" : "Replace selection"}
+                    Choose files
                   </label>
                   <input
                     id="vault-files"
@@ -433,6 +457,7 @@ export default function NewVaultPage() {
                     onChange={(e) => onPickFiles(e.target.files)}
                     className="sr-only"
                   />
+
                   {form.files.length > 0 && (
                     <span className="inline-flex items-center h-7 px-3 rounded-[var(--radius-pill)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 text-mono-tight text-[11px] text-[var(--color-accent)] tabular-nums">
                       {form.files.length} file{form.files.length === 1 ? "" : "s"} · {(totalBytes / 1024).toFixed(1)} KB

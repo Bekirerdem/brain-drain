@@ -11,6 +11,7 @@ An `x402` + RAG **multi-vault network** on Solana. Anyone can mount a maintained
 [![Frontier 2026](https://img.shields.io/badge/Built_for-Colosseum_Frontier_2026-blue)](https://colosseum.com/frontier)
 [![Status](https://img.shields.io/badge/status-multi--vault_MVP_live-success)](https://brain-drain-iota.vercel.app)
 [![Audit](https://img.shields.io/badge/CSO_audit-10%2F10_resolved-9945FF)](#security-audit)
+[![Vuln disclosure](https://img.shields.io/badge/vuln_disclosure-SECURITY.md-9CA3AF)](./SECURITY.md)
 
 [Live](https://brain-drain-iota.vercel.app) · [Mount your vault](https://brain-drain-iota.vercel.app/vaults/new) · [Architecture](./docs/architecture.md) · [Frontier submission](https://arena.colosseum.org/u/Beks)
 
@@ -194,6 +195,29 @@ A self-administered Chief Security Officer-grade audit (`cso` skill, daily 8/10 
 | BD-10 | Missing security headers | ✅ X-Frame-Options DENY, nosniff, Permissions-Policy, Referrer-Policy (`ff5a6cd`) |
 
 Full report at `~/.superstack/security-reports/brain-drain-2026-05-06.md`.
+
+A second pass after the layout + ledger + theme changes that landed in commit `46837f7` produced **no new findings**. Risk surfaces touched: `vault_settlements` ledger schema + `AFTER INSERT` trigger (`SECURITY DEFINER`, `search_path = public`), `ThemeProvider` localStorage key, `GitHubStarButton` public-API fetch, the `--color-chrome*` translucent CSS variables. None reached an authenticated path or introduced state the existing RLS policies and rate-limit buckets couldn't already cover.
+
+### OWASP Top 10 (2021) coverage
+
+| OWASP category | Mapped controls |
+| :-- | :-- |
+| **A01 Broken Access Control** | BD-01 + BD-02 — server-derived `owner_wallet` on every vault mutation; `/api/vaults?owner=` requires session match; Postgres RLS on `vaults` (public + owner-private split) and `vault_settlements` (read-only public, service-role writes) |
+| **A02 Cryptographic Failures** | BD-03 + `lib/auth/session.ts` — `tweetnacl.sign.detached.verify` for ed25519, `node:crypto.createHmac("sha256", AUTH_SECRET)` with `timingSafeEqual` on every cookie verification; no bespoke crypto |
+| **A03 Injection** | Zod parse at every API boundary (`lib/errors.ts:zodFieldError`); Postgres queries go through Supabase's parameter-binding client; no raw SQL string concatenation |
+| **A04 Insecure Design** | Ledger PK on `signature` makes settlement replay impossible by-construction; trigger keeps counters in lock-step with the ledger; rate-limit buckets are per-key + atomic |
+| **A05 Security Misconfiguration** | BD-10 — `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy` shipped in `next.config.ts`; service-role key never reaches the client bundle (`lib/env.ts` is server-only and verified post-3d7ba1a regression) |
+| **A06 Vulnerable Components** | BD-04 + BD-09 — `axios ^1.12.0` and `postcss ^8.5.10` in `package.json` overrides; `npm ls` clean. BD-05 documented mitigation (read-only ATA derivation, no user bigint input) |
+| **A07 Authentication Failures** | BD-03 + replay protection — challenges deleted on consume in `lib/auth/challenge.ts`; nonces 5-minute TTL; HMAC cookie 1-hour TTL with constant-time comparison |
+| **A08 Software & Data Integrity** | BD-08 — public errors are coarse, internal errors stay in Vercel logs; PRs require code-owner review (`.github/CODEOWNERS`) |
+| **A09 Logging & Monitoring** | Structured `console.error` JSON in `lib/errors.ts:logAndSanitize` and `lib/ratelimit.ts`; rate-limit fail-open events log a key prefix so the operator can grep Vercel logs |
+| **A10 Server-Side Request Forgery** | No user-controlled URL fetches in any route; `getNetworkPayouts` (RPC indexer, legacy) reads only known Helius endpoints; `GitHubStarButton` only hits the literal `api.github.com/repos/Bekirerdem/brain-drain` URL |
+
+### Reproducing the audit
+
+- `bun scripts/smoke.ts` exercises every public-facing surface — page routes, REST endpoints, MCP `tools/list`, x402 quote, unauthenticated POSTs — and exits non-zero on any regression.
+- `npm ls axios bigint-buffer postcss ip-address` confirms the override resolutions.
+- Vulnerability disclosure policy in [`SECURITY.md`](./SECURITY.md). Repo entry-point map in [`docs/agent-onboarding.md`](./docs/agent-onboarding.md).
 
 ## Contributing
 

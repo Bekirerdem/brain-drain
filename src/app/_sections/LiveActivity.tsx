@@ -1,5 +1,5 @@
 import { env } from "@/lib/env";
-import { getNetworkPayouts, type PayoutEvent } from "@/lib/payouts";
+import { getLedgerPayouts, type PayoutEvent } from "@/lib/payouts";
 import type { SolanaCluster } from "@/lib/format";
 import { LiveActivityClient } from "../_components/LiveActivityClient";
 
@@ -7,7 +7,12 @@ const INITIAL_LIMIT = 20;
 
 async function loadInitial(): Promise<PayoutEvent[]> {
   try {
-    return await getNetworkPayouts({ limit: INITIAL_LIMIT });
+    // Same source as /api/payouts — the DB-backed ledger. Earlier this
+    // used getNetworkPayouts (RPC indexer), which on hard refresh
+    // briefly painted faucet-inflated stats ($25.20 / 17 settlements)
+    // before the client poll replaced them with the real ledger view
+    // ($3.70 / 9). SSR + polling now read the same source.
+    return await getLedgerPayouts({ limit: INITIAL_LIMIT });
   } catch {
     return [];
   }

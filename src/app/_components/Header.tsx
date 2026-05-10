@@ -25,8 +25,8 @@ export function Header() {
   });
 
   const shellClass = scrolled
-    ? "bg-[rgba(10,10,10,0.78)] backdrop-blur-xl border-b border-[var(--color-border)]"
-    : "bg-[rgba(10,10,10,0.32)] backdrop-blur-md border-b border-transparent";
+    ? "bg-[var(--color-chrome-strong)] backdrop-blur-xl border-b border-[var(--color-border)]"
+    : "bg-[var(--color-chrome)] backdrop-blur-md border-b border-transparent";
 
   return (
     <header

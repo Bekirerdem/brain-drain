@@ -22,6 +22,12 @@
   --color-amber: #fbbf24;
   --color-link: #dfcdf5;
 
+  /* Translucent surfaces that overlay both themes — header bar,
+     scroll-tinted blurs. RGB values match --color-bg per theme so
+     the alpha works the same on dark (#0a0a0a) and light (#ffffff). */
+  --color-chrome: rgba(10, 10, 10, 0.32);
+  --color-chrome-strong: rgba(10, 10, 10, 0.78);
+
   /* Logo invert is tema-aware. Dark theme inverts (black strokes
      become white on dark surface); light theme leaves the file
      alone so the original strokes read naturally. */
@@ -64,6 +70,9 @@
 
   --color-link: #5a3aa3;
   --logo-invert: 0;
+
+  --color-chrome: rgba(255, 255, 255, 0.55);
+  --color-chrome-strong: rgba(255, 255, 255, 0.85);
 }
 
 * {

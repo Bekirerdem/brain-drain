@@ -37,19 +37,22 @@ export function Header() {
           className="flex items-center gap-2.5 group select-none"
           aria-label="Brain Drain home"
         >
-          <Image
-            src="/BD-logo.png"
-            alt=""
-            width={2986}
-            height={1408}
-            priority
-            // Logo is line-art black with a green accent. On a dark
-            // theme the black strokes vanish and only the accent
-            // reads — invert flips strokes to white so the wordmark
-            // reads cleanly. Larger size so it actually carries the
-            // lockup instead of being a stamp.
-            className="h-10 w-auto invert"
-          />
+          <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden">
+            <Image
+              src="/BD-logo.png"
+              alt=""
+              width={2986}
+              height={1408}
+              priority
+              // Source image carries massive horizontal transparent
+              // margins — the actual lockup occupies ~30% of the
+              // canvas. Square clip box plus h-full + max-w-none lets
+              // the rendered logo fill the height while overflowing
+              // the side margins outside the visible box. Invert so
+              // the black strokes read on dark theme.
+              className="h-full w-auto max-w-none invert"
+            />
+          </span>
           <span className="text-brand text-[15px] uppercase tracking-[0.04em]">
             Brain Drain<span className="text-[var(--color-accent)]">.</span>
           </span>

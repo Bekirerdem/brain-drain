@@ -85,7 +85,7 @@ async function runJob(job: BuyerJob, skipFaucet: boolean): Promise<void> {
     await new Promise((r) => setTimeout(r, 4000));
   }
 
-  const url = `${env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "")}/api/v/${job.vaultSlug}/query`;
+  const url = `${resolveBaseUrl()}/api/v/${job.vaultSlug}/query`;
   console.log(`  target: ${url}`);
   console.log(`  query: ${job.query}`);
 
@@ -152,10 +152,22 @@ async function runJob(job: BuyerJob, skipFaucet: boolean): Promise<void> {
   }
 }
 
+function resolveBaseUrl(): string {
+  // CLI overrides win, then a manual --target flag, then env.
+  // --prod points at the deployed Vercel URL so this script can seed
+  // the production ledger directly without needing a local dev server.
+  if (process.argv.includes("--prod")) {
+    return "https://brain-drain-iota.vercel.app";
+  }
+  const targetFlag = process.argv.find((a) => a.startsWith("--target="));
+  if (targetFlag) return targetFlag.slice("--target=".length).replace(/\/$/, "");
+  return env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
+}
+
 async function main(): Promise<void> {
   const skipFaucet = process.argv.includes("--skip-faucet");
   console.log(
-    `[traffic] running ${JOBS.length} buyer→vault job(s)${skipFaucet ? " (faucet skipped)" : ""}`,
+    `[traffic] running ${JOBS.length} buyer→vault job(s) → ${resolveBaseUrl()}${skipFaucet ? " (faucet skipped)" : ""}`,
   );
 
   for (const job of JOBS) {

@@ -52,6 +52,11 @@ const JOBS: readonly BuyerJob[] = [
     vaultSlug: "bekir-erdem",
     query: "What's the right pattern for cross-chain bounty payouts via ICM?",
   },
+  {
+    buyerName: "brain-drain-buyer-trader",
+    vaultSlug: "news-trade-agent",
+    query: "Why did $HIGH bifurcate from $MLN on the same monitoring tag event?",
+  },
 ];
 
 async function fundBuyer(address: string): Promise<void> {

@@ -9,10 +9,11 @@ const STACK = [
   { name: "Solana", role: "settlement" },
   { name: "Helius", role: "rpc" },
   { name: "Coinbase CDP", role: "buyer wallet" },
-  { name: "Phantom Cash", role: "seller payout" },
+  { name: "Phantom", role: "operator auth" },
   { name: "x402", role: "payment protocol" },
-  { name: "MCP", role: "agent surface" },
+  { name: "Anthropic MCP", role: "agent surface" },
   { name: "Gemini 3.1 Pro", role: "embeddings + reasoning" },
+  { name: "Supabase", role: "registry + storage" },
   { name: "Next.js 16", role: "framework" },
   { name: "Vercel", role: "deployment" },
 ] as const;

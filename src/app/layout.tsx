@@ -25,6 +25,19 @@ export const metadata: Metadata = {
   },
   description:
     "AI agents finally pay the experts they cite. Mount your decision log on Solana — ~400ms on-chain settlement, USDC straight to your wallet.",
+  // Surfaces the protocol stack to crawlers (Wappalyzer, etc.) — the
+  // frontend layer is detectable from chunks, but the x402 / CDP / MCP /
+  // Helius / Gemini / Supabase combo is not. This makes that visible.
+  generator:
+    "Brain Drain · Next.js 16 · Solana · x402 v1.2 · CDP MPC · Anthropic MCP · Gemini 3.1 Pro · Helius · Supabase",
+  other: {
+    "powered-by":
+      "Solana, x402, Coinbase CDP, Anthropic MCP, Helius RPC, Gemini, Supabase, Phantom",
+    "x-payment-protocol": "x402 v1.2",
+    "x-network": "solana-devnet",
+    "x-agent-surface": "MCP + HTTP",
+    "x-rag": "custom in-memory cosine, gemini-embedding-001 (3072d)",
+  },
   openGraph: {
     title: "Brain Drain — AI agents pay experts they cite",
     description:

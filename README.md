@@ -21,24 +21,24 @@ An `x402` + RAG **multi-vault network** on Solana. Anyone can mount a maintained
 
 ## The problem
 
-Open-web training data is exhausted. The most valuable knowledge — the kind that actually moves a domain forward — lives in private vaults: researchers' notebooks, engineers' war-stories, lawyers' precedent files, traders' edge cases. AI agents either hallucinate around this gap or scrape it without consent. The humans who curated that knowledge get nothing back.
+Open-web training data is exhausted. The valuable context — researchers' notebooks, engineers' war stories, lawyers' precedent files, traders' edge cases — lives in private vaults. Agents either hallucinate around it or scrape it without consent; the experts who curated it get nothing back.
 
-There has never been a frictionless rail for an AI agent to compensate the human whose context it just consumed.
+**There has never been a frictionless rail for an agent to pay the human whose knowledge it just used.**
 
 ## The protocol, in one shape
 
-Brain Drain is **not the marketplace** — it's the **protocol the marketplace runs on**. v0 ships a working multi-vault network on Solana devnet:
+Brain Drain is **not the marketplace** — it's the **protocol the marketplace runs on**. v0 is a multi-vault network on Solana devnet:
 
-1. An operator connects Phantom, signs a one-shot challenge, and uploads a markdown bundle at `/vaults/new`.
-2. Brain Drain chunks + embeds the corpus (Gemini 3072d), persists the index in Supabase Storage, registers the vault in Postgres with the operator's wallet + payout address + category.
-3. The vault gets a public, x402-gated endpoint at `/api/v/{slug}/query` and a discovery page at `/vaults/{slug}`.
-4. An external agent (Claude Desktop, Cursor, custom MCP client, raw HTTP) hits the endpoint with a query.
-5. The endpoint replies `402 Payment Required` with USDC price + the **operator's** payout address.
-6. The agent's wallet — typically a Coinbase CDP Embedded Wallet — auto-funds, auto-signs an SPL transfer, retries with `X-Payment` proof.
-7. Helius RPC verifies the on-chain transfer (`confirmed` commitment, ~400 ms). The endpoint returns the top-k snippets with citations and the tx signature.
-8. USDC lands in the operator's address. Brain Drain holds nothing.
+1. Operator connects Phantom, signs a one-shot challenge, drops a markdown bundle at `/vaults/new`.
+2. Brain Drain chunks + embeds (Gemini 3072d), persists the index in Supabase Storage, registers the vault with the operator's payout address + category.
+3. The vault gets a public x402-gated endpoint at `/api/v/{slug}/query` and a discovery page.
+4. An agent (Claude Desktop, Cursor, MCP client, raw HTTP) hits the endpoint with a query.
+5. `402 Payment Required` returns USDC price + the **operator's** payout address.
+6. The agent's CDP Embedded Wallet auto-funds, signs an SPL transfer, retries with `X-Payment` proof.
+7. Helius RPC verifies the transfer (`confirmed`, ~400 ms). Top-k snippets + citations + tx signature returned.
+8. USDC lands in the operator's wallet. **Brain Drain custodies nothing.**
 
-**Devnet by choice for the v0 demo** — submission budget is solo, mainnet cutover is one env flip (`SOLANA_NETWORK=mainnet-beta` + RPC URL + USDC mint). x402 protocol logic is identical across networks.
+Devnet by choice for v0; mainnet cutover is one env flip (`SOLANA_NETWORK=mainnet-beta` + RPC URL + USDC mint). Protocol logic is identical across networks.
 
 ## How it works
 
@@ -92,7 +92,7 @@ Brain Drain v0 ships with a public catalog at [`/vaults`](https://brain-drain-io
 | `legal` | Citation-grade case law, redacted real precedent, jurisdiction-specific decision trees | (open) |
 | `other` | Catch-all (lowest discovery — prefer a closer match) | `bekir-erdem` |
 
-**Vault depth standard:** every chunk should be specific enough that an AI agent would pay $0.05 to read it. Specific dates, specific tickers/library versions, the actual error message, the actual PnL outcome. Generic explainers belong in a blog post, not a paid vault.
+**Vault depth standard:** every chunk should be specific enough that an agent would pay $0.05 to read it. Real dates, real tickers/versions, real error messages, real outcomes. Generic explainers don't belong in a paid vault.
 
 ## Tech stack
 
@@ -179,7 +179,7 @@ Then visit `http://localhost:3000`:
 
 ## Security audit
 
-A self-administered Chief Security Officer-grade audit (`cso` skill, daily 8/10 confidence gate) was run pre-submission. **All 10 findings resolved** — eight via patch commits, two via documented mitigation + scope-limit + post-submit migration plan.
+Pre-submission CSO-grade audit (`cso` skill, 8/10 confidence gate). **All 10 findings resolved** — eight by patch, two by documented mitigation + scope-limit + post-submit migration plan.
 
 | ID | Finding | Status |
 |----|---------|--------|
@@ -194,9 +194,9 @@ A self-administered Chief Security Officer-grade audit (`cso` skill, daily 8/10 
 | BD-09 | postcss XSS (build-time) | ✅ Override ≥8.5.10 (`0abfbbe`) |
 | BD-10 | Missing security headers | ✅ X-Frame-Options DENY, nosniff, Permissions-Policy, Referrer-Policy (`ff5a6cd`) |
 
-Full report at `~/.superstack/security-reports/brain-drain-2026-05-06.md`.
+Full report: `~/.superstack/security-reports/brain-drain-2026-05-06.md`.
 
-A second pass after the layout + ledger + theme changes that landed in commit `46837f7` produced **no new findings**. Risk surfaces touched: `vault_settlements` ledger schema + `AFTER INSERT` trigger (`SECURITY DEFINER`, `search_path = public`), `ThemeProvider` localStorage key, `GitHubStarButton` public-API fetch, the `--color-chrome*` translucent CSS variables. None reached an authenticated path or introduced state the existing RLS policies and rate-limit buckets couldn't already cover.
+A second pass after Day 10's layout + ledger + theme changes (`46837f7`) produced **no new findings**. New surfaces — `vault_settlements` trigger (`SECURITY DEFINER`), `ThemeProvider` localStorage, `GitHubStarButton` public fetch, `--color-chrome*` CSS vars — none reached authenticated paths or escaped existing RLS + rate-limit coverage.
 
 ### OWASP Top 10 (2021) coverage
 
@@ -215,9 +215,9 @@ A second pass after the layout + ledger + theme changes that landed in commit `4
 
 ### Reproducing the audit
 
-- `bun scripts/smoke.ts` exercises every public-facing surface — page routes, REST endpoints, MCP `tools/list`, x402 quote, unauthenticated POSTs — and exits non-zero on any regression.
-- `npm ls axios bigint-buffer postcss ip-address` confirms the override resolutions.
-- Vulnerability disclosure policy in [`SECURITY.md`](./SECURITY.md). Repo entry-point map in [`docs/agent-onboarding.md`](./docs/agent-onboarding.md).
+- `bun scripts/smoke.ts` — exits non-zero on any regression across pages, REST endpoints, MCP `tools/list`, x402 quote, and unauthenticated POSTs.
+- `npm ls axios bigint-buffer postcss ip-address` — confirms override resolutions.
+- Disclosure policy: [`SECURITY.md`](./SECURITY.md). Repo entry-point map: [`docs/agent-onboarding.md`](./docs/agent-onboarding.md).
 
 ## Contributing
 
@@ -229,9 +229,7 @@ Active hackathon build, but issues, ideas, and friendly heckling are welcome. Op
 
 ## Acknowledgments
 
-Built solo for [Colosseum Frontier 2026](https://colosseum.com/frontier), powered by [Superteam Earn's Agentic Engineering Grant](https://superteam.fun/earn/grants/agentic-engineering/) and the open ecosystems of [Coinbase Developer Platform](https://portal.cdp.coinbase.com), [Phantom](https://phantom.com), [Helius](https://helius.dev), [Supabase](https://supabase.com), [Anthropic](https://anthropic.com), [Google DeepMind](https://deepmind.google), and [Solana Foundation](https://solana.org).
-
-The `x402` standard is the work of [Coinbase × Cloudflare](https://github.com/coinbase/x402). MCP comes from [Anthropic](https://modelcontextprotocol.io). Gemini comes from [Google DeepMind](https://deepmind.google).
+Built solo for [Colosseum Frontier 2026](https://colosseum.com/frontier), supported by [Superteam Earn's Agentic Engineering Grant](https://superteam.fun/earn/grants/agentic-engineering/). Built on [CDP](https://portal.cdp.coinbase.com), [Phantom](https://phantom.com), [Helius](https://helius.dev), [Supabase](https://supabase.com), [Solana](https://solana.org). [`x402`](https://github.com/coinbase/x402) by Coinbase × Cloudflare; [MCP](https://modelcontextprotocol.io) by Anthropic; [Gemini](https://deepmind.google) by Google DeepMind.
 
 The development cadence (skills, journey templates, hackathon discipline) is shaped by [solana.new](https://solana.new) — SendAI + Superteam's open-source platform — and our `cso` security audit ran on its CSO skill.
 

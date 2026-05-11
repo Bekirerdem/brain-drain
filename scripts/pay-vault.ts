@@ -123,7 +123,7 @@ async function main(): Promise<void> {
       const seedResult = await account.transfer({
         to: requirements.payTo,
         token: "usdc",
-        amount: 1000n,
+        amount: BigInt(1000),
         network: "devnet",
       });
       console.log(`  dust tx: ${seedResult.signature.slice(0, 24)}…`);

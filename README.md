@@ -1,6 +1,9 @@
 <div align="center">
 
-<img src="./public/bd-mark.png" alt="Brain Drain" width="140" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./public/bd-mark-dark.png">
+  <img src="./public/bd-mark.png" alt="Brain Drain" width="140" />
+</picture>
 
 # Brain Drain
 

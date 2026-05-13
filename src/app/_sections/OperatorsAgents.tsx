@@ -41,8 +41,8 @@ export function OperatorsAgents() {
         preload="auto"
         className="pointer-events-none hidden lg:block absolute inset-0 w-full h-full object-cover z-0"
         style={{
-          opacity: 0.55,
-          filter: "saturate(0.55) brightness(1.2)",
+          opacity: 0.9,
+          filter: "brightness(1.1)",
           mixBlendMode: "screen",
         }}
       >

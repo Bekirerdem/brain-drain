@@ -30,58 +30,7 @@ export async function LiveActivity() {
       <div className="bg-aurora-canvas opacity-50" aria-hidden="true" />
       <div className="bg-grain-overlay" aria-hidden="true" />
 
-      {/*
-       * Wall-anchored half-bursts — futuristic-7.gif → VP9 WebM
-       * (1.16 MB → 481 KB). Two square containers (aspect 1:1,
-       * height-full), each positioned with its center on a section
-       * wall. translate(±50%, -50%) pushes each video so half of it
-       * sits off-screen and the section's overflow-hidden clips the
-       * other half away — only the inward-facing half of each burst
-       * reads on the section. mix-blend-mode: screen drops the
-       * video's black backdrop. Hidden below lg.
-       */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none hidden lg:block absolute top-1/2 left-0 h-full z-[1]"
-        style={{
-          aspectRatio: "1 / 1",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="w-full h-full object-cover"
-          style={{ mixBlendMode: "screen" }}
-        >
-          <source src="/video/live-burst.webm" type="video/webm" />
-        </video>
-      </div>
-      <div
-        aria-hidden="true"
-        className="pointer-events-none hidden lg:block absolute top-1/2 right-0 h-full z-[1]"
-        style={{
-          aspectRatio: "1 / 1",
-          transform: "translate(50%, -50%)",
-        }}
-      >
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="w-full h-full object-cover"
-          style={{ mixBlendMode: "screen" }}
-        >
-          <source src="/video/live-burst.webm" type="video/webm" />
-        </video>
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
+      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
         <SectionEyebrow network={network} />
 
         <h2 className="text-display mt-8 text-[clamp(36px,6vw,72px)] text-[var(--color-text)] max-w-3xl">

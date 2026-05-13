@@ -27,27 +27,7 @@ export function OperatorsAgents() {
       id="operators-and-agents"
       className="relative overflow-hidden border-t border-[var(--color-border)]"
     >
-      {/*
-       * Background grid-particles loop — same WebM as HowItWorks so
-       * the protocol/section-below pair share a single download. Same
-       * dosage as HowItWorks to keep the visual rhythm consistent.
-       */}
-      <video
-        aria-hidden="true"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="pointer-events-none hidden lg:block absolute inset-0 w-full h-full object-cover z-0"
-        style={{
-          mixBlendMode: "screen",
-        }}
-      >
-        <source src="/video/grid-particles.webm" type="video/webm" />
-      </video>
-
-      <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-24 lg:pt-28 lg:pb-28">
+      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-24 lg:pt-28 lg:pb-28">
         <p className="text-eyebrow">Two sides, one rail</p>
         <h2 className="text-display mt-6 text-[clamp(36px,5.5vw,64px)] text-[var(--color-text)] max-w-[860px] leading-[1.04]">
           Mount a vault. Or send your agent.{" "}

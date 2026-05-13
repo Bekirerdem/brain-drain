@@ -71,11 +71,14 @@ export function Hero() {
       <div className="bg-grain-overlay" aria-hidden="true" />
 
       {/*
-       * Right-half vortex accent — futuristic-4.gif converted to VP9
-       * WebM (3.15 MB GIF → 506 KB video, 6× smaller). The video's
-       * black backdrop disappears under mix-blend-mode: screen so the
-       * particle ring reads as ambient atmosphere. Hidden below lg to
-       * keep mobile clean.
+       * Symmetric vortex accents — futuristic-4.gif converted to VP9
+       * WebM (3.15 MB GIF → 506 KB video, 6× smaller). Same source
+       * rendered twice: right-anchored on the right half, left-
+       * anchored on the left half with scaleX(-1) so the two vortex
+       * rings face each other and converge at the hero centerline.
+       * mix-blend-mode: screen drops the video's black backdrop.
+       * Hidden below lg to keep mobile clean and skip the double
+       * decode cost on small screens.
        */}
       <video
         aria-hidden="true"
@@ -89,6 +92,23 @@ export function Hero() {
           opacity: 0.6,
           filter: "saturate(0.85) brightness(1.15)",
           mixBlendMode: "screen",
+        }}
+      >
+        <source src="/video/hero-vortex.webm" type="video/webm" />
+      </video>
+      <video
+        aria-hidden="true"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        className="pointer-events-none hidden lg:block absolute inset-y-0 left-0 w-[50%] h-full object-cover z-[1]"
+        style={{
+          opacity: 0.6,
+          filter: "saturate(0.85) brightness(1.15)",
+          mixBlendMode: "screen",
+          transform: "scaleX(-1)",
         }}
       >
         <source src="/video/hero-vortex.webm" type="video/webm" />

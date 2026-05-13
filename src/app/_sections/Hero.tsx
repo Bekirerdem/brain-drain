@@ -71,34 +71,21 @@ export function Hero() {
       <div className="bg-grain-overlay" aria-hidden="true" />
 
       {/*
-       * Symmetric hero-wave accents — futuristic-4.jpg from
-       * Bg-design. Same image rendered twice: right-anchored on the
-       * right half, left-anchored on the left half with scaleX(-1) so
-       * the two holographic waves face each other and converge at the
-       * hero centerline. mix-blend-mode: screen drops the image's
-       * black backdrop. Hidden below lg.
+       * Single hero-wave bg — futuristic-4.jpg from Bg-design, one
+       * instance spanning the full hero. cover keeps it landscape-
+       * filling, screen blend drops the image's black backdrop so
+       * only the holographic wave reads as atmosphere. Hidden below
+       * lg to keep mobile clean.
        */}
       <div
         aria-hidden="true"
-        className="pointer-events-none hidden lg:block absolute inset-y-0 right-0 w-[50%] z-[1]"
+        className="pointer-events-none hidden lg:block absolute inset-0 z-[1]"
         style={{
           backgroundImage: "url('/bg/hero-wave.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           mixBlendMode: "screen",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none hidden lg:block absolute inset-y-0 left-0 w-[50%] z-[1]"
-        style={{
-          backgroundImage: "url('/bg/hero-wave.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          mixBlendMode: "screen",
-          transform: "scaleX(-1)",
         }}
       />
 

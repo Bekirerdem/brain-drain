@@ -66,7 +66,7 @@ export function Hero() {
   }, [reduced]);
 
   return (
-    <section className="bg-aurora bg-grain relative overflow-hidden">
+    <section className="bg-aurora bg-grain relative overflow-hidden lg:min-h-screen lg:flex lg:flex-col">
       <div className="bg-aurora-canvas" aria-hidden="true" />
       <div className="bg-grain-overlay" aria-hidden="true" />
 
@@ -114,7 +114,7 @@ export function Hero() {
         <source src="/video/hero-vortex.webm" type="video/webm" />
       </video>
 
-      <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 pt-12 pb-16 lg:pt-14 lg:pb-16">
+      <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 lg:px-10 pt-12 pb-16 lg:pt-14 lg:pb-16 lg:flex-1 lg:flex lg:flex-col lg:justify-between">
         <div className="grid lg:grid-cols-[1.15fr_1fr] gap-12 lg:gap-16 items-center">
           <div>
             <motion.div

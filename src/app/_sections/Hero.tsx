@@ -70,28 +70,6 @@ export function Hero() {
       <div className="bg-aurora-canvas" aria-hidden="true" />
       <div className="bg-grain-overlay" aria-hidden="true" />
 
-      {/*
-       * Right-side atmospheric rings — futuristic-2 reference. Spans
-       * the full hero height with background-size: cover so the rings
-       * read as ambient atmosphere instead of a contained band. The
-       * image's own black backdrop disappears under
-       * mix-blend-mode: screen, so the cover-fill never produces a
-       * visible rectangular edge — only the ring glow extends across.
-       */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[60%] z-[1]"
-        style={{
-          backgroundImage: "url('/bg/hero-rings.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          opacity: 0.7,
-          filter: "saturate(0.85) brightness(1.15) hue-rotate(-15deg)",
-          mixBlendMode: "screen",
-        }}
-      />
-
       <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 pt-16 pb-24 lg:pt-24 lg:pb-32">
         <div className="grid lg:grid-cols-[1.15fr_1fr] gap-12 lg:gap-16 items-center">
           <div>

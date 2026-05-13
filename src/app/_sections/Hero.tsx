@@ -114,7 +114,7 @@ export function Hero() {
         <source src="/video/hero-vortex.webm" type="video/webm" />
       </video>
 
-      <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 pt-16 pb-24 lg:pt-24 lg:pb-32">
+      <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 pt-12 pb-16 lg:pt-14 lg:pb-16">
         <div className="grid lg:grid-cols-[1.15fr_1fr] gap-12 lg:gap-16 items-center">
           <div>
             <motion.div
@@ -204,7 +204,7 @@ export function Hero() {
           </motion.div>
         </div>
 
-        <div className="mt-20 lg:mt-28 grid grid-cols-2 sm:grid-cols-4 gap-px bg-[var(--color-border)] border-y border-[var(--color-border)]">
+        <div className="mt-12 lg:mt-14 grid grid-cols-2 sm:grid-cols-4 gap-px bg-[var(--color-border)] border-y border-[var(--color-border)]">
           {HERO_STATS.map((stat, i) => (
             <motion.div
               key={stat.label}

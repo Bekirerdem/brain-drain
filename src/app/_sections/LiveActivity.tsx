@@ -31,26 +31,55 @@ export async function LiveActivity() {
       <div className="bg-grain-overlay" aria-hidden="true" />
 
       {/*
-       * Center burst accent — futuristic-7.gif → VP9 WebM (1.16 MB →
-       * 481 KB). Single instance, centered in the section.
-       * object-contain keeps the square aspect; the area around it
-       * stays the section bg (dark), so the particle burst reads as
-       * a focal element rather than a tiled pattern.
-       * mix-blend-mode: screen drops the video's black backdrop.
-       * Hidden below lg.
+       * Wall-anchored half-bursts — futuristic-7.gif → VP9 WebM
+       * (1.16 MB → 481 KB). Two square containers (aspect 1:1,
+       * height-full), each positioned with its center on a section
+       * wall. translate(±50%, -50%) pushes each video so half of it
+       * sits off-screen and the section's overflow-hidden clips the
+       * other half away — only the inward-facing half of each burst
+       * reads on the section. mix-blend-mode: screen drops the
+       * video's black backdrop. Hidden below lg.
        */}
-      <video
+      <div
         aria-hidden="true"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="pointer-events-none hidden lg:block absolute inset-0 w-full h-full object-contain z-[1]"
-        style={{ mixBlendMode: "screen" }}
+        className="pointer-events-none hidden lg:block absolute top-1/2 left-0 h-full z-[1]"
+        style={{
+          aspectRatio: "1 / 1",
+          transform: "translate(-50%, -50%)",
+        }}
       >
-        <source src="/video/live-burst.webm" type="video/webm" />
-      </video>
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover"
+          style={{ mixBlendMode: "screen" }}
+        >
+          <source src="/video/live-burst.webm" type="video/webm" />
+        </video>
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none hidden lg:block absolute top-1/2 right-0 h-full z-[1]"
+        style={{
+          aspectRatio: "1 / 1",
+          transform: "translate(50%, -50%)",
+        }}
+      >
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover"
+          style={{ mixBlendMode: "screen" }}
+        >
+          <source src="/video/live-burst.webm" type="video/webm" />
+        </video>
+      </div>
 
       <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
         <SectionEyebrow network={network} />

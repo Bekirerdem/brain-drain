@@ -31,7 +31,7 @@ const BOUNTIES = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-[var(--color-border)] mt-32 overflow-hidden">
+    <footer className="relative border-t border-[var(--color-border)] overflow-hidden">
       {/*
        * Symmetric wave accents — futuristic.jpg rendered twice: once
        * left-anchored, once right-anchored with scaleX(-1) so the two

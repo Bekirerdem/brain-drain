@@ -13,7 +13,7 @@ An `x402` + RAG **multi-vault network** on Solana. Anyone mounts a markdown corp
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Solana](https://img.shields.io/badge/Solana-devnet-9945FF?logo=solana&logoColor=white)](https://solana.com)
-[![Frontier 2026](https://img.shields.io/badge/Built_for-Colosseum_Frontier_2026-blue)](https://colosseum.com/frontier)
+[![Frontier 2026](https://img.shields.io/badge/Submitted-Colosseum_Frontier_2026-blue)](https://arena.colosseum.org/u/Beks)
 [![Status](https://img.shields.io/badge/status-multi--vault_live-success)](https://brain-drain-iota.vercel.app)
 [![Audit](https://img.shields.io/badge/CSO_audit-10%2F10_resolved-9945FF)](#security-audit)
 [![Vuln disclosure](https://img.shields.io/badge/vuln_disclosure-SECURITY.md-9CA3AF)](./SECURITY.md)
@@ -99,7 +99,9 @@ Public catalog at [`/vaults`](https://brain-drain-iota.vercel.app/vaults). Every
 
 **No vector DB.** Per-vault index lives in Supabase Storage as JSON; in-process LRU caches 32 vaults for 5 min. Cosine top-k is a literal `for` loop. Submit-grade because it's small enough to read end-to-end in 5 minutes.
 
-## Frontier 2026 — bounties targeted
+## Frontier 2026 — submitted bounties
+
+Submitted via [arena.colosseum.org/u/Beks](https://arena.colosseum.org/u/Beks). Awaiting judging.
 
 | Bounty | How |
 | :-- | :-- |
@@ -107,6 +109,8 @@ Public catalog at [`/vaults`](https://brain-drain-iota.vercel.app/vaults). Every
 | Best x402 Integration | Reference implementation on Solana — full spec compliance, multi-vault per-operator routing, atomic distributed rate limit |
 | Best CDP Embedded Wallets | Buyer-side MPC `TransactionModifyingSigner` — auto-fund + auto-sign, no raw-key handling |
 | Best AgentPay Demo | 3-minute submission video — agentic settlement end-to-end with on-chain proof |
+
+Also submitted to the **Halborn security track** (CSO audit + OWASP Top 10 mapping) and the **Solana Foundation Turkey $3K builder grant**.
 
 ## Quickstart
 
@@ -143,7 +147,8 @@ Routes:
 - [x] **Day 6–7** — Frontend rebuild, multi-vault MVP, CSO audit
 - [x] **Day 8–9** — Network seed + MCP v0.3, category taxonomy
 - [x] **Day 10** — Frontier submission, OWASP Top 10 mapping
-- [ ] **Day 11+** — Mainnet cutover, MCP catalog distribution (Smithery, Cursor, awesome-mcp-servers)
+- [x] **Day 11–13** — Demo video, Halborn track submission, Foundation Turkey grant submission, Twitter announce
+- [ ] **Post-Frontier** — Mainnet cutover, MCP catalog distribution (Smithery, Cursor, awesome-mcp-servers), operator outreach
 
 ## Security audit
 
@@ -187,7 +192,7 @@ Second audit pass after Day 10's layout + ledger + theme changes (`46837f7`) →
 
 ## Contributing
 
-Active hackathon build. Issues, ideas, friendly heckling welcome — open a GitHub issue or DM [@l3ekirerdem](https://x.com/l3ekirerdem).
+Hackathon submissions in — judging phase. Project continues post-Frontier. Issues, ideas, friendly heckling welcome — open a GitHub issue or DM [@l3ekirerdem](https://x.com/l3ekirerdem).
 
 ## License
 

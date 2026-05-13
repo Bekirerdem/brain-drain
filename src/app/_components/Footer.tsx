@@ -33,26 +33,25 @@ export function Footer() {
   return (
     <footer className="relative border-t border-[var(--color-border)] mt-32 overflow-hidden">
       {/*
-       * Top-edge wave strip — futuristic.jpg reference. Sits at the
-       * footer's upper band as the visual "settlements arrive here"
-       * accent. Top-and-bottom mask fade keeps the strip from clashing
-       * with the divider above or the watermark below.
+       * Left-anchored full wave — futuristic.jpg reference. Whole image
+       * visible on the left side at 45% opacity. Right-edge mask fades
+       * the wave into the column content so it never clashes with the
+       * lockup/columns. Hidden below lg to keep mobile clean.
        */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 z-0 overflow-hidden"
+        className="pointer-events-none hidden lg:block absolute inset-y-0 left-0 z-[1] w-[55%]"
         style={{
-          height: "320px",
           backgroundImage: "url('/bg/wave-strip.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
+          backgroundSize: "contain",
+          backgroundPosition: "left center",
           backgroundRepeat: "no-repeat",
-          opacity: 0.6,
-          filter: "saturate(0.75) brightness(1.1) hue-rotate(-15deg)",
+          opacity: 0.45,
+          filter: "saturate(0.8) brightness(1.05) hue-rotate(-15deg)",
           maskImage:
-            "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 28%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
+            "linear-gradient(to right, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
           WebkitMaskImage:
-            "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 28%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
+            "linear-gradient(to right, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
           mixBlendMode: "screen",
         }}
       />

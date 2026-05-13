@@ -70,6 +70,30 @@ export function Hero() {
       <div className="bg-aurora-canvas" aria-hidden="true" />
       <div className="bg-grain-overlay" aria-hidden="true" />
 
+      {/*
+       * Right-half vortex accent — futuristic-4.gif converted to VP9
+       * WebM (3.15 MB GIF → 506 KB video, 6× smaller). The video's
+       * black backdrop disappears under mix-blend-mode: screen so the
+       * particle ring reads as ambient atmosphere. Hidden below lg to
+       * keep mobile clean.
+       */}
+      <video
+        aria-hidden="true"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        className="pointer-events-none hidden lg:block absolute inset-y-0 right-0 w-[50%] h-full object-cover z-[1]"
+        style={{
+          opacity: 0.6,
+          filter: "saturate(0.85) brightness(1.15)",
+          mixBlendMode: "screen",
+        }}
+      >
+        <source src="/video/hero-vortex.webm" type="video/webm" />
+      </video>
+
       <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 pt-16 pb-24 lg:pt-24 lg:pb-32">
         <div className="grid lg:grid-cols-[1.15fr_1fr] gap-12 lg:gap-16 items-center">
           <div>

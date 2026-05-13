@@ -71,48 +71,36 @@ export function Hero() {
       <div className="bg-grain-overlay" aria-hidden="true" />
 
       {/*
-       * Symmetric vortex accents — futuristic-4.gif converted to VP9
-       * WebM (3.15 MB GIF → 506 KB video, 6× smaller). Same source
-       * rendered twice: right-anchored on the right half, left-
-       * anchored on the left half with scaleX(-1) so the two vortex
-       * rings face each other and converge at the hero centerline.
-       * mix-blend-mode: screen drops the video's black backdrop.
-       * Hidden below lg to keep mobile clean and skip the double
-       * decode cost on small screens.
+       * Symmetric hero-wave accents — futuristic-4.jpg from
+       * Bg-design. Same image rendered twice: right-anchored on the
+       * right half, left-anchored on the left half with scaleX(-1) so
+       * the two holographic waves face each other and converge at the
+       * hero centerline. mix-blend-mode: screen drops the image's
+       * black backdrop. Hidden below lg.
        */}
-      <video
+      <div
         aria-hidden="true"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="pointer-events-none hidden lg:block absolute inset-y-0 right-0 w-[50%] h-full object-cover z-[1]"
+        className="pointer-events-none hidden lg:block absolute inset-y-0 right-0 w-[50%] z-[1]"
         style={{
-          opacity: 0.6,
-          filter: "saturate(0.85) brightness(1.15)",
+          backgroundImage: "url('/bg/hero-wave.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
           mixBlendMode: "screen",
         }}
-      >
-        <source src="/video/hero-vortex.webm" type="video/webm" />
-      </video>
-      <video
+      />
+      <div
         aria-hidden="true"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="pointer-events-none hidden lg:block absolute inset-y-0 left-0 w-[50%] h-full object-cover z-[1]"
+        className="pointer-events-none hidden lg:block absolute inset-y-0 left-0 w-[50%] z-[1]"
         style={{
-          opacity: 0.6,
-          filter: "saturate(0.85) brightness(1.15)",
+          backgroundImage: "url('/bg/hero-wave.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
           mixBlendMode: "screen",
           transform: "scaleX(-1)",
         }}
-      >
-        <source src="/video/hero-vortex.webm" type="video/webm" />
-      </video>
+      />
 
       <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 lg:px-10 pt-12 pb-16 lg:pt-14 lg:pb-16 lg:flex-1 lg:flex lg:flex-col lg:justify-between">
         <div className="grid lg:grid-cols-[1.15fr_1fr] gap-12 lg:gap-16 items-center">

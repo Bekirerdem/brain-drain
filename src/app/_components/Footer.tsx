@@ -33,25 +33,23 @@ export function Footer() {
   return (
     <footer className="relative border-t border-[var(--color-border)] mt-32 overflow-hidden">
       {/*
-       * Left-anchored full wave — futuristic.jpg reference. Whole image
-       * visible on the left side at 45% opacity. Right-edge mask fades
-       * the wave into the column content so it never clashes with the
-       * lockup/columns. Hidden below lg to keep mobile clean.
+       * Left-anchored full wave — futuristic.jpg reference. Container
+       * locked to the image's native 736×490 aspect so the wave never
+       * crops. The image's own black backdrop disappears under
+       * mix-blend-mode: screen — only the wave reads through. No mask
+       * needed; the image fades into the footer naturally. Hidden
+       * below lg to keep mobile clean.
        */}
       <div
         aria-hidden="true"
-        className="pointer-events-none hidden lg:block absolute inset-y-0 left-0 z-[1] w-[55%]"
+        className="pointer-events-none hidden lg:block absolute z-[1] left-0 top-1/2 -translate-y-1/2 w-[50%]"
         style={{
+          aspectRatio: "736 / 490",
           backgroundImage: "url('/bg/wave-strip.jpg')",
-          backgroundSize: "contain",
-          backgroundPosition: "left center",
+          backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
           opacity: 0.45,
           filter: "saturate(0.8) brightness(1.05) hue-rotate(-15deg)",
-          maskImage:
-            "linear-gradient(to right, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to right, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
           mixBlendMode: "screen",
         }}
       />

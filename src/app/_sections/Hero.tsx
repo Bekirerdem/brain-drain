@@ -70,7 +70,31 @@ export function Hero() {
       <div className="bg-aurora-canvas" aria-hidden="true" />
       <div className="bg-grain-overlay" aria-hidden="true" />
 
-      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-16 pb-24 lg:pt-24 lg:pb-32">
+      {/*
+       * Right-side atmospheric rings — futuristic-2 reference adapted as
+       * subtle accent. Anchored to the right edge, masked to fade out
+       * before reaching the headline column. Screen blend + drained
+       * saturation keep it ambient, not decorative.
+       */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[72%] z-[1]"
+        style={{
+          backgroundImage: "url('/bg/hero-rings.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center right",
+          backgroundRepeat: "no-repeat",
+          opacity: 0.28,
+          filter: "saturate(0.45) brightness(0.92) hue-rotate(-15deg)",
+          maskImage:
+            "linear-gradient(to left, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 92%)",
+          WebkitMaskImage:
+            "linear-gradient(to left, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 92%)",
+          mixBlendMode: "screen",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 pt-16 pb-24 lg:pt-24 lg:pb-32">
         <div className="grid lg:grid-cols-[1.15fr_1fr] gap-12 lg:gap-16 items-center">
           <div>
             <motion.div

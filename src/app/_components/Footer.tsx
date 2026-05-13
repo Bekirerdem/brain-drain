@@ -33,6 +33,31 @@ export function Footer() {
   return (
     <footer className="relative border-t border-[var(--color-border)] mt-32 overflow-hidden">
       {/*
+       * Top-edge wave strip — futuristic.jpg reference. Sits at the
+       * footer's upper band as the visual "settlements arrive here"
+       * accent. Top-and-bottom mask fade keeps the strip from clashing
+       * with the divider above or the watermark below.
+       */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 overflow-hidden"
+        style={{
+          height: "240px",
+          backgroundImage: "url('/bg/wave-strip.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center top",
+          backgroundRepeat: "no-repeat",
+          opacity: 0.22,
+          filter: "saturate(0.5) brightness(0.95) hue-rotate(-15deg)",
+          maskImage:
+            "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%)",
+          mixBlendMode: "screen",
+        }}
+      />
+
+      {/*
        * Giant brand watermark — solana.com / avax.network pattern.
        * Sits behind the column content, runs full-width, clipped at the
        * bottom edge. Audiowide via text-brand, opacity dialed to ~5-7%

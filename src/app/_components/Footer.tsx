@@ -33,12 +33,12 @@ export function Footer() {
   return (
     <footer className="relative border-t border-[var(--color-border)] mt-32 overflow-hidden">
       {/*
-       * Left-anchored full wave — futuristic.jpg reference. Container
-       * locked to the image's native 736×490 aspect so the wave never
-       * crops. The image's own black backdrop disappears under
-       * mix-blend-mode: screen — only the wave reads through. No mask
-       * needed; the image fades into the footer naturally. Hidden
-       * below lg to keep mobile clean.
+       * Symmetric wave accents — futuristic.jpg rendered twice: once
+       * left-anchored, once right-anchored with scaleX(-1) so the two
+       * waves converge at the footer's vertical centerline. Each
+       * container is locked to the image's native 736×490 aspect so
+       * the wave never crops. mix-blend-mode: screen hides the
+       * image's black backdrop. Hidden below lg to keep mobile clean.
        */}
       <div
         aria-hidden="true"
@@ -51,6 +51,20 @@ export function Footer() {
           opacity: 0.45,
           filter: "saturate(0.8) brightness(1.05) hue-rotate(-15deg)",
           mixBlendMode: "screen",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none hidden lg:block absolute z-[1] right-0 top-1/2 w-[50%]"
+        style={{
+          aspectRatio: "736 / 490",
+          backgroundImage: "url('/bg/wave-strip.jpg')",
+          backgroundSize: "100% 100%",
+          backgroundRepeat: "no-repeat",
+          opacity: 0.45,
+          filter: "saturate(0.8) brightness(1.05) hue-rotate(-15deg)",
+          mixBlendMode: "screen",
+          transform: "translateY(-50%) scaleX(-1)",
         }}
       />
 

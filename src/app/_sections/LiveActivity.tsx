@@ -31,13 +31,13 @@ export async function LiveActivity() {
       <div className="bg-grain-overlay" aria-hidden="true" />
 
       {/*
-       * Four-corner burst accents — futuristic-7.gif converted to VP9
-       * WebM (1.16 MB → 481 KB). Same source rendered four times, one
-       * per quadrant. The transforms (scaleX/scaleY/scale-1,-1) mirror
-       * each instance so the particle burst always reads as 'emerging
-       * from its own corner' instead of repeating the original
-       * orientation. mix-blend-mode: screen drops the video's black
-       * backdrop. Hidden below lg.
+       * Center burst accent — futuristic-7.gif → VP9 WebM (1.16 MB →
+       * 481 KB). Single instance, centered in the section.
+       * object-contain keeps the square aspect; the area around it
+       * stays the section bg (dark), so the particle burst reads as
+       * a focal element rather than a tiled pattern.
+       * mix-blend-mode: screen drops the video's black backdrop.
+       * Hidden below lg.
        */}
       <video
         aria-hidden="true"
@@ -46,44 +46,8 @@ export async function LiveActivity() {
         loop
         playsInline
         preload="auto"
-        className="pointer-events-none hidden lg:block absolute top-0 left-0 w-[50%] h-[50%] object-cover z-[1]"
+        className="pointer-events-none hidden lg:block absolute inset-0 w-full h-full object-contain z-[1]"
         style={{ mixBlendMode: "screen" }}
-      >
-        <source src="/video/live-burst.webm" type="video/webm" />
-      </video>
-      <video
-        aria-hidden="true"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="pointer-events-none hidden lg:block absolute top-0 right-0 w-[50%] h-[50%] object-cover z-[1]"
-        style={{ mixBlendMode: "screen", transform: "scaleX(-1)" }}
-      >
-        <source src="/video/live-burst.webm" type="video/webm" />
-      </video>
-      <video
-        aria-hidden="true"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="pointer-events-none hidden lg:block absolute bottom-0 left-0 w-[50%] h-[50%] object-cover z-[1]"
-        style={{ mixBlendMode: "screen", transform: "scaleY(-1)" }}
-      >
-        <source src="/video/live-burst.webm" type="video/webm" />
-      </video>
-      <video
-        aria-hidden="true"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="pointer-events-none hidden lg:block absolute bottom-0 right-0 w-[50%] h-[50%] object-cover z-[1]"
-        style={{ mixBlendMode: "screen", transform: "scale(-1, -1)" }}
       >
         <source src="/video/live-burst.webm" type="video/webm" />
       </video>

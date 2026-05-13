@@ -71,25 +71,22 @@ export function Hero() {
       <div className="bg-grain-overlay" aria-hidden="true" />
 
       {/*
-       * Right-side atmospheric rings — futuristic-2 reference adapted as
-       * subtle accent. Anchored to the right edge, masked to fade out
-       * before reaching the headline column. Screen blend + drained
-       * saturation keep it ambient, not decorative.
+       * Right-side atmospheric rings — futuristic-2 reference, locked
+       * to the image's native 736×414 aspect so both ring sets read
+       * in full (no crop). mix-blend-mode: screen hides the image's
+       * black backdrop; no mask needed. Vertically centered within
+       * the hero so the rings sit behind the orbit/stats area.
        */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[55%] z-[1]"
+        className="pointer-events-none hidden lg:block absolute z-[1] right-0 top-1/2 -translate-y-1/2 w-[55%]"
         style={{
+          aspectRatio: "736 / 414",
           backgroundImage: "url('/bg/hero-rings.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "right center",
+          backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
-          opacity: 0.6,
-          filter: "saturate(0.75) brightness(1.05) hue-rotate(-15deg)",
-          maskImage:
-            "linear-gradient(to left, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to left, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%)",
+          opacity: 0.7,
+          filter: "saturate(0.85) brightness(1.15) hue-rotate(-15deg)",
           mixBlendMode: "screen",
         }}
       />

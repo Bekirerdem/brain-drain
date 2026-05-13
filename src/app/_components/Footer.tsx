@@ -48,8 +48,8 @@ export function Footer() {
           backgroundImage: "url('/bg/wave-strip.jpg')",
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
-          opacity: 0.45,
-          filter: "saturate(0.8) brightness(1.05) hue-rotate(-15deg)",
+          opacity: 0.6,
+          filter: "saturate(0.9) brightness(1.2) hue-rotate(-15deg)",
           mixBlendMode: "screen",
         }}
       />
@@ -61,8 +61,8 @@ export function Footer() {
           backgroundImage: "url('/bg/wave-strip.jpg')",
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
-          opacity: 0.45,
-          filter: "saturate(0.8) brightness(1.05) hue-rotate(-15deg)",
+          opacity: 0.6,
+          filter: "saturate(0.9) brightness(1.2) hue-rotate(-15deg)",
           mixBlendMode: "screen",
           transform: "translateY(-50%) scaleX(-1)",
         }}

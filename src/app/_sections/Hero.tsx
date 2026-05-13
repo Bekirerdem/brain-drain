@@ -71,19 +71,20 @@ export function Hero() {
       <div className="bg-grain-overlay" aria-hidden="true" />
 
       {/*
-       * Right-side atmospheric rings — futuristic-2 reference, locked
-       * to the image's native 736×414 aspect so both ring sets read
-       * in full (no crop). mix-blend-mode: screen hides the image's
-       * black backdrop; no mask needed. Vertically centered within
-       * the hero so the rings sit behind the orbit/stats area.
+       * Right-side atmospheric rings — futuristic-2 reference. Spans
+       * the full hero height with background-size: cover so the rings
+       * read as ambient atmosphere instead of a contained band. The
+       * image's own black backdrop disappears under
+       * mix-blend-mode: screen, so the cover-fill never produces a
+       * visible rectangular edge — only the ring glow extends across.
        */}
       <div
         aria-hidden="true"
-        className="pointer-events-none hidden lg:block absolute z-[1] right-0 top-1/2 -translate-y-1/2 w-[55%]"
+        className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[60%] z-[1]"
         style={{
-          aspectRatio: "736 / 414",
           backgroundImage: "url('/bg/hero-rings.jpg')",
-          backgroundSize: "100% 100%",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           opacity: 0.7,
           filter: "saturate(0.85) brightness(1.15) hue-rotate(-15deg)",

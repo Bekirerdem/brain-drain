@@ -30,42 +30,7 @@ export async function LiveActivity() {
       <div className="bg-aurora-canvas opacity-50" aria-hidden="true" />
       <div className="bg-grain-overlay" aria-hidden="true" />
 
-      {/*
-       * Symmetric live-ribbon accents — futuristic-22.gif converted to
-       * VP9 WebM (1.92 MB → 192 KB). Same source rendered twice: the
-       * original ribbon flows from upper-left on the left half, the
-       * scaleX(-1) mirror flows from upper-right on the right half so
-       * the two streams converge at the section centerline. Mirrors
-       * the same composition pattern used by Hero + Footer.
-       * mix-blend-mode: screen drops the video's black backdrop.
-       * Hidden below lg to keep mobile clean.
-       */}
-      <video
-        aria-hidden="true"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="pointer-events-none hidden lg:block absolute inset-y-0 left-0 w-[50%] h-full object-cover z-[1]"
-        style={{ mixBlendMode: "screen" }}
-      >
-        <source src="/video/live-ribbon.webm" type="video/webm" />
-      </video>
-      <video
-        aria-hidden="true"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="pointer-events-none hidden lg:block absolute inset-y-0 right-0 w-[50%] h-full object-cover z-[1]"
-        style={{ mixBlendMode: "screen", transform: "scaleX(-1)" }}
-      >
-        <source src="/video/live-ribbon.webm" type="video/webm" />
-      </video>
-
-      <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
+      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
         <SectionEyebrow network={network} />
 
         <h2 className="text-display mt-8 text-[clamp(36px,6vw,72px)] text-[var(--color-text)] max-w-3xl">

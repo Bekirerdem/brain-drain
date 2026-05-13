@@ -255,8 +255,6 @@ export const VAULT_CATEGORY_LABELS: Record<VaultCategory, string> = {
 /**
  * Per-category helper text shown below the dropdown in /vaults/new.
  * Operator-faced — sets the depth standard so uploads stay paid-grade.
- * Alternate phrasings (English-only, punchy) lived in
- * tasks/category-hints-draft.md.
  */
 export const VAULT_CATEGORY_HINTS: Record<VaultCategory, string> = {
   engineering:

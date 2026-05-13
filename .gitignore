@@ -42,6 +42,9 @@ git-log.txt
 # private vault content (anything Bekir does not want to ship publicly)
 seed-vault/private/
 
+# internal planning / drafts / video scripts — not part of the public protocol
+/tasks/
+
 # RAG index cache (rebuildable from seed-vault/)
 .cache/
 

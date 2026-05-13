@@ -27,27 +27,7 @@ export function OperatorsAgents() {
       id="operators-and-agents"
       className="relative overflow-hidden border-t border-[var(--color-border)]"
     >
-      {/*
-       * Lower-junction bg — futuristic-7.jpg. Mirror pair of the
-       * upper section's junction-top. The orange tile junction sits
-       * in the image's lower half; cover-fit + center top keeps the
-       * top of the image at the section's top edge so its streaks
-       * pick up exactly where HowItWorks' junction-top.jpg left off.
-       * mix-blend-mode: screen drops the image's black backdrop.
-       */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none hidden lg:block absolute inset-0 z-0"
-        style={{
-          backgroundImage: "url('/bg/junction-bottom.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
-          backgroundRepeat: "no-repeat",
-          mixBlendMode: "screen",
-        }}
-      />
-
-      <div className="relative z-10 mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-24 lg:pt-28 lg:pb-28">
+      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-24 lg:pt-28 lg:pb-28">
         <p className="text-eyebrow">Two sides, one rail</p>
         <h2 className="text-display mt-6 text-[clamp(36px,5.5vw,64px)] text-[var(--color-text)] max-w-[860px] leading-[1.04]">
           Mount a vault. Or send your agent.{" "}

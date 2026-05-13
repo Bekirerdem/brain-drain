@@ -78,18 +78,18 @@ export function Hero() {
        */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[72%] z-[1]"
+        className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[78%] z-[1]"
         style={{
           backgroundImage: "url('/bg/hero-rings.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center right",
           backgroundRepeat: "no-repeat",
-          opacity: 0.28,
-          filter: "saturate(0.45) brightness(0.92) hue-rotate(-15deg)",
+          opacity: 0.55,
+          filter: "saturate(0.7) brightness(1.05) hue-rotate(-15deg)",
           maskImage:
-            "linear-gradient(to left, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 92%)",
+            "linear-gradient(to left, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 95%)",
           WebkitMaskImage:
-            "linear-gradient(to left, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 92%)",
+            "linear-gradient(to left, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 95%)",
           mixBlendMode: "screen",
         }}
       />

@@ -42,17 +42,17 @@ export function Footer() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 z-0 overflow-hidden"
         style={{
-          height: "240px",
+          height: "320px",
           backgroundImage: "url('/bg/wave-strip.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center top",
           backgroundRepeat: "no-repeat",
-          opacity: 0.22,
-          filter: "saturate(0.5) brightness(0.95) hue-rotate(-15deg)",
+          opacity: 0.6,
+          filter: "saturate(0.75) brightness(1.1) hue-rotate(-15deg)",
           maskImage:
-            "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%)",
+            "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 28%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
           WebkitMaskImage:
-            "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%)",
+            "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 28%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
           mixBlendMode: "screen",
         }}
       />

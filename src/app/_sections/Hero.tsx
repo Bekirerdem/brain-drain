@@ -71,20 +71,21 @@ export function Hero() {
       <div className="bg-grain-overlay" aria-hidden="true" />
 
       {/*
-       * Single hero-wave bg — futuristic-4.jpg from Bg-design, one
-       * instance spanning the full hero. cover keeps it landscape-
-       * filling, screen blend drops the image's black backdrop so
-       * only the holographic wave reads as atmosphere. Hidden below
-       * lg to keep mobile clean.
+       * Single hero-rings bg — futuristic-2.jpg from Bg-design, one
+       * instance spanning the full hero, centered. opacity dialed
+       * slightly down so the rings read as atmosphere rather than
+       * dominating the OrbitVisual / headline. mix-blend-mode screen
+       * drops the image's black backdrop. Hidden below lg.
        */}
       <div
         aria-hidden="true"
         className="pointer-events-none hidden lg:block absolute inset-0 z-[1]"
         style={{
-          backgroundImage: "url('/bg/hero-wave.jpg')",
+          backgroundImage: "url('/bg/hero-rings.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
+          opacity: 0.7,
           mixBlendMode: "screen",
         }}
       />

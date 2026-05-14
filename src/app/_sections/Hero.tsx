@@ -71,9 +71,9 @@ export function Hero() {
       <div className="bg-grain-overlay" aria-hidden="true" />
 
       {/*
-       * Single hero-rings bg — futuristic-2.jpg from Bg-design, one
+       * Single hero bg — futuristic-9.jpg from bg-design, one
        * instance spanning the full hero, centered. opacity dialed
-       * slightly down so the rings read as atmosphere rather than
+       * slightly down so it reads as atmosphere rather than
        * dominating the OrbitVisual / headline. mix-blend-mode screen
        * drops the image's black backdrop. Hidden below lg.
        */}
@@ -81,7 +81,7 @@ export function Hero() {
         aria-hidden="true"
         className="pointer-events-none hidden lg:block absolute inset-0 z-[1]"
         style={{
-          backgroundImage: "url('/bg/hero-rings.jpg')",
+          backgroundImage: "url('/bg/futuristic-9.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

@@ -70,26 +70,6 @@ export function Hero() {
       <div className="bg-aurora-canvas" aria-hidden="true" />
       <div className="bg-grain-overlay" aria-hidden="true" />
 
-      {/*
-       * Single hero bg — futuristic-9.jpg from bg-design, one
-       * instance spanning the full hero, centered. opacity dialed
-       * slightly down so it reads as atmosphere rather than
-       * dominating the OrbitVisual / headline. mix-blend-mode screen
-       * drops the image's black backdrop. Hidden below lg.
-       */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none hidden lg:block absolute inset-0 z-[1]"
-        style={{
-          backgroundImage: "url('/bg/futuristic-9.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          opacity: 0.7,
-          mixBlendMode: "screen",
-        }}
-      />
-
       <div className="relative z-10 mx-auto w-full max-w-[1280px] px-6 lg:px-10 pt-12 pb-16 lg:pt-14 lg:pb-16 lg:flex-1 lg:flex lg:flex-col lg:justify-between">
         <div className="grid lg:grid-cols-[1.15fr_1fr] gap-12 lg:gap-16 items-center">
           <div>

@@ -66,7 +66,7 @@ export function Hero() {
   }, [reduced]);
 
   return (
-    <section className="bg-aurora bg-grain relative overflow-hidden lg:min-h-screen lg:flex lg:flex-col">
+    <section className="bg-aurora overflow-hidden lg:min-h-screen lg:flex lg:flex-col">
       <div className="bg-aurora-canvas" aria-hidden="true" />
       <div className="bg-grain-overlay" aria-hidden="true" />
 
@@ -82,7 +82,7 @@ export function Hero() {
             </motion.div>
 
             <motion.h1
-              className="text-display mt-8 text-[clamp(40px,7vw,96px)] text-[var(--color-text)]"
+              className="text-display mt-8 text-[clamp(40px,7vw,96px)] text-(--color-text)"
               initial={{ opacity: 0, y: HEADLINE.offsetY }}
               animate={{
                 opacity: stage >= 2 ? 1 : 0,
@@ -92,23 +92,23 @@ export function Hero() {
             >
               AI cites you.{" "}
               <br className="hidden md:block" aria-hidden="true" />
-              <em className="not-italic font-normal text-[var(--color-accent)]">
+              <em className="not-italic font-normal text-(--color-accent)">
                 USDC arrives.
               </em>
             </motion.h1>
 
             <motion.p
-              className="mt-7 max-w-xl text-[var(--color-text-muted)] text-lg lg:text-xl leading-[1.55]"
+              className="mt-7 max-w-xl text-(--color-text-muted) text-lg lg:text-xl leading-[1.55]"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: stage >= 3 ? 1 : 0, y: stage >= 3 ? 0 : 12 }}
               transition={FADE.spring}
             >
               Your{" "}
-              <span className="text-mono-tight text-[var(--color-text)]">Claude&nbsp;Desktop</span>
+              <span className="text-mono-tight text-(--color-text)">Claude&nbsp;Desktop</span>
               , your{" "}
-              <span className="text-mono-tight text-[var(--color-text)]">Cursor</span>
+              <span className="text-mono-tight text-(--color-text)">Cursor</span>
               , any MCP-speaking agent — they read your decision log and pay your Solana wallet directly.{" "}
-              <span className="text-mono-tight text-[var(--color-text)]">~400ms</span>{" "}
+              <span className="text-mono-tight text-(--color-text)">~400ms</span>{" "}
               settlement, no platform custody.
             </motion.p>
 
@@ -123,7 +123,7 @@ export function Hero() {
                 whileHover={{ scale: 1.02, y: -1 }}
                 whileTap={{ scale: 0.98 }}
                 transition={SPRINGS.snappy}
-                className="group inline-flex h-11 px-6 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)]"
+                className="group inline-flex h-11 px-6 items-center gap-2 rounded-(--radius-pill) bg-(--color-accent) text-(--color-bg) text-[14px] font-medium hover:brightness-110 hover:shadow-[0_0_36px_-6px_var(--color-accent)]"
               >
                 Mount your vault
                 <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -133,14 +133,14 @@ export function Hero() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 transition={SPRINGS.snappy}
-                className="group inline-flex h-11 px-5 items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg-card)]/40 backdrop-blur text-[14px] text-[var(--color-text)] hover:bg-[var(--color-bg-card)] hover:border-[var(--color-border-emphasis)]"
+                className="group inline-flex h-11 px-5 items-center gap-2 rounded-(--radius-pill) border border-(--color-border-strong) bg-(--color-bg-card)/40 backdrop-blur text-[14px] text-(--color-text) hover:bg-(--color-bg-card) hover:border-(--color-border-emphasis)"
               >
                 Browse vaults
                 <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
               </MotionLink>
               <a
                 href="#how-it-works"
-                className="hidden sm:inline-flex h-11 px-3 items-center text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+                className="hidden sm:inline-flex h-11 px-3 items-center text-[13px] text-(--color-text-muted) hover:text-(--color-text) transition-colors"
               >
                 How it works ↓
               </a>
@@ -160,11 +160,11 @@ export function Hero() {
           </motion.div>
         </div>
 
-        <div className="mt-12 lg:mt-14 grid grid-cols-2 sm:grid-cols-4 gap-px bg-[var(--color-border)] border-y border-[var(--color-border)]">
+        <div className="mt-12 lg:mt-14 grid grid-cols-2 sm:grid-cols-4 gap-px bg-(--color-border) border-y border-(--color-border)">
           {HERO_STATS.map((stat, i) => (
             <motion.div
               key={stat.label}
-              className="bg-[var(--color-bg)] px-5 py-6 lg:px-6 lg:py-7"
+              className="bg-(--color-bg) px-5 py-6 lg:px-6 lg:py-7"
               initial={{ opacity: 0, y: 12 }}
               animate={{
                 opacity: stage >= 6 ? 1 : 0,
@@ -176,10 +176,10 @@ export function Hero() {
               }}
             >
               <p className="text-eyebrow">{stat.label}</p>
-              <p className="text-display text-[clamp(22px,3vw,32px)] mt-3 text-[var(--color-text)] tabular-nums">
+              <p className="text-display text-[clamp(22px,3vw,32px)] mt-3 text-(--color-text) tabular-nums">
                 {stat.value}
               </p>
-              <p className="text-mono-tight text-[11px] mt-1 text-[var(--color-text-faint)]">
+              <p className="text-mono-tight text-[11px] mt-1 text-(--color-text-faint)">
                 {stat.caption}
               </p>
             </motion.div>
@@ -192,12 +192,12 @@ export function Hero() {
 
 function LiveIndicator() {
   return (
-    <div className="inline-flex items-center gap-2.5 px-3 h-7 rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-bg-card)]/60 backdrop-blur-sm">
+    <div className="inline-flex items-center gap-2.5 px-3 h-7 rounded-(--radius-pill) border border-(--color-border) bg-(--color-bg-card)/60 backdrop-blur-sm">
       <span className="relative flex size-1.5">
-        <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent)] opacity-60 animate-ping" />
-        <span className="relative inline-flex size-1.5 rounded-full bg-[var(--color-accent)]" />
+        <span className="absolute inline-flex h-full w-full rounded-full bg-(--color-accent) opacity-60 animate-ping" />
+        <span className="relative inline-flex size-1.5 rounded-full bg-(--color-accent)" />
       </span>
-      <span className="text-mono-tight text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-muted)]">
+      <span className="text-mono-tight text-[10px] uppercase tracking-[0.2em] text-(--color-text-muted)">
         Live on Solana devnet
       </span>
     </div>

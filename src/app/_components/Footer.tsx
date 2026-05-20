@@ -31,7 +31,7 @@ const BOUNTIES = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-[var(--color-border)] overflow-hidden">
+    <footer className="relative border-t border-[var(--color-border)] overflow-hidden bg-bg">
       {/*
        * Symmetric wave accents — futuristic.jpg rendered twice: once
        * left-anchored, once right-anchored with scaleX(-1) so the two
@@ -124,7 +124,7 @@ export function Footer() {
               {BOUNTIES.map((b) => (
                 <li
                   key={b}
-                  className="inline-flex items-center px-2 h-5 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg)]/60 text-mono-tight text-[10px] text-[var(--color-text-muted)]"
+                  className="inline-flex items-center px-2 h-5 rounded-none border border-[var(--color-border-strong)] bg-[var(--color-bg)]/60 text-mono-tight text-[10px] text-[var(--color-text-muted)]"
                 >
                   {b}
                 </li>

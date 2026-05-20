@@ -73,9 +73,9 @@ export function Header() {
           <ThemeToggle />
           <Link
             href="/vaults/new"
-            className="inline-flex h-9 px-3 sm:px-4 items-center whitespace-nowrap rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[12.5px] sm:text-[13px] font-medium hover:brightness-110 hover:shadow-[0_0_24px_-6px_var(--color-accent)] transition-all duration-200"
+            className="inline-flex h-9 px-4 items-center whitespace-nowrap rounded-none bg-[var(--color-accent)] text-[var(--color-bg)] text-[12.5px] sm:text-[13px] font-mono font-bold hover:bg-[var(--color-bg)] hover:text-[var(--color-accent)] border border-[var(--color-accent)] transition-colors duration-100"
           >
-            Mount<span className="hidden sm:inline">&nbsp;vault</span>
+            [ Mount vault ]
           </Link>
         </div>
       </div>

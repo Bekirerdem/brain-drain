@@ -273,14 +273,14 @@ function StatStripe({
             y: stage >= 1 ? 0 : OFFSETS.rise,
           }}
           transition={{
-            ...SPRINGS.smooth,
-            delay: stage >= 1 ? i * STRIPE_CELL_STAGGER : 0,
+            duration: 0.2,
+            delay: stage >= 1 ? i * 0.05 : 0,
           }}
-          className={`bg-[var(--color-bg)] px-5 py-6 lg:px-6 lg:py-7 transition-[box-shadow] duration-300 ${
-            kickerActive ? "shadow-[inset_0_0_0_1px_var(--color-accent)]" : ""
+          className={`bg-[var(--color-bg)] px-5 py-6 lg:px-6 lg:py-7 font-mono ${
+            kickerActive ? "bg-[rgba(25,251,155,0.05)]" : ""
           }`}
         >
-          <p className="text-eyebrow">{s.label}</p>
+          <p className="text-[10px] text-text-faint uppercase tracking-wider">[{s.label}]</p>
           {s.numeric ? (
             <AnimatedNumber
               value={s.numeric.value}
@@ -288,14 +288,14 @@ function StatStripe({
               prefix={s.numeric.prefix}
               delay={s.numeric.delay}
               bumpOn={headSig}
-              className="text-display text-[clamp(22px,3vw,32px)] mt-3 text-[var(--color-text)] tabular-nums block"
+              className="text-2xl md:text-3xl font-black mt-3 text-[var(--color-text)] tabular-nums block"
             />
           ) : (
-            <p className="text-display text-[clamp(22px,3vw,32px)] mt-3 text-[var(--color-text)] tabular-nums">
+            <p className="text-2xl md:text-3xl font-black mt-3 text-[var(--color-text)] tabular-nums">
               {s.staticValue}
             </p>
           )}
-          <p className="text-mono-tight text-[11px] mt-1 text-[var(--color-text-faint)]">
+          <p className="text-[10px] mt-1 text-[var(--color-text-muted)]">
             {s.caption}
           </p>
         </motion.div>
@@ -320,13 +320,13 @@ function ActivityFeed({
   reduced: boolean;
 }) {
   return (
-    <div className="mt-10 rounded-[var(--radius-card)] border border-[var(--color-border)] overflow-hidden">
-      <div className="grid grid-cols-[1.6fr_1.4fr_1fr_0.9fr] sm:grid-cols-[1.6fr_1.4fr_1.4fr_1fr_0.9fr] gap-3 sm:gap-4 px-4 sm:px-5 lg:px-6 py-3 border-b border-[var(--color-border)] bg-[var(--color-bg-elevated)]">
-        <span className="text-eyebrow">Signature</span>
-        <span className="text-eyebrow hidden sm:inline">Vault</span>
-        <span className="text-eyebrow">Payer</span>
-        <span className="text-eyebrow text-right">Amount</span>
-        <span className="text-eyebrow text-right">Time</span>
+    <div className="mt-10 rounded-none border border-[var(--color-border)] overflow-hidden">
+      <div className="grid grid-cols-[1.6fr_1.4fr_1fr_0.9fr] sm:grid-cols-[1.6fr_1.4fr_1.4fr_1fr_0.9fr] gap-3 sm:gap-4 px-4 sm:px-5 lg:px-6 py-3 border-b border-[var(--color-border)] bg-[var(--color-bg-elevated)] font-mono text-[10px] text-text-muted">
+        <span>Signature</span>
+        <span className="hidden sm:inline">Vault</span>
+        <span>Payer</span>
+        <span className="text-right">Amount</span>
+        <span className="text-right">Time</span>
       </div>
       <ul className="divide-y divide-[var(--color-border)]">
         {rows.map((row, i) => (
@@ -368,16 +368,15 @@ function FeedRow({
     : "hover:bg-[var(--color-bg-card)]/40";
   return (
     <motion.li
-      initial={{ opacity: 0, y: OFFSETS.rise }}
+      initial={{ opacity: 0 }}
       animate={{
         opacity: stage >= 2 ? 1 : 0,
-        y: stage >= 2 ? 0 : OFFSETS.rise,
       }}
       transition={{
-        ...SPRINGS.smooth,
-        delay: stage >= 2 ? (index * FEED_ROW_STAGGER_MS) / 1000 : 0,
+        duration: 0.15,
+        delay: stage >= 2 ? (index * 0.03) : 0,
       }}
-      className={`relative grid grid-cols-[1.6fr_1.4fr_1fr_0.9fr] sm:grid-cols-[1.6fr_1.4fr_1.4fr_1fr_0.9fr] gap-3 sm:gap-4 px-4 sm:px-5 lg:px-6 py-3.5 transition-colors duration-300 ${flashClass}`}
+      className={`relative grid grid-cols-[1.6fr_1.4fr_1fr_0.9fr] sm:grid-cols-[1.6fr_1.4fr_1.4fr_1fr_0.9fr] gap-3 sm:gap-4 px-4 sm:px-5 lg:px-6 py-3.5 transition-colors duration-150 ${flashClass}`}
     >
       {isNew && !reduced && <SettlementPacket />}
       <a
@@ -433,12 +432,12 @@ function FeedRow({
 
 function EmptyState() {
   return (
-    <div className="mt-10 rounded-[var(--radius-card)] border border-dashed border-[var(--color-border-strong)] px-6 py-12 text-center">
-      <p className="text-eyebrow">Awaiting first settlement</p>
+    <div className="mt-10 rounded-none border border-dashed border-[var(--color-border-strong)] px-6 py-12 text-center font-mono">
+      <p className="text-[10px] text-text-faint uppercase tracking-wider">[Awaiting first settlement]</p>
       <p className="mt-4 text-[var(--color-text-muted)] text-sm max-w-md mx-auto leading-[1.55]">
         No agents have paid yet. Fire a query from the demo CLI to seed the feed:
       </p>
-      <pre className="mt-5 inline-block px-4 py-2.5 rounded-[var(--radius-pill)] bg-[var(--color-bg-elevated)] border border-[var(--color-border)] text-mono-tight text-[12px] text-[var(--color-accent)]">
+      <pre className="mt-5 inline-block px-4 py-2.5 rounded-none bg-[var(--color-bg-elevated)] border border-[var(--color-border)] text-mono-tight text-[12px] text-[var(--color-accent)]">
         bun scripts/multi-buyer-traffic.ts
       </pre>
     </div>

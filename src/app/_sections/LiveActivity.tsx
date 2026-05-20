@@ -7,11 +7,6 @@ const INITIAL_LIMIT = 20;
 
 async function loadInitial(): Promise<PayoutEvent[]> {
   try {
-    // Same source as /api/payouts — the DB-backed ledger. Earlier this
-    // used getNetworkPayouts (RPC indexer), which on hard refresh
-    // briefly painted faucet-inflated stats ($25.20 / 17 settlements)
-    // before the client poll replaced them with the real ledger view
-    // ($3.70 / 9). SSR + polling now read the same source.
     return await getLedgerPayouts({ limit: INITIAL_LIMIT });
   } catch {
     return [];
@@ -25,30 +20,27 @@ export async function LiveActivity() {
   return (
     <section
       id="live"
-      className="bg-aurora bg-grain relative overflow-hidden border-t border-[var(--color-border)]"
+      className="bg-transparent relative overflow-hidden border-t border-border"
     >
-      <div className="bg-aurora-canvas opacity-50" aria-hidden="true" />
-      <div className="bg-grain-overlay" aria-hidden="true" />
-
-      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-28 lg:pt-32 lg:pb-36">
+      <div className="mx-auto max-w-[1280px] px-6 lg:px-10 pt-16 pb-20 md:pt-20 md:pb-24">
         <SectionEyebrow network={network} />
 
-        <h2 className="text-display mt-8 text-[clamp(36px,6vw,72px)] text-[var(--color-text)] max-w-3xl">
-          Protocol settlements,{" "}
-          <em className="not-italic font-normal text-[var(--color-accent)]">
+        <h2 className="mt-6 text-3xl md:text-4xl lg:text-5xl font-mono tracking-tight font-black uppercase text-text max-w-3xl leading-[0.95]">
+          Protocol settlements, <br />
+          <span className="text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-2 py-0.5 mt-2 inline-block border border-[var(--color-accent)]/20">
             in real time.
-          </em>
+          </span>
         </h2>
 
-        <p className="mt-6 max-w-2xl text-[var(--color-text-muted)] text-lg leading-[1.55]">
-          Every paid query is an on-chain SPL transfer from the buyer agent's
-          wallet to a vault operator's payout address. The feed below merges
+        <p className="mt-6 max-w-2xl text-text-muted text-sm font-mono leading-relaxed pl-4 border-l border-border-strong">
+          Every paid query is an on-chain SPL transfer from the buyer agent&apos;s
+          wallet to a vault operator&apos;s payout address. The feed below merges
           settlements across every public vault on the protocol, polling{" "}
-          <span className="text-mono-tight text-[var(--color-text)]">/api/payouts</span>{" "}
+          <span className="text-[var(--color-accent)]">/api/payouts</span>{" "}
           every 10 seconds — no mocks, no proxies, just on-chain truth.
         </p>
 
-        <div className="mt-12 lg:mt-14">
+        <div className="mt-10 md:mt-12">
           <LiveActivityClient initial={initial} network={network} />
         </div>
       </div>
@@ -59,13 +51,13 @@ export async function LiveActivity() {
 function SectionEyebrow({ network }: { network: SolanaCluster }) {
   const label = network === "devnet" ? "Solana devnet · live" : "Solana mainnet · live";
   return (
-    <div className="inline-flex items-center gap-2.5 px-3 h-7 rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-bg-card)]/60 backdrop-blur-sm">
+    <div className="inline-flex items-center gap-2.5 px-3 h-7 rounded-none border border-border bg-bg-card font-mono text-[10px]">
       <span className="relative flex size-1.5">
         <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent)] opacity-60 animate-ping" />
         <span className="relative inline-flex size-1.5 rounded-full bg-[var(--color-accent)]" />
       </span>
-      <span className="text-mono-tight text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-muted)]">
-        {label}
+      <span className="uppercase tracking-[0.15em] text-text-muted font-bold">
+        [{label}]
       </span>
     </div>
   );

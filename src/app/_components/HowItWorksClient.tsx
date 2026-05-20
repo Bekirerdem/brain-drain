@@ -156,19 +156,17 @@ function Step({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-120px" }}
       transition={{
-        type: "spring",
-        stiffness: 280,
-        damping: 30,
+        duration: 0.2,
         delay: index * 0.05,
       }}
     >
       <StepNumber n={step.n} />
-      <div className="grid lg:grid-cols-[1fr_1.1fr] gap-8 lg:gap-12 items-start">
+      <div className="grid lg:grid-cols-[1fr_1.1fr] gap-8 lg:gap-12 items-start font-mono">
         <div>
-          <h3 className="text-display text-[clamp(22px,3vw,32px)] text-[var(--color-text)]">
+          <h3 className="text-xl md:text-2xl font-black uppercase text-[var(--color-text)]">
             {step.title}
           </h3>
-          <p className="mt-4 text-[var(--color-text-muted)] text-[15px] lg:text-base leading-[1.65] max-w-[460px]">
+          <p className="mt-4 text-[var(--color-text-muted)] text-xs lg:text-sm leading-relaxed max-w-[460px] pl-3 border-l border-border-strong">
             {step.body}
           </p>
         </div>
@@ -182,10 +180,10 @@ function StepNumber({ n }: { n: string }) {
   return (
     <span
       aria-hidden="true"
-      className="absolute left-0 top-0 inline-flex items-center justify-center size-10 sm:size-14 rounded-full bg-[var(--color-bg-elevated)] border border-[var(--color-border-strong)]"
+      className="absolute left-0 top-0 inline-flex items-center justify-center size-10 sm:size-14 rounded-none bg-[var(--color-bg-elevated)] border border-[var(--color-border-strong)]"
     >
-      <span className="text-mono-tight text-[11px] sm:text-[13px] tracking-[0.05em] text-[var(--color-accent)]">
-        {n}
+      <span className="text-mono-tight text-[11px] sm:text-[13px] tracking-[0.05em] text-[var(--color-accent)] font-mono font-bold">
+        [{n}]
       </span>
     </span>
   );
@@ -199,10 +197,10 @@ function ArtifactCard({
   price: string;
 }) {
   return (
-    <figure className="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/80 backdrop-blur-sm overflow-hidden">
+    <figure className="rounded-none border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/80 backdrop-blur-sm overflow-hidden font-mono">
       <figcaption className="flex items-center justify-between px-4 lg:px-5 py-2.5 border-b border-[var(--color-border)] bg-[var(--color-bg-card)]/40">
-        <span className="text-eyebrow">{artifact.label}</span>
-        <span className="text-mono-tight text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-faint)]">
+        <span className="text-[10px] text-text-faint uppercase tracking-wider">[{artifact.label}]</span>
+        <span className="text-[10px] uppercase tracking-[0.16em] text-[var(--color-text-faint)]">
           {artifact.lang}
         </span>
       </figcaption>

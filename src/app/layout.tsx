@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, JetBrains_Mono, Audiowide } from "next/font/google";
+import { Geist_Mono, JetBrains_Mono, Audiowide } from "next/font/google";
 import { Header } from "./_components/Header";
 import { Footer } from "./_components/Footer";
 import { LiveEventsProvider } from "@/lib/live-events/context";
@@ -25,8 +25,8 @@ const themeInitScript = `
 })();
 `;
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -86,6 +86,8 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+import { AmbientBackground } from "./_components/AmbientBackground";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -94,17 +96,20 @@ export default function RootLayout({
       lang="en"
       data-theme="dark"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${jetBrainsMono.variable} ${audiowide.variable} antialiased`}
+      className={`${geistMono.variable} ${jetBrainsMono.variable} ${audiowide.variable} antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-screen flex flex-col bg-[var(--color-bg)] text-[var(--color-text)]">
+      <body className="min-h-screen flex flex-col bg-[var(--color-bg)] text-[var(--color-text)] relative">
         <ThemeProvider>
           <LiveEventsProvider>
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            <AmbientBackground />
+            <div className="relative z-10 flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
           </LiveEventsProvider>
         </ThemeProvider>
       </body>

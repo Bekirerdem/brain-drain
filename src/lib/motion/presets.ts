@@ -6,6 +6,10 @@
  * in delay props. New motion code MUST import from here.
  */
 
+/**
+ * @deprecated SPRINGS is deprecated in Terminal Brutalism (Yön 2) design system.
+ * Use GSAP utilities or stepped reveals instead.
+ */
 export const SPRINGS = {
   snappy:   { type: "spring" as const, stiffness: 400, damping: 30 },
   smooth:   { type: "spring" as const, stiffness: 300, damping: 30 },

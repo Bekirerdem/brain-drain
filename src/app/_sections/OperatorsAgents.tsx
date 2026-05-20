@@ -2,9 +2,6 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { SPRINGS } from "@/lib/motion/presets";
-
-const MotionLink = motion(Link);
 
 const AGENT_RUNTIMES = [
   "Claude Desktop",
@@ -14,29 +11,28 @@ const AGENT_RUNTIMES = [
   "OpenCode",
 ] as const;
 
-/* ─────────────────────────────────────────────────────────
- * OPERATORS + AGENTS — single bento that replaces the two
- * separate ForExperts + ForAgents sections. Kept compact so the
- * landing reads like a teaser hub: each card is one paragraph plus
- * a "learn more" link. Deeper content lives on the destination
- * page (/vaults/new for operators, README + MCP docs for agents).
- * ───────────────────────────────────────────────────────── */
 export function OperatorsAgents() {
   return (
     <section
       id="operators-and-agents"
-      className="relative overflow-hidden border-t border-[var(--color-border)]"
+      className="relative overflow-hidden border-t border-border bg-transparent"
     >
-      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-24 pb-24 lg:pt-28 lg:pb-28">
-        <p className="text-eyebrow">Two sides, one rail</p>
-        <h2 className="text-display mt-6 text-[clamp(36px,5.5vw,64px)] text-[var(--color-text)] max-w-[860px] leading-[1.04]">
-          Mount a vault. Or send your agent.{" "}
-          <em className="not-italic font-normal text-[var(--color-accent)]">
+      <div className="relative mx-auto max-w-[1280px] px-6 lg:px-10 pt-16 pb-16 md:pt-20 md:pb-20">
+        
+        {/* Eyebrow */}
+        <div className="text-[10px] font-mono tracking-widest text-text-muted uppercase font-bold">
+          [ Two sides, one rail ]
+        </div>
+
+        {/* Heading */}
+        <h2 className="mt-6 text-3xl md:text-4xl lg:text-5xl font-mono tracking-tight font-black uppercase text-text max-w-3xl leading-[0.95]">
+          Mount a vault. Or send your agent. <br />
+          <span className="text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-2 py-0.5 mt-2 inline-block border border-[var(--color-accent)]/20">
             Both flows in one click.
-          </em>
+          </span>
         </h2>
 
-        <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <OperatorCard />
           <AgentCard />
         </div>
@@ -48,48 +44,46 @@ export function OperatorsAgents() {
 function OperatorCard() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ ...SPRINGS.smooth }}
-      className="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/60 backdrop-blur-md p-7 lg:p-9 flex flex-col"
+      transition={{ duration: 0.2 }}
+      className="rounded-none border border-border bg-bg-card p-6 md:p-8 flex flex-col justify-between font-mono"
     >
-      <p className="text-eyebrow">For operators</p>
-      <h3 className="mt-5 text-display text-[clamp(22px,3vw,32px)] text-[var(--color-text)]">
-        Your decision log{" "}
-        <em className="not-italic font-normal text-[var(--color-accent)]">
-          is a paid API now.
-        </em>
-      </h3>
-      <p className="mt-4 text-[14.5px] leading-[1.6] text-[var(--color-text-muted)] max-w-[460px]">
-        Drop a folder of markdown — Obsidian export, Notion dump,
-        decision log. Brain Drain chunks, embeds, and mints an
-        x402-gated endpoint at <code className="text-mono-tight text-[var(--color-text)]">/api/v/{`{your-slug}`}/query</code>.
-        You set the price, USDC settles direct to your wallet.
-      </p>
+      <div className="space-y-4">
+        <p className="text-[10px] text-text-faint uppercase tracking-wider">[For operators]</p>
+        <h3 className="text-xl md:text-2xl font-black uppercase text-text">
+          Your decision log <br />
+          <span className="text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-1.5 py-0.5 mt-1 inline-block border border-[var(--color-accent)]/20">
+            is a paid API now.
+          </span>
+        </h3>
+        <p className="text-xs lg:text-sm leading-relaxed text-text-muted max-w-[460px] pl-3 border-l border-border-strong">
+          Drop a folder of markdown — Obsidian export, Notion dump,
+          decision log. Brain Drain chunks, embeds, and mints an
+          x402-gated endpoint at <code className="text-text font-bold">/api/v/{"{your-slug}"}/query</code>.
+          You set the price, USDC settles direct to your wallet.
+        </p>
 
-      <ul className="mt-6 space-y-2 text-[13px] text-[var(--color-text-muted)]">
-        <Bullet>$0.05–$5 per query, operator-set</Bullet>
-        <Bullet>No platform custody · no waitlist</Bullet>
-        <Bullet>~30 seconds to mount 100 chunks</Bullet>
-      </ul>
+        <ul className="space-y-2 text-xs text-text-muted pt-2">
+          <Bullet>$0.05–$5 per query, operator-set</Bullet>
+          <Bullet>No platform custody · no waitlist</Bullet>
+          <Bullet>~30 seconds to mount 100 chunks</Bullet>
+        </ul>
+      </div>
 
-      <div className="mt-7 flex flex-wrap gap-3">
-        <MotionLink
+      <div className="mt-8 flex flex-wrap gap-4 items-center">
+        <Link
           href="/vaults/new"
-          whileHover={{ scale: 1.02, y: -1 }}
-          whileTap={{ scale: 0.98 }}
-          transition={SPRINGS.snappy}
-          className="inline-flex h-10 px-5 items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-accent)] text-[var(--color-bg)] text-[13px] font-medium hover:brightness-110 hover:shadow-[0_0_28px_-6px_var(--color-accent)]"
+          className="bg-[var(--color-accent)] text-[var(--color-bg)] font-mono font-bold text-xs uppercase px-5 h-10 inline-flex items-center justify-center border border-[var(--color-accent)] hover:bg-bg hover:text-[var(--color-accent)] transition-colors duration-100"
         >
-          Mount your vault
-          <Arrow />
-        </MotionLink>
+          [ Mount Vault ]
+        </Link>
         <Link
           href="/vaults"
-          className="inline-flex h-10 px-4 items-center text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+          className="text-xs text-text-muted hover:text-[var(--color-accent)] transition-colors font-bold"
         >
-          Browse public vaults →
+          Browse public vaults &rarr;
         </Link>
       </div>
     </motion.div>
@@ -99,55 +93,53 @@ function OperatorCard() {
 function AgentCard() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ ...SPRINGS.smooth, delay: 0.06 }}
-      className="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg-elevated)]/60 backdrop-blur-md p-7 lg:p-9 flex flex-col"
+      transition={{ duration: 0.2, delay: 0.05 }}
+      className="rounded-none border border-border bg-bg-card p-6 md:p-8 flex flex-col justify-between font-mono"
     >
-      <p className="text-eyebrow">For agent buyers</p>
-      <h3 className="mt-5 text-display text-[clamp(22px,3vw,32px)] text-[var(--color-text)]">
-        Stop hallucinating.{" "}
-        <em className="not-italic font-normal text-[var(--color-accent)]">
-          Cite real experts.
-        </em>
-      </h3>
-      <p className="mt-4 text-[14.5px] leading-[1.6] text-[var(--color-text-muted)] max-w-[460px]">
-        Paste the MCP endpoint into your agent runtime. CDP MPC
-        signs every USDC transfer — no SDK lock-in, no key handling.
-        Pay only what you cite, get on-chain proof every round trip.
-      </p>
+      <div className="space-y-4">
+        <p className="text-[10px] text-text-faint uppercase tracking-wider">[For agent buyers]</p>
+        <h3 className="text-xl md:text-2xl font-black uppercase text-text">
+          Stop hallucinating. <br />
+          <span className="text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-1.5 py-0.5 mt-1 inline-block border border-[var(--color-accent)]/20">
+            Cite real experts.
+          </span>
+        </h3>
+        <p className="text-xs lg:text-sm leading-relaxed text-text-muted max-w-[460px] pl-3 border-l border-border-strong">
+          Paste the MCP endpoint into your agent runtime. CDP MPC
+          signs every USDC transfer — no SDK lock-in, no key handling.
+          Pay only what you cite, get on-chain proof every round trip.
+        </p>
 
-      <ul className="mt-5 flex flex-wrap gap-1.5">
-        {AGENT_RUNTIMES.map((r) => (
-          <li
-            key={r}
-            className="inline-flex items-center px-2.5 h-6 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg)]/50 text-mono-tight text-[11px] text-[var(--color-text)]"
-          >
-            {r}
+        <ul className="flex flex-wrap gap-2 pt-2">
+          {AGENT_RUNTIMES.map((r) => (
+            <li
+              key={r}
+              className="inline-flex items-center px-2.5 h-6 rounded-none border border-border-strong bg-bg/50 text-[10px] text-text font-bold"
+            >
+              {r}
+            </li>
+          ))}
+          <li className="inline-flex items-center px-2.5 h-6 rounded-none border border-dashed border-border text-[10px] text-text-faint">
+            + any MCP client
           </li>
-        ))}
-        <li className="inline-flex items-center px-2.5 h-6 rounded-[var(--radius-pill)] border border-dashed border-[var(--color-border)] text-mono-tight text-[11px] text-[var(--color-text-faint)]">
-          + any MCP client
-        </li>
-      </ul>
+        </ul>
+      </div>
 
-      <div className="mt-7 flex flex-wrap gap-3">
-        <MotionLink
+      <div className="mt-8 flex flex-wrap gap-4 items-center">
+        <Link
           href="https://github.com/Bekirerdem/brain-drain#quickstart-local-development"
-          whileHover={{ scale: 1.02, y: -1 }}
-          whileTap={{ scale: 0.98 }}
-          transition={SPRINGS.snappy}
-          className="inline-flex h-10 px-5 items-center gap-2 rounded-[var(--radius-pill)] border border-[var(--color-border-strong)] bg-[var(--color-bg-card)] text-[13px] text-[var(--color-text)] hover:bg-[var(--color-bg-card-hover)] hover:border-[var(--color-accent)]/40"
+          className="bg-bg border border-border-strong text-text font-mono font-bold text-xs uppercase px-5 h-10 inline-flex items-center justify-center hover:border-[var(--color-accent)]/50 transition-colors duration-100"
         >
-          Drop the endpoint
-          <Arrow />
-        </MotionLink>
+          [ Drop Endpoint ]
+        </Link>
         <Link
           href="/#how-it-works"
-          className="inline-flex h-10 px-4 items-center text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+          className="text-xs text-text-muted hover:text-[var(--color-accent)] transition-colors font-bold"
         >
-          See protocol mechanics →
+          See mechanics &rarr;
         </Link>
       </div>
     </motion.div>
@@ -156,30 +148,11 @@ function AgentCard() {
 
 function Bullet({ children }: { readonly children: React.ReactNode }) {
   return (
-    <li className="flex gap-2.5">
-      <span aria-hidden="true" className="text-[var(--color-accent)] mt-0.5 text-[12px]">
-        ▸
+    <li className="flex gap-2">
+      <span aria-hidden="true" className="text-[var(--color-accent)]">
+        &gt;
       </span>
       <span>{children}</span>
     </li>
-  );
-}
-
-function Arrow() {
-  return (
-    <svg
-      viewBox="0 0 12 12"
-      fill="none"
-      className="size-3.5"
-      aria-hidden="true"
-    >
-      <path
-        d="M3 6h6m0 0L6 3m3 3L6 9"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }

@@ -19,6 +19,7 @@ import { AnimatedNumber } from "./AnimatedNumber";
 import { SettlementPacket } from "./SettlementPacket";
 
 const POLL_INTERVAL_MS = 10_000;
+const POLL_LIMIT = 500;
 const FEED_VISIBLE = 5;
 const HIGHLIGHT_MS = 2_000;
 
@@ -82,7 +83,7 @@ export function LiveActivityClient({ initial, network }: Props) {
 
   const fetchPayouts = useCallback(async () => {
     try {
-      const res = await fetch("/api/payouts?limit=20", { cache: "no-store" });
+      const res = await fetch(`/api/payouts?limit=${POLL_LIMIT}`, { cache: "no-store" });
       if (!res.ok) return;
       const data: { payouts: PayoutEvent[] } = await res.json();
       const incoming = data.payouts;

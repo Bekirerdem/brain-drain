@@ -38,7 +38,7 @@ export function ClosingHero() {
 
             {/* Paragraph */}
             <p className="mt-6 max-w-xl text-text-muted text-sm leading-relaxed pl-4 border-l border-border-strong">
-              The rail is on Solana devnet. 5 vaults indexed, 9
+              The rail is on Solana devnet. 7 vaults indexed, 72
               settlements on-chain, real USDC moving from agent
               wallets to operator wallets. Add yours, or send your
               agent — both flows take one click each.

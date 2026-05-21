@@ -3,7 +3,7 @@ import { getLedgerPayouts, type PayoutEvent } from "@/lib/payouts";
 import type { SolanaCluster } from "@/lib/format";
 import { LiveActivityClient } from "../_components/LiveActivityClient";
 
-const INITIAL_LIMIT = 20;
+const INITIAL_LIMIT = 500;
 
 async function loadInitial(): Promise<PayoutEvent[]> {
   try {
